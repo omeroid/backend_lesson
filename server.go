@@ -17,6 +17,7 @@ func main() {
 
 	e.GET("/room/:id", handler.GetMessages)
 	e.POST("/lobby", handler.SendMessage) //roomIDとmsgが必要
+	e.POST("/delete", handler.DeleteMessage)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }

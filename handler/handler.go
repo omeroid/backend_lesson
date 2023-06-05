@@ -24,22 +24,24 @@ func SendMessage(c echo.Context) error {
 
 func GetMessages(c echo.Context) error {
 
+	roomID := c.Param("id")
+
 	conn, err := db.Initdb()
 	if err != nil {
 		log.Fatalln("接続失敗！", err)
 	}
 
 	var messages []db.Message
-	conn.Find(&messages) //全件取得
+	conn.Find(&messages, "roomid=?", roomID) //指定したroomIDのメッセージを全件取得
 
 	res := &ResponseGetMessages{}
 	res.Response = messages
 
-	var tmp []byte
+	var resJson []byte
 
-	tmp, err = json.Marshal(res)
+	resJson, err = json.Marshal(res)
 
-	return c.String(http.StatusOK, string(tmp))
+	return c.String(http.StatusOK, string(resJson))
 }
 
 //columnはroomID,content,timestampで行きます

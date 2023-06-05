@@ -5,19 +5,45 @@ import (
 
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/omeroid/kosen_backend_lesson/db"
 )
 
+var layout = "2006-01-02T15:04:05Z07:00"
+
 type ResponseGetMessages struct {
 	Response []db.Message
 }
 
+type InputSendMessage struct {
+	RoomID  string `json:"roomID"`
+	Message string `json:"message"`
+}
+
 func SendMessage(c echo.Context) error {
 
-	//msg := c.FormValue("message")
-	//roomID := c.FormValue("roomID")
+	p := new(InputSendMessage)
+	if err := c.Bind(p); err != nil {
+		log.Fatalln("パラメータが不正です", err)
+		return err
+	}
+
+	conn, err := db.Initdb()
+	if err != nil {
+		log.Fatalln("接続失敗!", err)
+	}
+
+	now := time.Now()
+
+	message := db.Message{
+		RoomID:    p.RoomID,
+		Content:   p.Message,
+		TimeStamp: now.Format(layout),
+	}
+
+	conn.Create(&message)
 
 	return c.String(http.StatusOK, "message sended")
 }
@@ -37,11 +63,11 @@ func GetMessages(c echo.Context) error {
 	res := &ResponseGetMessages{}
 	res.Response = messages
 
-	var resJson []byte
+	var output []byte
 
-	resJson, err = json.Marshal(res)
+	output, err = json.Marshal(res)
 
-	return c.String(http.StatusOK, string(resJson))
+	return c.String(http.StatusOK, string(output))
 }
 
 //columnはroomID,content,timestampで行きます

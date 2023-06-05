@@ -8,7 +8,7 @@ import (
 )
 
 type Message struct {
-	RoomID    uint   `gorm:"column:roomID"`
+	RoomID    uint   `gorm:"column:roomid"`
 	Content   string `gorm:"column:content"`
 	TimeStamp string `gorm:"column:timestamp"`
 }

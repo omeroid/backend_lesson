@@ -1,10 +1,11 @@
 package main
 
 import (
-	"net/http"
+	//	"net/http"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/omeroid/kosen_backend_lesson/handler"
 )
 
 func main() {
@@ -14,11 +15,8 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	e.GET("/", hello)
+	e.GET("/room/:id", handler.GetMessages)
+	e.POST("/lobby", handler.SendMessage) //roomIDとmsgが必要
 
 	e.Logger.Fatal(e.Start(":1323"))
-}
-
-func hello(c echo.Context) error {
-	return c.String(http.StatusOK, "Hello,World!")
 }

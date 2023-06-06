@@ -1,0 +1,336 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: チャットアプリ
+  description: インターン教材
+tags:
+  - name: authentication
+    description: ユーザ認証関連API
+  - name: room
+    description: チャットルーム関連API
+  - name: message
+    description: メッセージ関連API
+paths:
+  /user/signup:
+    post:
+      tags:
+        - authentication
+      summary: ユーザ登録
+      description: ユーザ登録API
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginParameters'
+      responses:
+        '201':
+          description: ユーザ作成成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: ユーザ作成失敗
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: エラーメッセージ
+  /user/signin:
+    post:
+      tags:
+        - authentication
+      summary: ユーザログイン
+      description: ユーザログインAPI
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginParameters'
+      responses:
+        '200':
+          description: ログイン成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                    description: ユーザId
+                  userName:
+                    type: string
+                    description: ユーザ名
+                  token:
+                    type: string
+                    description: アクセストークン
+        '401':
+          description: ログイン失敗
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: エラーメッセージ
+  /rooms:
+    get:
+      summary: チャットルーム一覧取得
+      description: チャットルーム一覧取得API
+      tags:
+        - room
+      security:
+        - Bearer: []
+      responses:
+        '201':
+          description: チャットルーム一覧取得成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+        '401':
+          description: 認証失敗
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizeResponse'
+    post:
+      summary: チャットルーム作成
+      description: チャットルーム作成API
+      tags:
+        - room
+      security:
+        - Bearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  description: チャットルーム名
+                description:
+                  type: string
+                  description: チャットルーム説明
+      responses:
+        '201':
+          description: チャットルーム作成成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+        '401':
+          description: 認証失敗
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizeResponse'
+  /rooms/{roomId}:
+    get:
+      summary: チャットルーム詳細取得
+      description: チャットルーム詳細取得API
+      tags:
+        - room
+      security:
+        - Bearer: []
+      parameters:
+        - name: roomId
+          in: path
+          required: true
+          schema:
+            type : string
+      responses:
+        '200':
+          description: チャットルーム詳細取得
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+        '401':
+          description: 認証失敗
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizeResponse'
+  /rooms/{roomId}/messages:
+    post:
+      summary: メッセージ送信
+      description: メッセージ送信API
+      tags:
+        - message
+      security:
+        - Bearer: []
+      parameters:
+        - name: roomId
+          in: path
+          required: true
+          schema:
+            type : string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - text
+              properties:
+                userId:
+                  type: string
+                  description: ユーザId(tokenからuserID取得できるがAPI側実装の簡略化のためuserID送る)
+                text:
+                  type: string
+                  description: メッセージテキスト
+      responses:
+        '201':
+          description: メッセージ送信成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '401':
+          description: 認証失敗
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizeResponse'
+    get:
+      summary: メッセージ一覧取得
+      description: チャットルームのメッセージ一覧取得API
+      tags:
+        - message
+      security:
+        - Bearer: []
+      parameters:
+        - name: roomId
+          in: path
+          required: true
+          schema:
+            type : string
+      responses:
+        '200':
+          description: メッセージ一覧取得成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  messages:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Message'
+        '401':
+          description: 認証失敗
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizeResponse'
+  /rooms/{roomId}/messages/{messageId}:
+    delete:
+      summary: メッセージ削除
+      description: メッセージ削除API
+      tags:
+        - message
+      security:
+        - Bearer: []
+      parameters:
+        - name: roomId
+          in: path
+          required: true
+          schema:
+            type : string
+        - name: messageId
+          in: path
+          required: true
+          schema:
+            type : string
+      responses:
+        '201':
+          description: メッセージ削除成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '401':
+          description: 認証失敗
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizeResponse'
+components:
+  schemas:
+    LoginParameters:
+      type: object
+      required:
+        - userName
+        - password
+      properties:
+        userName:
+          type: string
+          description: ユーザ名
+        password:
+          type: string
+          description: パスワード
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ユーザーId
+        name:
+          type: string
+          description: ユーザー名
+        createdAt:
+          type: string
+          description: 作成日時
+    Room:
+      type: object
+      properties:
+        id:
+          type: string
+          description: チャットルームId
+        name:
+          type: string
+          description: チャットルーム名
+        description:
+          type: string
+          description: チャットルーム説明
+        createdAt:
+          type: string
+          description: 作成日時
+    Message:
+      type: object
+      properties:
+        id:
+          type: string
+          description: メッセージId
+        text:
+          type: string
+          description: メッセージテキスト
+        createdAt:
+          type: string
+          description: 作成日時
+        user:
+          $ref: '#/components/schemas/User'
+    UnauthorizeResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: 認証に失敗しました
+  securitySchemes:
+    Bearer:
+      type: http
+      scheme: bearer
+      description: Credentials or access token for API
+
+
+

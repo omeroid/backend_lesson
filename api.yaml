@@ -1,0 +1,313 @@
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: チャットアプリ
+  description: インターン教材
+tags:
+  - name: authentication
+    description: ユーザ認証関連API
+  - name: chatRoom
+    description: チャットルーム関連API
+  - name: message
+    description: メッセージ関連API
+paths:
+  /user/signup:
+    post:
+      tags:
+        - authentication
+      summary: ユーザ登録
+      description: ユーザ登録API
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/authenticationParameters'
+      responses:
+        '201':
+          description: ユーザ作成成功
+          schema:
+            type: object
+            properties:
+              userId:
+                type: string
+                example: ユーザId
+              userName:
+                type: string
+                example: ユーザ名
+        '400':
+          description: ユーザ作成失敗
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: エラーメッセージ
+  /user/signin:
+    post:
+      tags:
+        - authentication
+      summary: ユーザログイン
+      description: ユーザログインAPI
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/authenticationParameters'
+      responses:
+        '200':
+          description: ログイン成功
+          schema:
+            type: object
+            properties:
+              userId:
+                type: string
+                example: ユーザId
+              userName:
+                type: string
+                example: ユーザ名
+              token:
+                type: string
+                example: アクセストークン
+        '401':
+          description: ログイン失敗
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: エラーメッセージ
+  /chatRooms:
+    get:
+      summary: チャットルーム一覧取得
+      description: チャットルーム一覧取得API
+      tags:
+        - chatRoom
+      parameters:
+        - name: token
+          in: query
+          type: string
+          required: true
+      responses:
+        '201':
+          description: チャットルーム一覧取得成功
+          schema:
+            $ref: '#/definitions/chatRoom'
+        '401':
+          description: 認証失敗
+          schema:
+            $ref: '#/definitions/unauthorizeResponse'
+    post:
+      summary: チャットルーム作成
+      description: チャットルーム作成API
+      tags:
+        - chatRoom
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            required:
+              - token
+              - chatRoomId
+            properties:
+              token:
+                type: string
+                example: アクセストークン
+              chatRoomName:
+                type: string
+                example: チャットルーム名
+              chatRoomDescription:
+                type: string
+                example: チャットルーム説明
+      responses:
+        '201':
+          description: チャットルーム作成成功
+          schema:
+            $ref: '#/definitions/chatRoom'
+        '401':
+          description: 認証失敗
+          schema:
+            $ref: '#/definitions/unauthorizeResponse'
+
+  /chatRooms/{chatRoomId}:
+    get:
+      summary: チャットルーム詳細取得
+      description: チャットルーム詳細取得API
+      tags:
+        - chatRoom
+      parameters:
+        - name: chatRoomId
+          in: path
+          type: string
+          required: true
+        - name: token
+          in: query
+          type: string
+          required: true
+      responses:
+        '200':
+          description: チャットルーム詳細取得
+          schema:
+            $ref: '#/definitions/chatRoom'
+        '401':
+          description: 認証失敗
+          schema:
+            $ref: '#/definitions/unauthorizeResponse'
+  /message:
+    post:
+      summary: メッセージ送信
+      description: メッセージ送信API
+      tags:
+        - message
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            required:
+              - token
+              - chatRoomId
+            properties:
+              token:
+                type: string
+                example: アクセストークン
+              chatRoomId:
+                type: string
+                example: メッセージId
+              userId:
+                type: string
+                example: ユーザId
+              text:
+                type: string
+                example: メッセージテキスト
+      responses:
+        '201':
+          description: メッセージ送信成功
+          schema:
+            $ref: '#/definitions/message'
+        '401':
+          description: 認証失敗
+          schema:
+            $ref: '#/definitions/unauthorizeResponse'
+    delete:
+      summary: メッセージ削除
+      description: メッセージ削除API
+      tags:
+        - message
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            required:
+              - token
+              - userId
+              - messageId
+            properties:
+              token:
+                type: string
+                example: アクセストークン
+              userId:
+                type: string
+                example: ユーザId
+              messageId:
+                type: string
+                example: メッセージId
+      responses:
+        '201':
+          description: メッセージ削除成功
+          schema:
+            $ref: '#/definitions/message'
+        '401':
+          description: 認証失敗
+          schema:
+            $ref: '#/definitions/unauthorizeResponse'
+  /message/{chatRoomId}:
+    get:
+      summary: メッセージ一覧取得
+      description: チャットルームのメッセージ一覧取得API
+      tags:
+        - message
+      parameters:
+        - name: token
+          in: query
+          type: string
+          required: true
+        - name: chatRoomId
+          in: path
+          type: string
+          required: true
+      responses:
+        '200':
+          description: メッセージ一覧取得成功
+          schema:
+            type: object
+            properties:
+              messages:
+                type: array
+                items:
+                  $ref: '#/definitions/message'
+        '401':
+          description: 認証失敗
+          schema:
+            $ref: '#/definitions/unauthorizeResponse'
+definitions:
+  authenticationParameters:
+    type: object
+    required:
+      - userName
+      - password
+    properties:
+      userName:
+        type: string
+        example: ユーザ名
+      password:
+        type: string
+        example: パスワード
+  chatRoomsGetParameters:
+    type: object
+    required:
+      - token
+    properties:
+      token:
+        type: string
+        example: アクセストークン
+  chatRoom:
+    type: object
+    properties:
+      id:
+        type: string
+        example: チャットルームId
+      name:
+        type: string
+        example: チャットルーム名
+      description:
+        type: string
+        example: チャットルーム説明
+      createdAt:
+        type: string
+        example: 作成日時
+  message:
+    type: object
+    properties:
+      id:
+        type: string
+        example: メッセージId
+      userId:
+        type: string
+        example: ユーザId
+      userName:
+        type: string
+        example: ユーザ名
+      text:
+        type: string
+        example: メッセージテキスト
+      createdAt:
+        type: string
+        example: 作成日時
+  unauthorizeResponse:
+    type: object
+    properties:
+      message:
+        type: string
+        example: 認証に失敗しました

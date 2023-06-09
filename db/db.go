@@ -1,22 +1,19 @@
 package db
 
 import (
-	//"github.com/jinzhu/gorm"
-	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"log"
 )
 
-type Message struct {
-	MessageID string `gorm:"column:messageid"`
-	RoomID    string `gorm:"column:roomid"`
-	Content   string `gorm:"column:content"`
-	TimeStamp string `gorm:"column:timestamp"`
-}
-
-func Initdb() (*gorm.DB, error) {
-	dsn := "host=localhost user=root password=root dbname=root port=5430 sslmode=disable"
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+// type Messages struct {
+// MessageID string `gorm:"column:messageid"`
+// RoomID    string `gorm:"column:roomid"`
+// Content   string `gorm:"column:content"`
+// TimeStamp string `gorm:"column:timestamp"`
+// }
+func InitDB() (*gorm.DB, error) {
+	db, err := gorm.Open(sqlite.Open("chatsystem.sqlite"), &gorm.Config{})
 	if err != nil {
 		log.Fatalln("接続失敗", err)
 	}

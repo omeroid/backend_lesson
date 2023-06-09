@@ -3,7 +3,7 @@ services:
   psql:
     build: .
     ports:
-      - 5430:5432
+      - 5432:5432
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root

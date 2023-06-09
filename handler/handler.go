@@ -40,7 +40,7 @@ func SendMessage(c echo.Context) error {
 		return err
 	}
 
-	conn, err := db.Initdb()
+	conn, err := db.InitDB()
 	if err != nil {
 		log.Fatalln("接続失敗!", err)
 	}
@@ -48,7 +48,7 @@ func SendMessage(c echo.Context) error {
 	now := time.Now()
 
 	fmt.Println(strconv.Itoa(int(r.Int31n(10000))))
-	message := db.Message{
+	message := db.Messages{
 		MessageID: strconv.Itoa(int(r.Int31n(10000))),
 		RoomID:    p.RoomID,
 		Content:   p.Message,
@@ -64,7 +64,7 @@ func GetMessages(c echo.Context) error {
 
 	roomID := c.Param("id")
 
-	conn, err := db.Initdb()
+	conn, err := db.InitDB()
 	if err != nil {
 		log.Fatalln("接続失敗！", err)
 	}
@@ -89,7 +89,7 @@ func DeleteMessage(c echo.Context) error {
 		return err
 	}
 
-	conn, err := db.Initdb()
+	conn, err := db.InitDB()
 	if err != nil {
 		log.Fatalln("接続失敗!", err)
 	}

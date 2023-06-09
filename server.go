@@ -1,23 +1,27 @@
 package main
 
 import (
-	//	"net/http"
+	//"net/http"
 
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
-	"github.com/omeroid/kosen_backend_lesson/handler"
+	//"github.com/labstack/echo/v4"
+	//"github.com/labstack/echo/v4/middleware"
+	"github.com/omeroid/kosen_backend_lesson/db"
+	//"github.com/omeroid/kosen_backend_lesson/handler"
 )
 
 func main() {
+	conn, _ := db.InitDB()
+	db.Migrate(conn)
+	db.Insert(conn)
 
-	e := echo.New()
+	//e := echo.New()
 
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
+	//e.Use(middleware.Logger())
+	//e.Use(middleware.Recover())
 
-	e.GET("/room/:id", handler.GetMessages)
-	e.POST("/lobby", handler.SendMessage) //roomIDとmsgが必要
-	e.POST("/delete", handler.DeleteMessage)
+	//e.GET("/room/:id", handler.GetMessages)
+	//e.POST("/lobby", handler.SendMessage) //roomIDとmsgが必要
+	//e.POST("/delete", handler.DeleteMessage)
 
-	e.Logger.Fatal(e.Start(":1323"))
+	//.Logger.Fatal(e.Start(":1323"))
 }

@@ -1,2 +1,2 @@
 psql:
-	@psql -h localhost -p 5430 -U root
+	@psql -h localhost -p 5432 -U root

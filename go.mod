@@ -3,9 +3,11 @@ module github.com/omeroid/kosen_backend_lesson
 go 1.20
 
 require (
+	github.com/jinzhu/gorm v1.9.16
 	github.com/labstack/echo/v4 v4.10.2
+	github.com/mattn/go-sqlite3 v1.14.17
 	gorm.io/driver/postgres v1.5.2
-	gorm.io/gorm v1.25.1
+	gorm.io/gorm v1.25.2-0.20230530020048-26663ab9bf55
 )
 
 require (
@@ -25,4 +27,5 @@ require (
 	golang.org/x/sys v0.7.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
+	gorm.io/driver/sqlite v1.5.2 // indirect
 )

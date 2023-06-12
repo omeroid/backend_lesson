@@ -3,10 +3,10 @@ package main
 import (
 	//"net/http"
 
-	//"github.com/labstack/echo/v4"
-	//"github.com/labstack/echo/v4/middleware"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/omeroid/kosen_backend_lesson/db"
-	//"github.com/omeroid/kosen_backend_lesson/handler"
+	"github.com/omeroid/kosen_backend_lesson/handler"
 )
 
 func main() {
@@ -14,14 +14,15 @@ func main() {
 	db.Migrate(conn)
 	db.Insert(conn)
 
-	//e := echo.New()
+	e := echo.New()
 
-	//e.Use(middleware.Logger())
-	//e.Use(middleware.Recover())
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 
 	//e.GET("/room/:id", handler.GetMessages)
 	//e.POST("/lobby", handler.SendMessage) //roomIDとmsgが必要
 	//e.POST("/delete", handler.DeleteMessage)
+	e.POST("/user/signup", handler.CreateUser)
 
-	//.Logger.Fatal(e.Start(":1323"))
+	e.Logger.Fatal(e.Start(":1323"))
 }

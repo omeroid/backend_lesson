@@ -2,102 +2,74 @@ package handler
 
 import (
 	"encoding/json"
+	"golang.org/x/crypto/bcrypt"
 
-	"fmt"
-	"log"
-	"math/rand"
+	//"fmt"
+	//"log"
+	//"math/rand"
 	"net/http"
 	"strconv"
-	"time"
+	//	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/omeroid/kosen_backend_lesson/db"
 )
 
-var layout = "2006-01-02T15:04:05Z07:00"
-
-type ResponseGetMessages struct {
-	Response []db.Message
-}
-
-type InputSendMessage struct {
-	RoomID  string `json:"roomID"`
+type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
-type InputDeleteMessage struct {
-	MessageID string `json:"messageID"`
+// LoginParameters
+type InputCreateUser struct {
+	Username string `json:"userName"`
+	Password string `json:"password"`
+}
+type OutputCreateUser struct {
+	ID        string `json:"id"`
+	Name      string `json:"name"`
+	CreatedAt string `json:"createdAt"`
 }
 
-func SendMessage(c echo.Context) error {
-
-	seed := time.Now().UnixNano()
-	r := rand.New(rand.NewSource(seed))
-
-	p := new(InputSendMessage)
+// signup
+func CreateUser(c echo.Context) error {
+	p := new(InputCreateUser)
 	if err := c.Bind(p); err != nil {
-		log.Fatalln("パラメータが不正です", err)
-		return err
+		return c.String(http.StatusBadRequest, ThrowError(err.Error()))
 	}
 
 	conn, err := db.InitDB()
 	if err != nil {
-		log.Fatalln("接続失敗!", err)
+		return c.String(http.StatusBadRequest, ThrowError(err.Error()))
 	}
 
-	now := time.Now()
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(p.Password), 10)
 
-	fmt.Println(strconv.Itoa(int(r.Int31n(10000))))
-	message := db.Messages{
-		MessageID: strconv.Itoa(int(r.Int31n(10000))),
-		RoomID:    p.RoomID,
-		Content:   p.Message,
-		TimeStamp: now.Format(layout),
+	user := db.User{
+		Name:         p.Username,
+		PasswordHash: string(hashedPassword), //Hash化する
 	}
 
-	conn.Create(&message)
+	conn.Create(&user)
 
-	return c.String(http.StatusOK, "message sended")
-}
-
-func GetMessages(c echo.Context) error {
-
-	roomID := c.Param("id")
-
-	conn, err := db.InitDB()
-	if err != nil {
-		log.Fatalln("接続失敗！", err)
+	res := OutputCreateUser{
+		ID:        strconv.Itoa(user.ID),
+		Name:      user.Name,
+		CreatedAt: user.CreatedAt.String(),
 	}
-
-	var messages []db.Message
-	conn.Find(&messages, "roomid=?", roomID) //指定したroomIDのメッセージを全件取得
-
-	res := &ResponseGetMessages{}
-	res.Response = messages
 
 	var output []byte
-
 	output, err = json.Marshal(res)
 
-	return c.String(http.StatusOK, string(output))
+	return c.String(http.StatusCreated, string(output))
+
 }
 
-func DeleteMessage(c echo.Context) error {
-	p := new(InputDeleteMessage)
-	if err := c.Bind(p); err != nil {
-		log.Fatalln("パラメータが不正です", err)
-		return err
+func ThrowError(error string) string {
+	res := ErrorResponse{
+		Message: error,
 	}
 
-	conn, err := db.InitDB()
-	if err != nil {
-		log.Fatalln("接続失敗!", err)
-	}
-
-	var message db.Message
-
-	conn.Delete(&message, p.MessageID)
-
-	return c.String(http.StatusOK, "Deleted")
-
+	var output []byte
+	output, _ = json.Marshal(res) //ここどうしよう
+	return string(output)
 }

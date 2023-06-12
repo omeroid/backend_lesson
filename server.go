@@ -23,6 +23,7 @@ func main() {
 	//e.POST("/lobby", handler.SendMessage) //roomIDとmsgが必要
 	//e.POST("/delete", handler.DeleteMessage)
 	e.POST("/user/signup", handler.CreateUser)
+	e.POST("/user/signin", handler.CheckUser)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }

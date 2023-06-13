@@ -1,6 +1,6 @@
 package handler
 
-import ()
+import "github.com/volatiletech/null/v8"
 
 type ErrorResponse struct {
 	Message string `json:"message"`
@@ -22,6 +22,7 @@ type InputCheckUser struct {
 	Username string `json:"userName"`
 	Password string `json:"password"`
 }
+
 type OutputCheckUser struct {
 	UserID   string `json:"userId"`
 	UserName string `json:"userName"`
@@ -29,11 +30,31 @@ type OutputCheckUser struct {
 }
 
 type RoomDetail struct {
-	ID          string `json:"id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	CreatedAt   string `json:"createdAt"`
+	ID          string      `json:"id"`
+	Name        string      `json:"name"`
+	Description null.String `json:"description"`
+	CreatedAt   string      `json:"createdAt"`
 }
-type OutputGetRoomsDetail struct {
+
+type OutputGetRoomDetailList struct {
 	Rooms []RoomDetail
+}
+
+type InputCreateRoom struct {
+	Name        string      `json:"name"`
+	Description null.String `json:"description"`
+}
+
+type OutputCreateRoom struct {
+	ID          string      `json:"id"`
+	Name        string      `json:"name"`
+	Description null.String `json:"description"`
+	CreatedAt   string      `json:"createdAt"`
+}
+
+type OutputGetRoomDetail struct {
+	ID          string      `json:"id"`
+	Name        string      `json:"name"`
+	Description null.String `json:"description"`
+	CreatedAt   string      `json:"createdAt"`
 }

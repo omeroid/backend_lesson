@@ -1,6 +1,7 @@
 package db
 
 import (
+	"github.com/volatiletech/null/v8"
 	"gorm.io/gorm"
 )
 
@@ -15,7 +16,7 @@ func Insert(db *gorm.DB) {
 		Text:   "adadada",
 	}
 	room := Room{
-		Description: "aaaa",
+		Description: null.StringFrom("aaaa"),
 		Name:        "chat room",
 	}
 

@@ -112,7 +112,7 @@ func CheckUser(c echo.Context) error {
 	return c.String(http.StatusOK, string(res))
 }
 
-func GetRoomsDetail(c echo.Context) error {
+func GetRoomDetailList(c echo.Context) error {
 
 	conn, err := db.InitDB()
 	if err != nil {
@@ -144,8 +144,92 @@ func GetRoomsDetail(c echo.Context) error {
 		})
 	}
 
-	output := OutputGetRoomsDetail{
+	output := OutputGetRoomDetailList{
 		Rooms: roomsDetail,
+	}
+
+	var res []byte
+	res, err = json.Marshal(output)
+	if err != nil {
+		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (JSONのMarshalエラー)"))
+	}
+
+	return c.String(http.StatusOK, string(res))
+}
+
+func CreateRoom(c echo.Context) error {
+	p := new(InputCreateRoom)
+	if err := c.Bind(p); err != nil {
+		return c.String(http.StatusBadRequest, ThrowError(err.Error()+" (入力値エラー)"))
+	}
+
+	conn, err := db.InitDB()
+	if err != nil {
+		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (DBの接続エラー)"))
+	}
+
+	authHeader := c.Request().Header.Get("Authorization")
+	token := ExtractBearerToken(authHeader)
+
+	errStr := CheckSession(conn, token)
+	if errStr != "" {
+		return c.String(http.StatusUnauthorized, errStr)
+	}
+
+	room := db.Room{
+		Name:        p.Name,
+		Description: p.Description,
+	}
+
+	result := conn.Create(&room)
+	if result.Error != nil {
+		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (roomの作成エラー)"))
+	}
+
+	output := OutputCreateRoom{
+		ID:          strconv.Itoa(room.ID),
+		Name:        room.Name,
+		Description: room.Description,
+		CreatedAt:   room.CreatedAt.String(),
+	}
+
+	var res []byte
+	res, err = json.Marshal(output)
+	if err != nil {
+		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (JSONのMarshalエラー)"))
+	}
+
+	return c.String(http.StatusCreated, string(res))
+}
+
+func GetRoomDetail(c echo.Context) error {
+
+	conn, err := db.InitDB()
+	if err != nil {
+		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (DBの接続エラー)"))
+	}
+
+	authHeader := c.Request().Header.Get("Authorization")
+	token := ExtractBearerToken(authHeader)
+
+	errStr := CheckSession(conn, token)
+	if errStr != "" {
+		return c.String(http.StatusUnauthorized, errStr)
+	}
+
+	roomID := c.Param("roomId")
+
+	var room db.Room
+	result := conn.Find(&room, "id=?", roomID)
+	if result.Error != nil {
+		return c.String(http.StatusUnauthorized, ThrowError(result.Error.Error()+" (roomの検索エラー)"))
+	}
+
+	output := OutputGetRoomDetail{
+		ID:          strconv.Itoa(room.ID),
+		Name:        room.Name,
+		Description: room.Description,
+		CreatedAt:   room.CreatedAt.String(),
 	}
 
 	var res []byte
@@ -169,6 +253,8 @@ func CheckSession(conn *gorm.DB, token string) string {
 	}
 
 	if session.ExpiredAt < time.Now().Unix() {
+		session = db.Session{}
+		conn.Delete(&session, "token = ?", token)
 		return ThrowError("session expired" + " ログインし直してください")
 	}
 

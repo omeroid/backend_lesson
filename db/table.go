@@ -2,6 +2,8 @@ package db
 
 import (
 	"time"
+
+	"github.com/volatiletech/null/v8"
 )
 
 type User struct {
@@ -25,13 +27,13 @@ type Message struct {
 }
 
 type Room struct {
-	ID          int        `gorm:"primaryKey;autoIncrement"`
-	Name        string     `gorm:"column:name;NOT NULL;"`
-	Description string     `gorm:"column:description"`
-	CreatedAt   time.Time  `gorm:"column:created_at"`
-	UpdatedAt   time.Time  `gorm:"column:updated_at"`
-	DeletedAt   *time.Time `gorm:"column:deleted_at"`
-	Messages    []Message  `gorm:"foreignKey:RoomID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	ID          int         `gorm:"primaryKey;autoIncrement"`
+	Name        string      `gorm:"column:name;NOT NULL;"`
+	Description null.String `gorm:"column:description"`
+	CreatedAt   time.Time   `gorm:"column:created_at"`
+	UpdatedAt   time.Time   `gorm:"column:updated_at"`
+	DeletedAt   *time.Time  `gorm:"column:deleted_at"`
+	Messages    []Message   `gorm:"foreignKey:RoomID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
 type Session struct {

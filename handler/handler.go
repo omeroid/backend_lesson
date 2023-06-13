@@ -132,10 +132,10 @@ func GetRoomDetailList(c echo.Context) error {
 		return c.String(http.StatusUnauthorized, ThrowError(result.Error.Error()+" (roomの検索エラー)"))
 	}
 
-	var roomsDetail []RoomDetail
+	var roomDetails []RoomDetail
 
 	for _, v := range rooms {
-		roomsDetail = append(roomsDetail, RoomDetail{
+		roomDetails = append(roomDetails, RoomDetail{
 			ID:          strconv.Itoa(v.ID),
 			Name:        v.Name,
 			Description: v.Description,
@@ -144,7 +144,7 @@ func GetRoomDetailList(c echo.Context) error {
 	}
 
 	output := OutputGetRoomDetailList{
-		Rooms: roomsDetail,
+		Rooms: roomDetails,
 	}
 
 	var res []byte
@@ -305,6 +305,60 @@ func CreateMessage(c echo.Context) error {
 	}
 
 	return c.String(http.StatusCreated, string(res))
+}
+
+func GetMessageDetailList(c echo.Context) error {
+	conn, err := db.InitDB()
+	if err != nil {
+		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (DBの接続エラー)"))
+	}
+
+	authHeader := c.Request().Header.Get("Authorization")
+	token := ExtractBearerToken(authHeader)
+
+	errStr := CheckSession(conn, token)
+	if errStr != "" {
+		return c.String(http.StatusUnauthorized, errStr)
+	}
+
+	roomID, err := strconv.Atoi(c.Param("roomId"))
+
+	var messages []db.Message
+
+	result := conn.Find(&messages, "room_id=?", roomID)
+	if result.Error != nil {
+		return c.String(http.StatusUnauthorized, ThrowError(result.Error.Error()+" (messageの検索エラー)"))
+	}
+
+	var messageDetails []Message
+	for _, v := range messages {
+		user := db.User{}
+		conn.Find(&user, "id=?", v.UserID)
+
+		messageDetails = append(messageDetails, Message{
+			ID:        strconv.Itoa(v.ID),
+			Text:      v.Text,
+			CreatedAt: v.CreatedAt.String(),
+			User: User{
+				ID:        strconv.Itoa(user.ID),
+				Name:      user.Name,
+				CreatedAt: user.CreatedAt.String(),
+			},
+		})
+	}
+
+	output := OutputGetMessageDetailList{
+		Messages: messageDetails,
+	}
+
+	var res []byte
+
+	res, err = json.Marshal(output)
+	if err != nil {
+		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (JSONのMarshalエラー)"))
+	}
+
+	return c.String(http.StatusOK, string(res))
 }
 
 func CheckSession(conn *gorm.DB, token string) string {

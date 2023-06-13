@@ -5,14 +5,13 @@ import (
 	"strings"
 )
 
-// utils
 func ThrowError(errStr string) string {
 	res := ErrorResponse{
 		Message: errStr,
 	}
 
 	var output []byte
-	output, _ = json.Marshal(res) //ここどうしよう
+	output, _ = json.Marshal(res)
 	return string(output)
 }
 

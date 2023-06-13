@@ -1,8 +1,6 @@
 package main
 
 import (
-	//"net/http"
-
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/omeroid/kosen_backend_lesson/db"
@@ -19,9 +17,6 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	//e.GET("/room/:id", handler.GetMessages)
-	//e.POST("/lobby", handler.SendMessage) //roomIDとmsgが必要
-	//e.POST("/delete", handler.DeleteMessage)
 	e.POST("/user/signup", handler.CreateUser)
 	e.POST("/user/signin", handler.CheckUser)
 	e.GET("/rooms", handler.GetRoomDetailList)

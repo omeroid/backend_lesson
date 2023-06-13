@@ -2,23 +2,15 @@ package handler
 
 import (
 	"encoding/json"
-	"time"
-
-	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
-
-	//"fmt"
-	//"log"
-	//"math/rand"
-	"net/http"
-	"strconv"
-
-	//	"time"
-
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/omeroid/kosen_backend_lesson/db"
+	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
+	"net/http"
+	"strconv"
+	"time"
 )
 
 // signup
@@ -39,7 +31,6 @@ func CreateUser(c echo.Context) error {
 		Name:         p.Username,
 		PasswordHash: string(hashedPassword), //Hash化する
 	}
-
 	result := conn.Create(&user)
 	if result.Error != nil {
 		return c.String(http.StatusBadRequest, ThrowError(result.Error.Error()+" (user作成エラー)"))
@@ -134,7 +125,6 @@ func GetRoomDetailList(c echo.Context) error {
 	}
 
 	var roomDetails []RoomDetail
-
 	for _, v := range rooms {
 		roomDetails = append(roomDetails, RoomDetail{
 			ID:          strconv.Itoa(v.ID),
@@ -170,7 +160,6 @@ func CreateRoom(c echo.Context) error {
 
 	authHeader := c.Request().Header.Get("Authorization")
 	token := ExtractBearerToken(authHeader)
-
 	errStr := CheckSession(conn, token)
 	if errStr != "" {
 		return c.String(http.StatusUnauthorized, errStr)
@@ -211,7 +200,6 @@ func GetRoomDetail(c echo.Context) error {
 
 	authHeader := c.Request().Header.Get("Authorization")
 	token := ExtractBearerToken(authHeader)
-
 	errStr := CheckSession(conn, token)
 	if errStr != "" {
 		return c.String(http.StatusUnauthorized, errStr)
@@ -249,7 +237,6 @@ func CreateMessage(c echo.Context) error {
 
 	authHeader := c.Request().Header.Get("Authorization")
 	token := ExtractBearerToken(authHeader)
-
 	errStr := CheckSession(conn, token)
 	if errStr != "" {
 		return c.String(http.StatusUnauthorized, errStr)
@@ -316,7 +303,6 @@ func GetMessageDetailList(c echo.Context) error {
 
 	authHeader := c.Request().Header.Get("Authorization")
 	token := ExtractBearerToken(authHeader)
-
 	errStr := CheckSession(conn, token)
 	if errStr != "" {
 		return c.String(http.StatusUnauthorized, errStr)
@@ -370,7 +356,6 @@ func DeleteMessage(c echo.Context) error {
 
 	authHeader := c.Request().Header.Get("Authorization")
 	token := ExtractBearerToken(authHeader)
-
 	errStr := CheckSession(conn, token)
 	if errStr != "" {
 		return c.String(http.StatusUnauthorized, errStr)

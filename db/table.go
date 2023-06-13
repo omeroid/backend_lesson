@@ -1,9 +1,8 @@
 package db
 
 import (
-	"time"
-
 	"github.com/volatiletech/null/v8"
+	"time"
 )
 
 type User struct {

@@ -37,7 +37,7 @@ type Room struct {
 type Session struct {
 	ID        int       `gorm:"primaryKey;autoIncrement"`
 	UserID    int       `gorm:"column:user_id;NOT NULL"`
-	Token     string    `gorm:"column:token;NOT NULL"`
+	Token     string    `gorm:"column:token;NOT NULL;UNIQUE"`
 	ExpiredAt int64     `gorm:"column:expired_at;NOT NULL"`
 	CreatedAt time.Time `gorm:"column:created_at"`
 	UpdatedAt time.Time `gorm:"column:updated_at"`

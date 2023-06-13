@@ -24,6 +24,7 @@ func main() {
 	//e.POST("/delete", handler.DeleteMessage)
 	e.POST("/user/signup", handler.CreateUser)
 	e.POST("/user/signin", handler.CheckUser)
+	e.GET("/rooms", handler.GetRoomsDetail)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }

@@ -2,11 +2,11 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	//"fmt"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 
 	//"fmt"
 	//"log"
@@ -21,42 +21,16 @@ import (
 	"github.com/omeroid/kosen_backend_lesson/db"
 )
 
-type ErrorResponse struct {
-	Message string `json:"message"`
-}
-
-// LoginParameters
-type InputCreateUser struct {
-	Username string `json:"userName"`
-	Password string `json:"password"`
-}
-
-type OutputCreateUser struct {
-	ID        string `json:"id"`
-	Name      string `json:"name"`
-	CreatedAt string `json:"createdAt"`
-}
-
-type InputCheckUser struct {
-	Username string `json:"userName"`
-	Password string `json:"password"`
-}
-type OutputCheckUser struct {
-	UserID   string `json:"userId"`
-	UserName string `json:"userName"`
-	Token    string `json:"token"`
-}
-
 // signup
 func CreateUser(c echo.Context) error {
 	p := new(InputCreateUser)
 	if err := c.Bind(p); err != nil {
-		return c.String(http.StatusBadRequest, ThrowError(err.Error()))
+		return c.String(http.StatusBadRequest, ThrowError(err.Error()+" (入力値エラー)"))
 	}
 
 	conn, err := db.InitDB()
 	if err != nil {
-		return c.String(http.StatusBadRequest, ThrowError(err.Error()))
+		return c.String(http.StatusBadRequest, ThrowError(err.Error()+" (DB接続エラー)"))
 	}
 
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(p.Password), 10)
@@ -67,9 +41,8 @@ func CreateUser(c echo.Context) error {
 	}
 
 	result := conn.Create(&user)
-
 	if result.Error != nil {
-		return c.String(http.StatusBadRequest, ThrowError(result.Error.Error()))
+		return c.String(http.StatusBadRequest, ThrowError(result.Error.Error()+" (user作成エラー)"))
 	}
 
 	output := OutputCreateUser{
@@ -81,7 +54,7 @@ func CreateUser(c echo.Context) error {
 	var res []byte
 	res, err = json.Marshal(output)
 	if err != nil {
-		return c.String(http.StatusBadRequest, ThrowError(err.Error()))
+		return c.String(http.StatusBadRequest, ThrowError(err.Error()+" (jsonのMarshalのエラー)"))
 	}
 
 	return c.String(http.StatusCreated, string(res))
@@ -91,23 +64,23 @@ func CreateUser(c echo.Context) error {
 func CheckUser(c echo.Context) error {
 	p := new(InputCheckUser)
 	if err := c.Bind(p); err != nil {
-		return c.String(http.StatusBadRequest, ThrowError(err.Error()))
+		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (入力値エラー)"))
 	}
 
 	conn, err := db.InitDB()
 	if err != nil {
-		return c.String(http.StatusBadRequest, ThrowError(err.Error()))
+		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (DB接続エラー)"))
 	}
 
 	user := db.User{}
 	result := conn.Take(&user, "name=?", p.Username)
 	if result.Error != nil {
-		return c.String(http.StatusBadRequest, ThrowError(result.Error.Error()))
+		return c.String(http.StatusUnauthorized, ThrowError(result.Error.Error()+" (User検索エラー)"))
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(p.Password))
 	if err != nil {
-		return c.String(http.StatusBadRequest, ThrowError(err.Error()))
+		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (パスワードが違う)"))
 	}
 
 	token, _ := uuid.NewRandom()
@@ -121,7 +94,7 @@ func CheckUser(c echo.Context) error {
 
 	result = conn.Create(&session)
 	if result.Error != nil {
-		c.String(http.StatusBadRequest, ThrowError(result.Error.Error()))
+		c.String(http.StatusUnauthorized, ThrowError(result.Error.Error()+" (session作成エラー)"))
 	}
 
 	output := OutputCheckUser{
@@ -133,18 +106,71 @@ func CheckUser(c echo.Context) error {
 	var res []byte
 	res, err = json.Marshal(output)
 	if err != nil {
-		c.String(http.StatusBadRequest, ThrowError(err.Error()))
+		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (jsonのMarshalのエラー)"))
 	}
 
 	return c.String(http.StatusOK, string(res))
 }
 
-func ThrowError(error string) string {
-	res := ErrorResponse{
-		Message: error,
+func GetRoomsDetail(c echo.Context) error {
+
+	conn, err := db.InitDB()
+	if err != nil {
+		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (DBの接続エラー)"))
 	}
 
-	var output []byte
-	output, _ = json.Marshal(res) //ここどうしよう
-	return string(output)
+	authHeader := c.Request().Header.Get("Authorization")
+	token := ExtractBearerToken(authHeader)
+
+	errStr := CheckSession(conn, token)
+	if errStr != "" {
+		return c.String(http.StatusUnauthorized, errStr)
+	}
+
+	var rooms []db.Room
+	result := conn.Find(&rooms)
+	if result.Error != nil {
+		return c.String(http.StatusUnauthorized, ThrowError(result.Error.Error()+" (roomの検索エラー)"))
+	}
+
+	var roomsDetail []RoomDetail
+
+	for _, v := range rooms {
+		roomsDetail = append(roomsDetail, RoomDetail{
+			ID:          strconv.Itoa(v.ID),
+			Name:        v.Name,
+			Description: v.Description,
+			CreatedAt:   v.CreatedAt.String(),
+		})
+	}
+
+	output := OutputGetRoomsDetail{
+		Rooms: roomsDetail,
+	}
+
+	var res []byte
+	res, err = json.Marshal(output)
+	if err != nil {
+		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (JSONのMarshalエラー)"))
+	}
+
+	return c.String(http.StatusOK, string(res))
+}
+
+func CheckSession(conn *gorm.DB, token string) string {
+
+	session := db.Session{}
+	result := conn.First(&session, "token = ?", token)
+	if result.Error != nil {
+		if result.Error != gorm.ErrRecordNotFound {
+			return ThrowError(result.Error.Error() + " (sessionが見つからない)")
+		}
+		return ThrowError(result.Error.Error() + " (RecordNotFound以外のsessionの検索エラー)")
+	}
+
+	if session.ExpiredAt < time.Now().Unix() {
+		return ThrowError("session expired" + " ログインし直してください")
+	}
+
+	return ""
 }

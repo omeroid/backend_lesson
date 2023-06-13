@@ -16,7 +16,6 @@ func ThrowError(errStr string) string {
 }
 
 func ExtractBearerToken(authHeader string) string {
-
 	if authHeader == "" {
 		return ""
 	}

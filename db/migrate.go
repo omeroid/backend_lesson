@@ -6,7 +6,6 @@ import (
 )
 
 func Migrate(db *gorm.DB) {
-
 	// Drop all tables
 	db.Migrator().DropTable(&Message{})
 	db.Migrator().DropTable(&Session{})

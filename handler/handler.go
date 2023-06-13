@@ -104,7 +104,6 @@ func CheckUser(c echo.Context) error {
 }
 
 func GetRoomDetailList(c echo.Context) error {
-
 	conn, err := db.InitDB()
 	if err != nil {
 		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (DBの接続エラー)"))
@@ -192,7 +191,6 @@ func CreateRoom(c echo.Context) error {
 }
 
 func GetRoomDetail(c echo.Context) error {
-
 	conn, err := db.InitDB()
 	if err != nil {
 		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (DBの接続エラー)"))

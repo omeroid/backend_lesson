@@ -8,10 +8,6 @@ import (
 )
 
 func main() {
-	conn, _ := db.InitDB()
-	db.Migrate(conn)
-	db.Insert(conn)
-
 	e := echo.New()
 
 	e.Use(middleware.Logger())
@@ -25,6 +21,13 @@ func main() {
 	e.POST("/rooms/:roomId/messages", handler.CreateMessage)
 	e.GET("/rooms/:roomId/messages", handler.GetMessageDetailList)
 	e.GET("/rooms/:roomId/messages/:messageId", handler.DeleteMessage)
+
+	conn, err := db.InitDB()
+	if err != nil {
+		e.Logger.Fatal()
+	}
+	db.Migrate(conn)
+	db.Insert(conn)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }

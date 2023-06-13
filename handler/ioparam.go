@@ -77,3 +77,5 @@ type OutputCreateMessage struct {
 type OutputGetMessageDetailList struct {
 	Messages []Message `json:"messages"`
 }
+
+type OutputDeleteMessage Message

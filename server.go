@@ -29,6 +29,7 @@ func main() {
 	e.GET("/rooms/:roomId", handler.GetRoomDetail)
 	e.POST("/rooms/:roomId/messages", handler.CreateMessage)
 	e.GET("/rooms/:roomId/messages", handler.GetMessageDetailList)
+	e.GET("/rooms/:roomId/messages/:messageId", handler.DeleteMessage)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }

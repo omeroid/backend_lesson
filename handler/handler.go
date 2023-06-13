@@ -6,6 +6,7 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 
 	//"fmt"
 	//"log"
@@ -361,15 +362,63 @@ func GetMessageDetailList(c echo.Context) error {
 	return c.String(http.StatusOK, string(res))
 }
 
+func DeleteMessage(c echo.Context) error {
+	conn, err := db.InitDB()
+	if err != nil {
+		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (DBの接続エラー)"))
+	}
+
+	authHeader := c.Request().Header.Get("Authorization")
+	token := ExtractBearerToken(authHeader)
+
+	errStr := CheckSession(conn, token)
+	if errStr != "" {
+		return c.String(http.StatusUnauthorized, errStr)
+	}
+
+	messageID := c.Param("messageId")
+	roomID := c.Param("roomId")
+
+	message := &db.Message{}
+	result := conn.Clauses(clause.Returning{}).Where("id=? AND room_id=?", messageID, roomID).Delete(&message)
+	if result.Error != nil {
+		return c.String(http.StatusUnauthorized, ThrowError(result.Error.Error()+" (messageの削除エラー)"))
+	}
+	//deleteできてなかったときはmessageidに"0"がかえるのでそれで判定してほしい
+
+	user := db.User{}
+	result = conn.Find(&user, "id=?", message.UserID)
+	if result.Error != nil {
+		return c.String(http.StatusUnauthorized, ThrowError(result.Error.Error()+" (userの検索エラー)"))
+	}
+
+	output := OutputDeleteMessage{
+		ID:        strconv.Itoa(message.ID),
+		Text:      message.Text,
+		CreatedAt: message.CreatedAt.String(),
+		User: User{
+			ID:        strconv.Itoa(user.ID),
+			Name:      user.Name,
+			CreatedAt: user.CreatedAt.String(),
+		},
+	}
+
+	var res []byte
+
+	res, err = json.Marshal(output)
+	if err != nil {
+		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (JSONのMarshalエラー)"))
+	}
+
+	return c.String(http.StatusCreated, string(res))
+}
+
 func CheckSession(conn *gorm.DB, token string) string {
 
 	session := db.Session{}
 	result := conn.First(&session, "token = ?", token)
 	if result.Error != nil {
-		if result.Error != gorm.ErrRecordNotFound {
-			return ThrowError(result.Error.Error() + " (sessionが見つからない)")
-		}
-		return ThrowError(result.Error.Error() + " (RecordNotFound以外のsessionの検索エラー)")
+		return ThrowError(result.Error.Error() + " (sessionの検索エラー)")
 	}
 
 	if session.ExpiredAt < time.Now().Unix() {

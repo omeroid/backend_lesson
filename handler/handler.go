@@ -74,7 +74,10 @@ func CheckUser(c echo.Context) error {
 		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (パスワードが違う)"))
 	}
 
-	token, _ := uuid.NewRandom()
+	token, err := uuid.NewRandom()
+	if err != nil {
+		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (token生成エラー)"))
+	}
 
 	//Sessionへの追加
 	session := db.Session{

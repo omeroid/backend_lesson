@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	//"fmt"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -239,6 +238,73 @@ func GetRoomDetail(c echo.Context) error {
 	}
 
 	return c.String(http.StatusOK, string(res))
+}
+
+func CreateMessage(c echo.Context) error {
+	conn, err := db.InitDB()
+	if err != nil {
+		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (DBの接続エラー)"))
+	}
+
+	authHeader := c.Request().Header.Get("Authorization")
+	token := ExtractBearerToken(authHeader)
+
+	errStr := CheckSession(conn, token)
+	if errStr != "" {
+		return c.String(http.StatusUnauthorized, errStr)
+	}
+
+	p := new(InputCreateMessage)
+	if err := c.Bind(p); err != nil {
+		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (入力値エラー)"))
+	}
+
+	roomID, err := strconv.Atoi(c.Param("roomId"))
+	if err != nil {
+		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (入力値エラー)"))
+	}
+
+	userID, err := strconv.Atoi(p.UserID)
+	if err != nil {
+		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (入力値エラー)"))
+	}
+
+	message := db.Message{
+		RoomID: roomID,
+		UserID: userID,
+		Text:   p.Text,
+	}
+
+	result := conn.Create(&message)
+	if result.Error != nil {
+		return c.String(http.StatusUnauthorized, ThrowError(result.Error.Error()+" (messageの作成エラー)"))
+	}
+
+	user := db.User{}
+
+	result = conn.Find(&user, "id=?", message.UserID)
+	if result.Error != nil {
+		return c.String(http.StatusUnauthorized, ThrowError(result.Error.Error()+" (userの検索エラー)"))
+	}
+
+	output := OutputCreateMessage{
+		ID:        strconv.Itoa(message.ID),
+		Text:      message.Text,
+		CreatedAt: message.CreatedAt.String(),
+		User: User{
+			ID:        strconv.Itoa(user.ID),
+			Name:      user.Name,
+			CreatedAt: user.CreatedAt.String(),
+		},
+	}
+
+	var res []byte
+	res, err = json.Marshal(output)
+	if err != nil {
+		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (JSONのMarshalエラー)"))
+	}
+
+	return c.String(http.StatusCreated, string(res))
 }
 
 func CheckSession(conn *gorm.DB, token string) string {

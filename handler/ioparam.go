@@ -2,6 +2,8 @@ package handler
 
 import "github.com/volatiletech/null/v8"
 
+type User OutputCreateUser
+
 type ErrorResponse struct {
 	Message string `json:"message"`
 }
@@ -57,4 +59,16 @@ type OutputGetRoomDetail struct {
 	Name        string      `json:"name"`
 	Description null.String `json:"description"`
 	CreatedAt   string      `json:"createdAt"`
+}
+
+type InputCreateMessage struct {
+	UserID string `json:"userId"`
+	Text   string `json:"text"`
+}
+
+type OutputCreateMessage struct {
+	ID        string `json:"id"`
+	Text      string `json:"text"`
+	CreatedAt string `json:"text"`
+	User      User   `json:"user"`
 }

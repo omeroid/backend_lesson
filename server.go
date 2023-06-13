@@ -27,6 +27,7 @@ func main() {
 	e.GET("/rooms", handler.GetRoomDetailList)
 	e.POST("/rooms", handler.CreateRoom)
 	e.GET("/rooms/:roomId", handler.GetRoomDetail)
+	e.POST("/rooms/:roomId/messages", handler.CreateMessage)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }

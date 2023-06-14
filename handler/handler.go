@@ -1,7 +1,6 @@
 package handler
 
 import (
-	//"encoding/json"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/omeroid/kosen_backend_lesson/db"
@@ -15,7 +14,7 @@ import (
 
 // signup
 func CreateUser(c echo.Context) error {
-	input := new(InputCreateUser)
+	input := new(CreateUserInput)
 	if err := c.Bind(input); err != nil {
 		return c.JSON(http.StatusBadRequest, CreateErrorResponseObject(err.Error()+" (入力値エラー)"))
 	}
@@ -36,7 +35,7 @@ func CreateUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, CreateErrorResponseObject(result.Error.Error()+" (user作成エラー)"))
 	}
 
-	output := OutputCreateUser{
+	output := CreateUserOutput{
 		ID:        strconv.Itoa(user.ID),
 		Name:      user.Name,
 		CreatedAt: user.CreatedAt.String(),
@@ -47,7 +46,7 @@ func CreateUser(c echo.Context) error {
 
 // signin
 func CheckUser(c echo.Context) error {
-	input := new(InputCheckUser)
+	input := new(CheckUserInput)
 	if err := c.Bind(input); err != nil {
 		return c.JSON(http.StatusUnauthorized, CreateErrorResponseObject(err.Error()+" (入力値エラー)"))
 	}
@@ -81,7 +80,7 @@ func CheckUser(c echo.Context) error {
 		c.JSON(http.StatusUnauthorized, CreateErrorResponseObject(result.Error.Error()+" (session作成エラー)"))
 	}
 
-	output := OutputCheckUser{
+	output := CheckUserOutput{
 		UserID:   strconv.Itoa(user.ID),
 		UserName: user.Name,
 		Token:    token.String(),
@@ -97,7 +96,7 @@ func GetRoomDetailList(c echo.Context) error {
 	authHeader := c.Request().Header.Get("Authorization")
 	token := ExtractBearerToken(authHeader)
 
-	errObj := isSessionValid(conn, token)
+	errObj := IsSessionValid(conn, token)
 	if errObj != nil {
 		return c.JSON(http.StatusUnauthorized, errObj)
 	}
@@ -118,7 +117,7 @@ func GetRoomDetailList(c echo.Context) error {
 		})
 	}
 
-	output := OutputGetRoomDetailList{
+	output := GetRoomDetailListOutput{
 		Rooms: roomDetails,
 	}
 
@@ -127,7 +126,7 @@ func GetRoomDetailList(c echo.Context) error {
 
 // roomを作成する
 func CreateRoom(c echo.Context) error {
-	input := new(InputCreateRoom)
+	input := new(CreateRoomInput)
 	if err := c.Bind(input); err != nil {
 		return c.JSON(http.StatusBadRequest, CreateErrorResponseObject(err.Error()+" (入力値エラー)"))
 	}
@@ -137,7 +136,7 @@ func CreateRoom(c echo.Context) error {
 	//Authorizationからtokenを取得してsessionの確認
 	authHeader := c.Request().Header.Get("Authorization")
 	token := ExtractBearerToken(authHeader)
-	errObj := isSessionValid(conn, token)
+	errObj := IsSessionValid(conn, token)
 	if errObj != nil {
 		return c.JSON(http.StatusUnauthorized, errObj)
 	}
@@ -152,7 +151,7 @@ func CreateRoom(c echo.Context) error {
 		return c.JSON(http.StatusUnauthorized, CreateErrorResponseObject(result.Error.Error()+" (roomの作成エラー)"))
 	}
 
-	output := OutputCreateRoom{
+	output := CreateRoomOutput{
 		ID:          strconv.Itoa(room.ID),
 		Name:        room.Name,
 		Description: room.Description,
@@ -169,7 +168,7 @@ func GetRoomDetail(c echo.Context) error {
 	//Authorizationからtokenを取得してsessionの確認
 	authHeader := c.Request().Header.Get("Authorization")
 	token := ExtractBearerToken(authHeader)
-	errObj := isSessionValid(conn, token)
+	errObj := IsSessionValid(conn, token)
 	if errObj != nil {
 		return c.JSON(http.StatusUnauthorized, errObj)
 	}
@@ -182,7 +181,7 @@ func GetRoomDetail(c echo.Context) error {
 		return c.JSON(http.StatusUnauthorized, CreateErrorResponseObject(result.Error.Error()+" (roomの検索エラー)"))
 	}
 
-	output := OutputGetRoomDetail{
+	output := GetRoomDetailOutput{
 		ID:          strconv.Itoa(room.ID),
 		Name:        room.Name,
 		Description: room.Description,
@@ -199,12 +198,12 @@ func CreateMessage(c echo.Context) error {
 	//Authorizationからtokenを取得してsessionの確認
 	authHeader := c.Request().Header.Get("Authorization")
 	token := ExtractBearerToken(authHeader)
-	errObj := isSessionValid(conn, token)
+	errObj := IsSessionValid(conn, token)
 	if errObj != nil {
 		return c.JSON(http.StatusUnauthorized, errObj)
 	}
 
-	input := new(InputCreateMessage)
+	input := new(CreateMessageInput)
 	if err := c.Bind(input); err != nil {
 		return c.JSON(http.StatusUnauthorized, CreateErrorResponseObject(err.Error()+" (入力値エラー)"))
 	}
@@ -237,7 +236,7 @@ func CreateMessage(c echo.Context) error {
 		return c.JSON(http.StatusUnauthorized, CreateErrorResponseObject(result.Error.Error()+" (userの検索エラー)"))
 	}
 
-	output := OutputCreateMessage{
+	output := CreateMessageOutput{
 		ID:        strconv.Itoa(message.ID),
 		Text:      message.Text,
 		CreatedAt: message.CreatedAt.String(),
@@ -258,7 +257,7 @@ func GetMessageDetailList(c echo.Context) error {
 	//Authorizationからtokenを取得してsessionの確認
 	authHeader := c.Request().Header.Get("Authorization")
 	token := ExtractBearerToken(authHeader)
-	errObj := isSessionValid(conn, token)
+	errObj := IsSessionValid(conn, token)
 	if errObj != nil {
 		return c.JSON(http.StatusUnauthorized, errObj)
 	}
@@ -292,7 +291,7 @@ func GetMessageDetailList(c echo.Context) error {
 		})
 	}
 
-	output := OutputGetMessageDetailList{
+	output := GetMessageDetailListOutput{
 		Messages: messageDetails,
 	}
 
@@ -306,7 +305,7 @@ func DeleteMessage(c echo.Context) error {
 	//Authorizationからtokenを取得してsessionの確認
 	authHeader := c.Request().Header.Get("Authorization")
 	token := ExtractBearerToken(authHeader)
-	errObj := isSessionValid(conn, token)
+	errObj := IsSessionValid(conn, token)
 	if errObj != nil {
 		return c.JSON(http.StatusUnauthorized, errObj)
 	}
@@ -327,7 +326,7 @@ func DeleteMessage(c echo.Context) error {
 		return c.JSON(http.StatusUnauthorized, CreateErrorResponseObject(result.Error.Error()+" (userの検索エラー)"))
 	}
 
-	output := OutputDeleteMessage{
+	output := DeleteMessageOutput{
 		ID:        strconv.Itoa(message.ID),
 		Text:      message.Text,
 		CreatedAt: message.CreatedAt.String(),
@@ -342,7 +341,7 @@ func DeleteMessage(c echo.Context) error {
 }
 
 // userにsessionが存在するか確認した後失効していないか確認する
-func isSessionValid(conn *gorm.DB, token string) *ErrorResponse {
+func IsSessionValid(conn *gorm.DB, token string) *ErrorResponse {
 
 	session := db.Session{}
 	result := conn.First(&session, "token = ?", token)

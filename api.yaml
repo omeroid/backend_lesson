@@ -87,7 +87,7 @@ paths:
       security:
         - Bearer: []
       responses:
-        '201':
+        '200':
           description: チャットルーム一覧取得成功
           content:
             application/json:

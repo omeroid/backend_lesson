@@ -4,7 +4,7 @@ import (
 // "github.com/volatiletech/null/v8"
 )
 
-type User OutputCreateUser
+type User CreateUserOutput
 type Message struct {
 	ID        string `json:"id"`
 	Text      string `json:"text"`
@@ -17,23 +17,23 @@ type ErrorResponse struct {
 }
 
 // LoginParameters
-type InputCreateUser struct {
+type CreateUserInput struct {
 	Username string `json:"userName"`
 	Password string `json:"password"`
 }
 
-type OutputCreateUser struct {
+type CreateUserOutput struct {
 	ID        string `json:"id"`
 	Name      string `json:"name"`
 	CreatedAt string `json:"createdAt"`
 }
 
-type InputCheckUser struct {
+type CheckUserInput struct {
 	Username string `json:"userName"`
 	Password string `json:"password"`
 }
 
-type OutputCheckUser struct {
+type CheckUserOutput struct {
 	UserID   string `json:"userId"`
 	UserName string `json:"userName"`
 	Token    string `json:"token"`
@@ -46,38 +46,38 @@ type RoomDetail struct {
 	CreatedAt   string  `json:"createdAt"`
 }
 
-type OutputGetRoomDetailList struct {
+type GetRoomDetailListOutput struct {
 	Rooms []RoomDetail
 }
 
-type InputCreateRoom struct {
+type CreateRoomInput struct {
 	Name        string  `json:"name"`
 	Description *string `json:"description"`
 }
 
-type OutputCreateRoom struct {
+type CreateRoomOutput struct {
 	ID          string  `json:"id"`
 	Name        string  `json:"name"`
 	Description *string `json:"description"`
 	CreatedAt   string  `json:"createdAt"`
 }
 
-type OutputGetRoomDetail struct {
+type GetRoomDetailOutput struct {
 	ID          string  `json:"id"`
 	Name        string  `json:"name"`
 	Description *string `json:"description"`
 	CreatedAt   string  `json:"createdAt"`
 }
 
-type InputCreateMessage struct {
+type CreateMessageInput struct {
 	UserID string `json:"userId"`
 	Text   string `json:"text"`
 }
 
-type OutputCreateMessage Message
+type CreateMessageOutput Message
 
-type OutputGetMessageDetailList struct {
+type GetMessageDetailListOutput struct {
 	Messages []Message `json:"messages"`
 }
 
-type OutputDeleteMessage Message
+type DeleteMessageOutput Message

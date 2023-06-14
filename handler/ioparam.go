@@ -1,6 +1,8 @@
 package handler
 
-import "github.com/volatiletech/null/v8"
+import (
+// "github.com/volatiletech/null/v8"
+)
 
 type User OutputCreateUser
 type Message struct {
@@ -38,10 +40,10 @@ type OutputCheckUser struct {
 }
 
 type RoomDetail struct {
-	ID          string      `json:"id"`
-	Name        string      `json:"name"`
-	Description null.String `json:"description"`
-	CreatedAt   string      `json:"createdAt"`
+	ID          string  `json:"id"`
+	Name        string  `json:"name"`
+	Description *string `json:"description"`
+	CreatedAt   string  `json:"createdAt"`
 }
 
 type OutputGetRoomDetailList struct {
@@ -49,22 +51,22 @@ type OutputGetRoomDetailList struct {
 }
 
 type InputCreateRoom struct {
-	Name        string      `json:"name"`
-	Description null.String `json:"description"`
+	Name        string  `json:"name"`
+	Description *string `json:"description"`
 }
 
 type OutputCreateRoom struct {
-	ID          string      `json:"id"`
-	Name        string      `json:"name"`
-	Description null.String `json:"description"`
-	CreatedAt   string      `json:"createdAt"`
+	ID          string  `json:"id"`
+	Name        string  `json:"name"`
+	Description *string `json:"description"`
+	CreatedAt   string  `json:"createdAt"`
 }
 
 type OutputGetRoomDetail struct {
-	ID          string      `json:"id"`
-	Name        string      `json:"name"`
-	Description null.String `json:"description"`
-	CreatedAt   string      `json:"createdAt"`
+	ID          string  `json:"id"`
+	Name        string  `json:"name"`
+	Description *string `json:"description"`
+	CreatedAt   string  `json:"createdAt"`
 }
 
 type InputCreateMessage struct {

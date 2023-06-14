@@ -1,7 +1,7 @@
 package db
 
 import (
-	"github.com/volatiletech/null/v8"
+	//"github.com/volatiletech/null/v8"
 	"gorm.io/gorm"
 )
 
@@ -16,8 +16,10 @@ func InsertSampleRecord(db *gorm.DB) {
 		UserID: 1,
 		Text:   "adadada",
 	}
+
+	description := "aaaa"
 	room := Room{
-		Description: null.StringFrom("aaaa"),
+		Description: &description,
 		Name:        "chat room",
 	}
 

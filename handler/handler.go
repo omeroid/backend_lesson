@@ -15,17 +15,17 @@ import (
 
 // signup
 func CreateUser(c echo.Context) error {
-	p := new(InputCreateUser)
-	if err := c.Bind(p); err != nil {
+	input := new(InputCreateUser)
+	if err := c.Bind(input); err != nil {
 		return c.String(http.StatusBadRequest, ThrowError(err.Error()+" (入力値エラー)"))
 	}
 
 	conn := c.Get("db").(*gorm.DB)
 
-	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(p.Password), 10)
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(input.Password), 10)
 
 	user := db.User{
-		Name:         p.Username,
+		Name:         input.Username,
 		PasswordHash: string(hashedPassword), //Hash化する
 	}
 	result := conn.Create(&user)
@@ -51,20 +51,20 @@ func CreateUser(c echo.Context) error {
 
 // signin
 func CheckUser(c echo.Context) error {
-	p := new(InputCheckUser)
-	if err := c.Bind(p); err != nil {
+	input := new(InputCheckUser)
+	if err := c.Bind(input); err != nil {
 		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (入力値エラー)"))
 	}
 
 	conn := c.Get("db").(*gorm.DB)
 
 	user := db.User{}
-	result := conn.Take(&user, "name=?", p.Username)
+	result := conn.Take(&user, "name=?", input.Username)
 	if result.Error != nil {
 		return c.String(http.StatusUnauthorized, ThrowError(result.Error.Error()+" (User検索エラー)"))
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(p.Password)); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(input.Password)); err != nil {
 		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (パスワードが違う)"))
 	}
 
@@ -143,8 +143,8 @@ func GetRoomDetailList(c echo.Context) error {
 
 // roomを作成する
 func CreateRoom(c echo.Context) error {
-	p := new(InputCreateRoom)
-	if err := c.Bind(p); err != nil {
+	input := new(InputCreateRoom)
+	if err := c.Bind(input); err != nil {
 		return c.String(http.StatusBadRequest, ThrowError(err.Error()+" (入力値エラー)"))
 	}
 
@@ -159,8 +159,8 @@ func CreateRoom(c echo.Context) error {
 	}
 
 	room := db.Room{
-		Name:        p.Name,
-		Description: p.Description,
+		Name:        input.Name,
+		Description: input.Description,
 	}
 
 	result := conn.Create(&room)
@@ -232,8 +232,8 @@ func CreateMessage(c echo.Context) error {
 		return c.String(http.StatusUnauthorized, errStr)
 	}
 
-	p := new(InputCreateMessage)
-	if err := c.Bind(p); err != nil {
+	input := new(InputCreateMessage)
+	if err := c.Bind(input); err != nil {
 		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (入力値エラー)"))
 	}
 
@@ -242,7 +242,7 @@ func CreateMessage(c echo.Context) error {
 		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (入力値エラー)"))
 	}
 
-	userID, err := strconv.Atoi(p.UserID)
+	userID, err := strconv.Atoi(input.UserID)
 	if err != nil {
 		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (入力値エラー)"))
 	}
@@ -250,7 +250,7 @@ func CreateMessage(c echo.Context) error {
 	message := db.Message{
 		RoomID: roomID,
 		UserID: userID,
-		Text:   p.Text,
+		Text:   input.Text,
 	}
 
 	result := conn.Create(&message)

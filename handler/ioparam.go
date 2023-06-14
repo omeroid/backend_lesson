@@ -1,10 +1,12 @@
 package handler
 
-import (
-// "github.com/volatiletech/null/v8"
-)
+import ()
 
-type User CreateUserOutput
+type User struct {
+	ID        string `json:"id"`
+	Name      string `json:"name"`
+	CreatedAt string `json:"createdAt"`
+}
 type Message struct {
 	ID        string `json:"id"`
 	Text      string `json:"text"`

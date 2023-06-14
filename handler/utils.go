@@ -1,18 +1,16 @@
 package handler
 
 import (
-	"encoding/json"
+	//"encoding/json"
 	"strings"
 )
 
-func ThrowError(errStr string) string {
-	res := ErrorResponse{
+func CreateErrorResponseObject(errStr string) *ErrorResponse {
+	output := &ErrorResponse{
 		Message: errStr,
 	}
 
-	var output []byte
-	output, _ = json.Marshal(res)
-	return string(output)
+	return output
 }
 
 // AuthorizationHeaderからtokenを取り出す

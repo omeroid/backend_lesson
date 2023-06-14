@@ -6,8 +6,8 @@ import (
 )
 
 // DBに接続する
-func InitDB() (*gorm.DB, error) {
-	db, err := gorm.Open(sqlite.Open("chatsystem.sqlite"), &gorm.Config{})
+func InitDB(dbName string) (*gorm.DB, error) {
+	db, err := gorm.Open(sqlite.Open(dbName), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}

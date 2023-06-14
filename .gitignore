@@ -1,1 +1,2 @@
-chatsystem.sqlite
+chatapp.sqlite
+.env

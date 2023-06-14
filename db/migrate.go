@@ -5,20 +5,21 @@ import (
 	"gorm.io/gorm"
 )
 
+// データベースにテーブルを作成する
 func Migrate(db *gorm.DB) {
-	// Drop all tables
+	// 前回起動時に作成したテーブルの全削除
 	db.Migrator().DropTable(&Message{})
 	db.Migrator().DropTable(&Session{})
 	db.Migrator().DropTable(&Room{})
 	db.Migrator().DropTable(&User{})
 
-	// Auto Migrate
+	// テーブルを作成する
 	err := db.AutoMigrate(&Room{}, &User{}, &Session{}, &Message{})
 	if err != nil {
 		panic("failed to migrate")
 	}
 
-	// Set foreign key constraints
+	// テーブルに外部キー制約を設定する
 	if err := db.Migrator().CreateConstraint(&Message{}, "UserID"); err != nil {
 		panic("failed to create foreign key constraint for Message")
 	}

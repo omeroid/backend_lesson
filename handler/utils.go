@@ -15,6 +15,7 @@ func ThrowError(errStr string) string {
 	return string(output)
 }
 
+// AuthorizationHeaderからtokenを取り出す
 func ExtractBearerToken(authHeader string) string {
 	if authHeader == "" {
 		return ""

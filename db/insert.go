@@ -5,7 +5,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func Insert(db *gorm.DB) {
+// テーブルにレコードを挿入する
+func InsertSampleRecord(db *gorm.DB) {
 	user := User{
 		Name:         "wada hiroka",
 		PasswordHash: "au923o",

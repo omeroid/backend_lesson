@@ -52,6 +52,7 @@ func CreateUser(c echo.Context) error {
 
 }
 
+// signin
 func CheckUser(c echo.Context) error {
 	p := new(InputCheckUser)
 	if err := c.Bind(p); err != nil {
@@ -106,6 +107,7 @@ func CheckUser(c echo.Context) error {
 	return c.String(http.StatusOK, string(res))
 }
 
+// 全roomの情報取得
 func GetRoomDetailList(c echo.Context) error {
 	conn, err := db.InitDB()
 	if err != nil {
@@ -149,6 +151,7 @@ func GetRoomDetailList(c echo.Context) error {
 	return c.String(http.StatusOK, string(res))
 }
 
+// roomを作成する
 func CreateRoom(c echo.Context) error {
 	p := new(InputCreateRoom)
 	if err := c.Bind(p); err != nil {
@@ -160,6 +163,7 @@ func CreateRoom(c echo.Context) error {
 		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (DBの接続エラー)"))
 	}
 
+	//Authorizationからtokenを取得してsessionの確認
 	authHeader := c.Request().Header.Get("Authorization")
 	token := ExtractBearerToken(authHeader)
 	errStr := CheckSession(conn, token)
@@ -193,12 +197,14 @@ func CreateRoom(c echo.Context) error {
 	return c.String(http.StatusCreated, string(res))
 }
 
+// 指定したroomidのroomの詳細取得
 func GetRoomDetail(c echo.Context) error {
 	conn, err := db.InitDB()
 	if err != nil {
 		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (DBの接続エラー)"))
 	}
 
+	//Authorizationからtokenを取得してsessionの確認
 	authHeader := c.Request().Header.Get("Authorization")
 	token := ExtractBearerToken(authHeader)
 	errStr := CheckSession(conn, token)
@@ -230,12 +236,14 @@ func GetRoomDetail(c echo.Context) error {
 	return c.String(http.StatusOK, string(res))
 }
 
+// messageをデータベースに登録する
 func CreateMessage(c echo.Context) error {
 	conn, err := db.InitDB()
 	if err != nil {
 		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (DBの接続エラー)"))
 	}
 
+	//Authorizationからtokenを取得してsessionの確認
 	authHeader := c.Request().Header.Get("Authorization")
 	token := ExtractBearerToken(authHeader)
 	errStr := CheckSession(conn, token)
@@ -296,12 +304,14 @@ func CreateMessage(c echo.Context) error {
 	return c.String(http.StatusCreated, string(res))
 }
 
+// roomidで指定したroomのmessage詳細を全件取得
 func GetMessageDetailList(c echo.Context) error {
 	conn, err := db.InitDB()
 	if err != nil {
 		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (DBの接続エラー)"))
 	}
 
+	//Authorizationからtokenを取得してsessionの確認
 	authHeader := c.Request().Header.Get("Authorization")
 	token := ExtractBearerToken(authHeader)
 	errStr := CheckSession(conn, token)
@@ -349,12 +359,14 @@ func GetMessageDetailList(c echo.Context) error {
 	return c.String(http.StatusOK, string(res))
 }
 
+// messageをデータベースから削除
 func DeleteMessage(c echo.Context) error {
 	conn, err := db.InitDB()
 	if err != nil {
 		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (DBの接続エラー)"))
 	}
 
+	//Authorizationからtokenを取得してsessionの確認
 	authHeader := c.Request().Header.Get("Authorization")
 	token := ExtractBearerToken(authHeader)
 	errStr := CheckSession(conn, token)
@@ -399,6 +411,7 @@ func DeleteMessage(c echo.Context) error {
 	return c.String(http.StatusCreated, string(res))
 }
 
+// userにsessionが存在するか確認した後失効していないか確認する
 func CheckSession(conn *gorm.DB, token string) string {
 
 	session := db.Session{}

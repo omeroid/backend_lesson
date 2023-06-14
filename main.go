@@ -27,7 +27,7 @@ func main() {
 		e.Logger.Fatal()
 	}
 	db.Migrate(conn)
-	db.Insert(conn)
+	db.InsertSampleRecord(conn)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }

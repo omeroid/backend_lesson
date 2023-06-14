@@ -64,8 +64,7 @@ func CheckUser(c echo.Context) error {
 		return c.String(http.StatusUnauthorized, ThrowError(result.Error.Error()+" (User検索エラー)"))
 	}
 
-	err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(p.Password))
-	if err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(p.Password)); err != nil {
 		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (パスワードが違う)"))
 	}
 

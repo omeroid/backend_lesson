@@ -14,8 +14,7 @@ func Migrate(db *gorm.DB) {
 	db.Migrator().DropTable(&User{})
 
 	// テーブルを作成する
-	err := db.AutoMigrate(&Room{}, &User{}, &Session{}, &Message{})
-	if err != nil {
+	if err := db.AutoMigrate(&Room{}, &User{}, &Session{}, &Message{}); err != nil {
 		panic("failed to migrate")
 	}
 

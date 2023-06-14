@@ -20,10 +20,7 @@ func CreateUser(c echo.Context) error {
 		return c.String(http.StatusBadRequest, ThrowError(err.Error()+" (入力値エラー)"))
 	}
 
-	conn, err := db.InitDB()
-	if err != nil {
-		return c.String(http.StatusBadRequest, ThrowError(err.Error()+" (DB接続エラー)"))
-	}
+	conn := c.Get("db").(*gorm.DB)
 
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(p.Password), 10)
 
@@ -43,7 +40,7 @@ func CreateUser(c echo.Context) error {
 	}
 
 	var res []byte
-	res, err = json.Marshal(output)
+	res, err := json.Marshal(output)
 	if err != nil {
 		return c.String(http.StatusBadRequest, ThrowError(err.Error()+" (jsonのMarshalのエラー)"))
 	}
@@ -59,10 +56,7 @@ func CheckUser(c echo.Context) error {
 		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (入力値エラー)"))
 	}
 
-	conn, err := db.InitDB()
-	if err != nil {
-		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (DB接続エラー)"))
-	}
+	conn := c.Get("db").(*gorm.DB)
 
 	user := db.User{}
 	result := conn.Take(&user, "name=?", p.Username)
@@ -70,7 +64,7 @@ func CheckUser(c echo.Context) error {
 		return c.String(http.StatusUnauthorized, ThrowError(result.Error.Error()+" (User検索エラー)"))
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(p.Password))
+	err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(p.Password))
 	if err != nil {
 		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (パスワードが違う)"))
 	}
@@ -109,10 +103,7 @@ func CheckUser(c echo.Context) error {
 
 // 全roomの情報取得
 func GetRoomDetailList(c echo.Context) error {
-	conn, err := db.InitDB()
-	if err != nil {
-		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (DBの接続エラー)"))
-	}
+	conn := c.Get("db").(*gorm.DB)
 
 	authHeader := c.Request().Header.Get("Authorization")
 	token := ExtractBearerToken(authHeader)
@@ -143,7 +134,7 @@ func GetRoomDetailList(c echo.Context) error {
 	}
 
 	var res []byte
-	res, err = json.Marshal(output)
+	res, err := json.Marshal(output)
 	if err != nil {
 		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (JSONのMarshalエラー)"))
 	}
@@ -158,10 +149,7 @@ func CreateRoom(c echo.Context) error {
 		return c.String(http.StatusBadRequest, ThrowError(err.Error()+" (入力値エラー)"))
 	}
 
-	conn, err := db.InitDB()
-	if err != nil {
-		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (DBの接続エラー)"))
-	}
+	conn := c.Get("db").(*gorm.DB)
 
 	//Authorizationからtokenを取得してsessionの確認
 	authHeader := c.Request().Header.Get("Authorization")
@@ -178,7 +166,7 @@ func CreateRoom(c echo.Context) error {
 
 	result := conn.Create(&room)
 	if result.Error != nil {
-		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (roomの作成エラー)"))
+		return c.String(http.StatusUnauthorized, ThrowError(result.Error.Error()+" (roomの作成エラー)"))
 	}
 
 	output := OutputCreateRoom{
@@ -189,7 +177,7 @@ func CreateRoom(c echo.Context) error {
 	}
 
 	var res []byte
-	res, err = json.Marshal(output)
+	res, err := json.Marshal(output)
 	if err != nil {
 		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (JSONのMarshalエラー)"))
 	}
@@ -199,10 +187,7 @@ func CreateRoom(c echo.Context) error {
 
 // 指定したroomidのroomの詳細取得
 func GetRoomDetail(c echo.Context) error {
-	conn, err := db.InitDB()
-	if err != nil {
-		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (DBの接続エラー)"))
-	}
+	conn := c.Get("db").(*gorm.DB)
 
 	//Authorizationからtokenを取得してsessionの確認
 	authHeader := c.Request().Header.Get("Authorization")
@@ -228,7 +213,7 @@ func GetRoomDetail(c echo.Context) error {
 	}
 
 	var res []byte
-	res, err = json.Marshal(output)
+	res, err := json.Marshal(output)
 	if err != nil {
 		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (JSONのMarshalエラー)"))
 	}
@@ -238,10 +223,7 @@ func GetRoomDetail(c echo.Context) error {
 
 // messageをデータベースに登録する
 func CreateMessage(c echo.Context) error {
-	conn, err := db.InitDB()
-	if err != nil {
-		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (DBの接続エラー)"))
-	}
+	conn := c.Get("db").(*gorm.DB)
 
 	//Authorizationからtokenを取得してsessionの確認
 	authHeader := c.Request().Header.Get("Authorization")
@@ -306,10 +288,7 @@ func CreateMessage(c echo.Context) error {
 
 // roomidで指定したroomのmessage詳細を全件取得
 func GetMessageDetailList(c echo.Context) error {
-	conn, err := db.InitDB()
-	if err != nil {
-		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (DBの接続エラー)"))
-	}
+	conn := c.Get("db").(*gorm.DB)
 
 	//Authorizationからtokenを取得してsessionの確認
 	authHeader := c.Request().Header.Get("Authorization")
@@ -361,10 +340,7 @@ func GetMessageDetailList(c echo.Context) error {
 
 // messageをデータベースから削除
 func DeleteMessage(c echo.Context) error {
-	conn, err := db.InitDB()
-	if err != nil {
-		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (DBの接続エラー)"))
-	}
+	conn := c.Get("db").(*gorm.DB)
 
 	//Authorizationからtokenを取得してsessionの確認
 	authHeader := c.Request().Header.Get("Authorization")
@@ -403,7 +379,7 @@ func DeleteMessage(c echo.Context) error {
 
 	var res []byte
 
-	res, err = json.Marshal(output)
+	res, err := json.Marshal(output)
 	if err != nil {
 		return c.String(http.StatusUnauthorized, ThrowError(err.Error()+" (JSONのMarshalエラー)"))
 	}

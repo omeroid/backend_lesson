@@ -146,7 +146,7 @@ paths:
           in: path
           required: true
           schema:
-            type : string
+            type : int
       responses:
         '200':
           description: チャットルーム詳細取得
@@ -184,7 +184,7 @@ paths:
                 - text
               properties:
                 userId:
-                  type: string
+                  type: int
                   description: ユーザId(tokenからuserID取得できるがAPI側実装の簡略化のためuserID送る)
                 text:
                   type: string
@@ -214,7 +214,7 @@ paths:
           in: path
           required: true
           schema:
-            type : string
+            type : int
       responses:
         '200':
           description: メッセージ一覧取得成功
@@ -246,12 +246,12 @@ paths:
           in: path
           required: true
           schema:
-            type : string
+            type : int
         - name: messageId
           in: path
           required: true
           schema:
-            type : string
+            type : int
       responses:
         '201':
           description: メッセージ削除成功
@@ -283,7 +283,7 @@ components:
       type: object
       properties:
         id:
-          type: string
+          type: int
           description: ユーザーId
         name:
           type: string
@@ -295,7 +295,7 @@ components:
       type: object
       properties:
         id:
-          type: string
+          type: int
           description: チャットルームId
         name:
           type: string
@@ -310,7 +310,7 @@ components:
       type: object
       properties:
         id:
-          type: string
+          type: int
           description: メッセージId
         text:
           type: string

@@ -6,6 +6,7 @@ import (
 
 // テーブルにレコードを挿入する
 func InsertSampleRecord(db *gorm.DB) {
+	//各テーブルに挿入するサンプルレコードの構造体を生成
 	user := User{
 		Name:         "wada hiroka",
 		PasswordHash: "au923o",
@@ -27,6 +28,7 @@ func InsertSampleRecord(db *gorm.DB) {
 		Token:  "aaaihjja",
 	}
 
+	//生成した構造体をDBにinsertする
 	result := db.Create(&user)
 	if result.Error != nil {
 		panic("Failed to insert user")

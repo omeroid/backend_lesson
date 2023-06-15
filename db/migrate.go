@@ -1,7 +1,6 @@
 package db
 
 import (
-	"fmt"
 	"gorm.io/gorm"
 )
 
@@ -34,7 +33,4 @@ func Migrate(db *gorm.DB) {
 	if err := db.Migrator().CreateConstraint(&Session{}, "UserID"); err != nil {
 		panic("failed to create foreign key constraint for Session")
 	}
-
-	fmt.Println("Migration successful")
-
 }

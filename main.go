@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -10,25 +11,31 @@ import (
 )
 
 func main() {
-
 	e := echo.New()
 
+	//設定ファイルの読み込み
 	if err := godotenv.Load(".env"); err != nil {
 		e.Logger.Fatal(".envの読み込み失敗: &v", err)
 	}
 	dbName := os.Getenv("DATABASE_NAME")
 
+	//DBへ接続
 	conn, err := db.InitDB(dbName)
 	if err != nil {
 		e.Logger.Fatal("DBの接続失敗: &v", err)
 	}
+
+	//テーブルを作成しサンプルデータを挿入
 	db.Migrate(conn)
 	db.InsertSampleRecord(conn)
+	fmt.Println("Migration Successful")
 
-	e.Use(db.DBMiddleware(conn))
+	//middlewareを登録
+	e.Use(db.DBMiddleware(conn)) //DBの接続をプールする
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
+	//APIエンドポイントを定義する
 	e.POST("/user/signup", handler.CreateUser)
 	e.POST("/user/signin", handler.CheckUser)
 	e.GET("/rooms", handler.GetRoomDetailList)
@@ -38,5 +45,6 @@ func main() {
 	e.GET("/rooms/:roomId/messages", handler.GetMessageDetailList)
 	e.GET("/rooms/:roomId/messages/:messageId", handler.DeleteMessage)
 
+	//localhost:1323でサーバ起動
 	e.Logger.Fatal(e.Start(":1323"))
 }

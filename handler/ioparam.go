@@ -3,29 +3,36 @@ package handler
 import ()
 
 type User struct {
-	ID        string `json:"id"`
+	ID        int    `json:"id"`
 	Name      string `json:"name"`
 	CreatedAt string `json:"createdAt"`
 }
+
 type Message struct {
-	ID        string `json:"id"`
+	ID        int    `json:"id"`
 	Text      string `json:"text"`
 	CreatedAt string `json:"createdAt"`
 	User      User   `json:"user"`
+}
+
+type Room struct {
+	ID          int     `json:"id"`
+	Name        string  `json:"name"`
+	Description *string `json:"description"`
+	CreatedAt   string  `json:"createdAt"`
 }
 
 type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
-// LoginParameters
 type CreateUserInput struct {
 	Username string `json:"userName"`
 	Password string `json:"password"`
 }
 
 type CreateUserOutput struct {
-	ID        string `json:"id"`
+	ID        int    `json:"id"`
 	Name      string `json:"name"`
 	CreatedAt string `json:"createdAt"`
 }
@@ -36,20 +43,13 @@ type CheckUserInput struct {
 }
 
 type CheckUserOutput struct {
-	UserID   string `json:"userId"`
+	UserID   int    `json:"userId"`
 	UserName string `json:"userName"`
 	Token    string `json:"token"`
 }
 
-type RoomDetail struct {
-	ID          string  `json:"id"`
-	Name        string  `json:"name"`
-	Description *string `json:"description"`
-	CreatedAt   string  `json:"createdAt"`
-}
-
 type GetRoomDetailListOutput struct {
-	Rooms []RoomDetail
+	Rooms []Room
 }
 
 type CreateRoomInput struct {
@@ -58,28 +58,38 @@ type CreateRoomInput struct {
 }
 
 type CreateRoomOutput struct {
-	ID          string  `json:"id"`
+	ID          int     `json:"id"`
 	Name        string  `json:"name"`
 	Description *string `json:"description"`
 	CreatedAt   string  `json:"createdAt"`
 }
 
 type GetRoomDetailOutput struct {
-	ID          string  `json:"id"`
+	ID          int     `json:"id"`
 	Name        string  `json:"name"`
 	Description *string `json:"description"`
 	CreatedAt   string  `json:"createdAt"`
 }
 
 type CreateMessageInput struct {
-	UserID string `json:"userId"`
+	UserID int    `json:"userId"`
 	Text   string `json:"text"`
 }
 
-type CreateMessageOutput Message
+type CreateMessageOutput struct {
+	ID        int    `json:"id"`
+	Text      string `json:"text"`
+	CreatedAt string `json:"createdAt"`
+	User      User   `json:"user"`
+}
 
 type GetMessageDetailListOutput struct {
 	Messages []Message `json:"messages"`
 }
 
-type DeleteMessageOutput Message
+type DeleteMessageOutput struct {
+	ID        int    `json:"id"`
+	Text      string `json:"text"`
+	CreatedAt string `json:"createdAt"`
+	User      User   `json:"user"`
+}

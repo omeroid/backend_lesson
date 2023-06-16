@@ -29,23 +29,19 @@ func InsertSampleRecord(db *gorm.DB) {
 	}
 
 	//生成した構造体をDBにinsertする
-	result := db.Create(&user)
-	if result.Error != nil {
+	if result := db.Create(&user); result.Error != nil {
 		panic("Failed to insert user")
 	}
 
-	result = db.Create(&room)
-	if result.Error != nil {
+	if result := db.Create(&room); result.Error != nil {
 		panic("Failed to insert room")
 	}
 
-	result = db.Create(&message)
-	if result.Error != nil {
+	if result := db.Create(&message); result.Error != nil {
 		panic("Failed to insert message")
 	}
 
-	result = db.Create(&session)
-	if result.Error != nil {
+	if result := db.Create(&session); result.Error != nil {
 		panic("Failed to insert session")
 	}
 

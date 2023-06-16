@@ -39,8 +39,7 @@ func CreateUser(c echo.Context) error {
 		Name:         input.Username,
 		PasswordHash: string(hashedPassword),
 	}
-	result := conn.Create(&user)
-	if result.Error != nil {
+	if result := conn.Create(&user); result.Error != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
 			Message: result.Error.Error() + " (user作成エラー)",
 		})
@@ -70,8 +69,7 @@ func CheckUser(c echo.Context) error {
 
 	//usersテーブルにusernameで検索をかける
 	user := db.User{}
-	result := conn.Take(&user, "name=?", input.Username)
-	if result.Error != nil {
+	if result := conn.Take(&user, "name=?", input.Username); result.Error != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
 			Message: result.Error.Error() + " (user検索エラー)",
 		})
@@ -98,8 +96,7 @@ func CheckUser(c echo.Context) error {
 		Token:     token.String(),
 		ExpiredAt: time.Now().Add(time.Hour * 24).Unix(),
 	}
-	result = conn.Create(&session)
-	if result.Error != nil {
+	if result := conn.Create(&session); result.Error != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{
 			Message: result.Error.Error() + " (session作成エラー)",
 		})
@@ -130,8 +127,7 @@ func GetRoomDetailList(c echo.Context) error {
 
 	//roomsからレコードを全件取得
 	var rooms []db.Room
-	result := conn.Find(&rooms)
-	if result.Error != nil {
+	if result := conn.Find(&rooms); result.Error != nil {
 		return c.JSON(http.StatusInternalServerError, ErrorResponse{
 			Message: result.Error.Error() + " (room検索エラー)",
 		})
@@ -182,8 +178,7 @@ func CreateRoom(c echo.Context) error {
 		Name:        input.Name,
 		Description: input.Description,
 	}
-	result := conn.Create(&room)
-	if result.Error != nil {
+	if result := conn.Create(&room); result.Error != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
 			Message: result.Error.Error() + " (room作成エラー)",
 		})
@@ -216,8 +211,7 @@ func GetRoomDetail(c echo.Context) error {
 	//roomsをroomIDで検索する
 	roomID := c.Param("roomId")
 	var room db.Room
-	result := conn.Find(&room, "id=?", roomID)
-	if result.Error != nil {
+	if result := conn.Find(&room, "id=?", roomID); result.Error != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
 			Message: result.Error.Error() + " (room検索エラー)",
 		})
@@ -265,8 +259,7 @@ func CreateMessage(c echo.Context) error {
 
 	//usersからuserIDで検索する
 	user := db.User{}
-	result := conn.First(&user, "id=?", input.UserID)
-	if result.Error != nil {
+	if result := conn.First(&user, "id=?", input.UserID); result.Error != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
 			Message: result.Error.Error() + " (user検索エラー)",
 		})
@@ -278,8 +271,7 @@ func CreateMessage(c echo.Context) error {
 		UserID: input.UserID,
 		Text:   input.Text,
 	}
-	result = conn.Create(&message)
-	if result.Error != nil {
+	if result := conn.Create(&message); result.Error != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
 			Message: result.Error.Error() + " (message作成エラー)",
 		})
@@ -323,8 +315,7 @@ func GetMessageDetailList(c echo.Context) error {
 
 	//messagesにroomIDで検索をかける(一致全件取得)
 	var messages []db.Message
-	result := conn.Find(&messages, "room_id=?", roomID)
-	if result.Error != nil {
+	if result := conn.Find(&messages, "room_id=?", roomID); result.Error != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
 			Message: result.Error.Error() + "(message検索エラー)",
 		})
@@ -375,8 +366,7 @@ func DeleteMessage(c echo.Context) error {
 	//messagesから指定したレコードを削除する
 	message := &db.Message{}
 	//deleteできてなかったときはmessageidに0がかえるのでそれで判定してほしい
-	result := conn.Clauses(clause.Returning{}).Where("id=? AND room_id=?", messageID, roomID).Delete(&message)
-	if result.Error != nil {
+	if result := conn.Clauses(clause.Returning{}).Where("id=? AND room_id=?", messageID, roomID).Delete(&message); result.Error != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
 			Message: result.Error.Error() + " (message削除エラー)",
 		})
@@ -384,8 +374,7 @@ func DeleteMessage(c echo.Context) error {
 
 	//usersからuserIDでuserを検索する
 	user := db.User{}
-	result = conn.Find(&user, "id=?", message.UserID)
-	if result.Error != nil {
+	if result := conn.Find(&user, "id=?", message.UserID); result.Error != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
 			Message: result.Error.Error() + " (user検索エラー)",
 		})
@@ -409,8 +398,7 @@ func DeleteMessage(c echo.Context) error {
 func IsSessionValid(conn *gorm.DB, token string) error {
 	//sessionsをtokenで検索する
 	session := db.Session{}
-	result := conn.First(&session, "token = ?", token)
-	if result.Error != nil {
+	if result := conn.First(&session, "token = ?", token); result.Error != nil {
 		return errors.New(result.Error.Error() + " (sessionの検索エラー)")
 	}
 

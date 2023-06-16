@@ -11,8 +11,8 @@ type User struct {
 type Message struct {
 	ID        int       `json:"id"`
 	Text      string    `json:"text"`
-	CreatedAt time.Time `json:"createdAt"`
 	User      User      `json:"user"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 type Room struct {

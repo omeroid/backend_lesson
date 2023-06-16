@@ -26,12 +26,12 @@ type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
-type CreateUserInput struct {
+type SignUpInput struct {
 	Username string `json:"userName"`
 	Password string `json:"password"`
 }
 
-type CreateUserOutput struct {
+type SignUpOutput struct {
 	ID        int       `json:"id"`
 	Name      string    `json:"name"`
 	CreatedAt time.Time `json:"createdAt"`
@@ -48,7 +48,7 @@ type SignInOutput struct {
 	Token    string `json:"token"`
 }
 
-type GetRoomDetailListOutput struct {
+type ListRoomOutput struct {
 	Rooms []RoomOutput
 }
 
@@ -64,7 +64,7 @@ type CreateRoomOutput struct {
 	CreatedAt   time.Time `json:"createdAt"`
 }
 
-type GetRoomDetailOutput struct {
+type GetRoomOutput struct {
 	ID          int       `json:"id"`
 	Name        string    `json:"name"`
 	Description *string   `json:"description"`
@@ -83,7 +83,7 @@ type CreateMessageOutput struct {
 	CreatedAt time.Time  `json:"createdAt"`
 }
 
-type GetMessageDetailListOutput struct {
+type ListMessageOutput struct {
 	Messages []MessageOutput `json:"messages"`
 }
 

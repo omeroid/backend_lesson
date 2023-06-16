@@ -15,10 +15,10 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-// signup
-func CreateUser(c echo.Context) error {
+// userを登録する
+func SignUp(c echo.Context) error {
 	//入力値の取得
-	input := new(CreateUserInput)
+	input := new(SignUpInput)
 	if err := c.Bind(input); err != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
 			Message: fmt.Sprintf("%s (入力値エラー)", err),
@@ -47,7 +47,7 @@ func CreateUser(c echo.Context) error {
 		})
 	}
 
-	output := CreateUserOutput{
+	output := SignUpOutput{
 		ID:        user.ID,
 		Name:      user.Name,
 		CreatedAt: user.CreatedAt,
@@ -56,7 +56,7 @@ func CreateUser(c echo.Context) error {
 	return c.JSON(http.StatusCreated, output)
 }
 
-// signin
+// ユーザを認証する
 func SignIn(c echo.Context) error {
 	//入力値の取得
 	input := new(SignInInput)
@@ -121,7 +121,7 @@ func SignIn(c echo.Context) error {
 }
 
 // 全roomの情報取得
-func GetRoomDetailList(c echo.Context) error {
+func ListRoom(c echo.Context) error {
 	//DBのコネクションを取得
 	conn := c.Get("db").(*gorm.DB)
 
@@ -153,7 +153,7 @@ func GetRoomDetailList(c echo.Context) error {
 		})
 	}
 
-	output := GetRoomDetailListOutput{
+	output := ListRoomOutput{
 		Rooms: roomDetails,
 	}
 
@@ -204,7 +204,7 @@ func CreateRoom(c echo.Context) error {
 }
 
 // 指定したroomidのroomの詳細取得
-func GetRoomDetail(c echo.Context) error {
+func GetRoom(c echo.Context) error {
 	//DBのコネクションを取得する
 	conn := c.Get("db").(*gorm.DB)
 
@@ -226,7 +226,7 @@ func GetRoomDetail(c echo.Context) error {
 		})
 	}
 
-	output := GetRoomDetailOutput{
+	output := GetRoomOutput{
 		ID:          room.ID,
 		Name:        room.Name,
 		Description: room.Description,
@@ -301,7 +301,7 @@ func CreateMessage(c echo.Context) error {
 }
 
 // roomidで指定したroomのmessage詳細を全件取得
-func GetMessageDetailList(c echo.Context) error {
+func ListMessage(c echo.Context) error {
 	//DBのコネクションを取得
 	conn := c.Get("db").(*gorm.DB)
 
@@ -351,7 +351,7 @@ func GetMessageDetailList(c echo.Context) error {
 		})
 	}
 
-	output := GetMessageDetailListOutput{
+	output := ListMessageOutput{
 		Messages: messageDetails,
 	}
 

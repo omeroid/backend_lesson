@@ -2,20 +2,20 @@ package handler
 
 import "time"
 
-type User struct {
+type UserOutput struct {
 	ID        int       `json:"id"`
 	Name      string    `json:"name"`
 	CreatedAt time.Time `json:"createdAt"`
 }
 
-type Message struct {
-	ID        int       `json:"id"`
-	Text      string    `json:"text"`
-	User      User      `json:"user"`
-	CreatedAt time.Time `json:"createdAt"`
+type MessageOutput struct {
+	ID        int        `json:"id"`
+	Text      string     `json:"text"`
+	User      UserOutput `json:"user"`
+	CreatedAt time.Time  `json:"createdAt"`
 }
 
-type Room struct {
+type RoomOutput struct {
 	ID          int       `json:"id"`
 	Name        string    `json:"name"`
 	Description *string   `json:"description"`
@@ -37,19 +37,19 @@ type CreateUserOutput struct {
 	CreatedAt time.Time `json:"createdAt"`
 }
 
-type CheckUserInput struct {
+type SignInInput struct {
 	Username string `json:"userName"`
 	Password string `json:"password"`
 }
 
-type CheckUserOutput struct {
+type SignInOutput struct {
 	UserID   int    `json:"userId"`
 	UserName string `json:"userName"`
 	Token    string `json:"token"`
 }
 
 type GetRoomDetailListOutput struct {
-	Rooms []Room
+	Rooms []RoomOutput
 }
 
 type CreateRoomInput struct {
@@ -77,19 +77,19 @@ type CreateMessageInput struct {
 }
 
 type CreateMessageOutput struct {
-	ID        int       `json:"id"`
-	Text      string    `json:"text"`
-	User      User      `json:"user"`
-	CreatedAt time.Time `json:"createdAt"`
+	ID        int        `json:"id"`
+	Text      string     `json:"text"`
+	User      UserOutput `json:"user"`
+	CreatedAt time.Time  `json:"createdAt"`
 }
 
 type GetMessageDetailListOutput struct {
-	Messages []Message `json:"messages"`
+	Messages []MessageOutput `json:"messages"`
 }
 
 type DeleteMessageOutput struct {
-	ID        int       `json:"id"`
-	Text      string    `json:"text"`
-	User      User      `json:"user"`
-	CreatedAt time.Time `json:"createdAt"`
+	ID        int        `json:"id"`
+	Text      string     `json:"text"`
+	User      UserOutput `json:"user"`
+	CreatedAt time.Time  `json:"createdAt"`
 }

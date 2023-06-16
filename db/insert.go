@@ -2,6 +2,7 @@ package db
 
 import (
 	"errors"
+
 	"gorm.io/gorm"
 )
 
@@ -15,18 +16,18 @@ func InsertSampleRecord(db *gorm.DB) error {
 	message := Message{
 		RoomID: 1,
 		UserID: 1,
-		Text:   "adadada",
+		Text:   "Hello!",
 	}
 
-	description := "aaaa"
+	description := "どんな話題でもOK!　雑談ルーム"
 	room := Room{
 		Description: &description,
-		Name:        "chat room",
+		Name:        "雑談",
 	}
 
 	session := Session{
 		UserID: 1,
-		Token:  "aaaihjja",
+		Token:  "57a336a5-d877-45aa-9fde-15c7c7309bec",
 	}
 
 	//生成した構造体をDBにinsertする

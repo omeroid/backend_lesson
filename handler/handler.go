@@ -2,15 +2,17 @@ package handler
 
 import (
 	"errors"
+	"fmt"
+	"net/http"
+	"strconv"
+	"time"
+
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/omeroid/kosen_backend_lesson/db"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
-	"net/http"
-	"strconv"
-	"time"
 )
 
 // signup
@@ -19,7 +21,7 @@ func CreateUser(c echo.Context) error {
 	input := new(CreateUserInput)
 	if err := c.Bind(input); err != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
-			Message: err.Error() + " (入力値エラー)",
+			Message: fmt.Sprintf("%s (入力値エラー)", err),
 		})
 	}
 
@@ -30,7 +32,7 @@ func CreateUser(c echo.Context) error {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), 10)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
-			Message: err.Error() + " (hashしたpasswordの生成に失敗)",
+			Message: fmt.Sprintf("%s (hash化したpasswordの生成に失敗)", err),
 		})
 	}
 
@@ -41,7 +43,7 @@ func CreateUser(c echo.Context) error {
 	}
 	if result := conn.Create(&user); result.Error != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
-			Message: result.Error.Error() + " (user作成エラー)",
+			Message: fmt.Sprintf("%s (user作成エラー)", result.Error),
 		})
 	}
 
@@ -55,12 +57,12 @@ func CreateUser(c echo.Context) error {
 }
 
 // signin
-func CheckUser(c echo.Context) error {
+func SignIn(c echo.Context) error {
 	//入力値の取得
-	input := new(CheckUserInput)
+	input := new(SignInInput)
 	if err := c.Bind(input); err != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
-			Message: err.Error() + " (入力値エラー)",
+			Message: fmt.Sprintf("%s (入力値エラー)", err),
 		})
 	}
 
@@ -71,14 +73,21 @@ func CheckUser(c echo.Context) error {
 	user := db.User{}
 	if result := conn.Take(&user, "name=?", input.Username); result.Error != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
-			Message: result.Error.Error() + " (user検索エラー)",
+			Message: fmt.Sprintf("%s (user検索エラー)", result.Error),
+		})
+	}
+
+	//過去のsessionの削除
+	if result := conn.Where("user_id = ?", user.ID).Delete(&db.Session{}); result.Error != nil {
+		return c.JSON(http.StatusBadRequest, ErrorResponse{
+			Message: fmt.Sprintf("%s (過去session削除エラー)", result.Error),
 		})
 	}
 
 	//パスワードの比較(Hash化されている)
 	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(input.Password)); err != nil {
 		return c.JSON(http.StatusUnauthorized, ErrorResponse{
-			Message: err.Error() + " (passwordが違う)",
+			Message: fmt.Sprintf("%s (passwordが違う)", err),
 		})
 	}
 
@@ -86,7 +95,7 @@ func CheckUser(c echo.Context) error {
 	token, err := uuid.NewRandom()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, ErrorResponse{
-			Message: err.Error() + " (token生成エラー)",
+			Message: fmt.Sprintf("%s (token生成エラー)", err),
 		})
 	}
 
@@ -98,11 +107,11 @@ func CheckUser(c echo.Context) error {
 	}
 	if result := conn.Create(&session); result.Error != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{
-			Message: result.Error.Error() + " (session作成エラー)",
+			Message: fmt.Sprintf("%s (session作成エラー)", result.Error),
 		})
 	}
 
-	output := CheckUserOutput{
+	output := SignInOutput{
 		UserID:   user.ID,
 		UserName: user.Name,
 		Token:    token.String(),
@@ -121,7 +130,7 @@ func GetRoomDetailList(c echo.Context) error {
 	token := ExtractBearerToken(authHeader)
 	if err := IsSessionValid(conn, token); err != nil {
 		return c.JSON(http.StatusUnauthorized, ErrorResponse{
-			Message: err.Error(),
+			Message: fmt.Sprintf("%s (tokenが無効)", err),
 		})
 	}
 
@@ -129,14 +138,14 @@ func GetRoomDetailList(c echo.Context) error {
 	var rooms []db.Room
 	if result := conn.Find(&rooms); result.Error != nil {
 		return c.JSON(http.StatusInternalServerError, ErrorResponse{
-			Message: result.Error.Error() + " (room検索エラー)",
+			Message: fmt.Sprintf("%s (room検索エラー)", result.Error),
 		})
 	}
 
 	//ユーザが必要なroomの情報を定義した構造体にデータを詰める
-	var roomDetails []Room
+	var roomDetails []RoomOutput
 	for _, v := range rooms {
-		roomDetails = append(roomDetails, Room{
+		roomDetails = append(roomDetails, RoomOutput{
 			ID:          v.ID,
 			Name:        v.Name,
 			Description: v.Description,
@@ -157,7 +166,7 @@ func CreateRoom(c echo.Context) error {
 	input := new(CreateRoomInput)
 	if err := c.Bind(input); err != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
-			Message: err.Error() + " (入力値エラー)",
+			Message: fmt.Sprintf("%s (入力値エラー)", err),
 		})
 	}
 
@@ -169,7 +178,7 @@ func CreateRoom(c echo.Context) error {
 	token := ExtractBearerToken(authHeader)
 	if err := IsSessionValid(conn, token); err != nil {
 		return c.JSON(http.StatusUnauthorized, ErrorResponse{
-			Message: err.Error(),
+			Message: fmt.Sprintf("%s (tokenが無効)", err),
 		})
 	}
 
@@ -180,7 +189,7 @@ func CreateRoom(c echo.Context) error {
 	}
 	if result := conn.Create(&room); result.Error != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
-			Message: result.Error.Error() + " (room作成エラー)",
+			Message: fmt.Sprintf("%s (room作成エラー)", result.Error),
 		})
 	}
 
@@ -204,7 +213,7 @@ func GetRoomDetail(c echo.Context) error {
 	token := ExtractBearerToken(authHeader)
 	if err := IsSessionValid(conn, token); err != nil {
 		return c.JSON(http.StatusUnauthorized, ErrorResponse{
-			Message: err.Error(),
+			Message: fmt.Sprintf("%s (tokenが無効)", err),
 		})
 	}
 
@@ -213,7 +222,7 @@ func GetRoomDetail(c echo.Context) error {
 	var room db.Room
 	if result := conn.Find(&room, "id=?", roomID); result.Error != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
-			Message: result.Error.Error() + " (room検索エラー)",
+			Message: fmt.Sprintf("%s (room検索エラー)", result.Error),
 		})
 	}
 
@@ -237,7 +246,7 @@ func CreateMessage(c echo.Context) error {
 	token := ExtractBearerToken(authHeader)
 	if err := IsSessionValid(conn, token); err != nil {
 		return c.JSON(http.StatusUnauthorized, ErrorResponse{
-			Message: err.Error(),
+			Message: fmt.Sprintf("%s (tokenが無効)", err),
 		})
 	}
 
@@ -245,7 +254,7 @@ func CreateMessage(c echo.Context) error {
 	input := new(CreateMessageInput)
 	if err := c.Bind(input); err != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
-			Message: err.Error() + " (入力値エラー)",
+			Message: fmt.Sprintf("%s (入力値エラー)", err),
 		})
 	}
 
@@ -253,7 +262,7 @@ func CreateMessage(c echo.Context) error {
 	roomID, err := strconv.Atoi(c.Param("roomId"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
-			Message: err.Error() + " (roomID入力エラー)",
+			Message: fmt.Sprintf("%s (roomID入力エラー)", err),
 		})
 	}
 
@@ -261,7 +270,7 @@ func CreateMessage(c echo.Context) error {
 	user := db.User{}
 	if result := conn.First(&user, "id=?", input.UserID); result.Error != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
-			Message: result.Error.Error() + " (user検索エラー)",
+			Message: fmt.Sprintf("%s (user検索エラー)", result.Error),
 		})
 	}
 
@@ -273,7 +282,7 @@ func CreateMessage(c echo.Context) error {
 	}
 	if result := conn.Create(&message); result.Error != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
-			Message: result.Error.Error() + " (message作成エラー)",
+			Message: fmt.Sprintf("%s (message作成エラー)", result.Error),
 		})
 	}
 
@@ -281,7 +290,7 @@ func CreateMessage(c echo.Context) error {
 		ID:        message.ID,
 		Text:      message.Text,
 		CreatedAt: message.CreatedAt,
-		User: User{
+		User: UserOutput{
 			ID:        user.ID,
 			Name:      user.Name,
 			CreatedAt: user.CreatedAt,
@@ -301,7 +310,7 @@ func GetMessageDetailList(c echo.Context) error {
 	token := ExtractBearerToken(authHeader)
 	if err := IsSessionValid(conn, token); err != nil {
 		return c.JSON(http.StatusUnauthorized, ErrorResponse{
-			Message: err.Error(),
+			Message: fmt.Sprintf("%s (tokenが無効)", err),
 		})
 	}
 
@@ -309,7 +318,7 @@ func GetMessageDetailList(c echo.Context) error {
 	roomID, err := strconv.Atoi(c.Param("roomId"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
-			Message: err.Error() + " (roomID入力エラー)",
+			Message: fmt.Sprintf("%s (roomID入力エラー)", err),
 		})
 	}
 
@@ -317,20 +326,24 @@ func GetMessageDetailList(c echo.Context) error {
 	var messages []db.Message
 	if result := conn.Find(&messages, "room_id=?", roomID); result.Error != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
-			Message: result.Error.Error() + "(message検索エラー)",
+			Message: fmt.Sprintf("%s (message検索エラー)", result.Error),
 		})
 	}
 
 	//ユーザが必要な情報を定義した構造体にデータを詰める
-	var messageDetails []Message
+	var messageDetails []MessageOutput
 	for _, v := range messages {
 		user := db.User{}
-		conn.Find(&user, "id=?", v.UserID)
-		messageDetails = append(messageDetails, Message{
+		if result := conn.Find(&user, "id=?", v.UserID); result.Error != nil {
+			return c.JSON(http.StatusBadRequest, ErrorResponse{
+				Message: fmt.Sprintf("%s (user検索エラー)", result.Error),
+			})
+		}
+		messageDetails = append(messageDetails, MessageOutput{
 			ID:        v.ID,
 			Text:      v.Text,
 			CreatedAt: v.CreatedAt,
-			User: User{
+			User: UserOutput{
 				ID:        user.ID,
 				Name:      user.Name,
 				CreatedAt: user.CreatedAt,
@@ -355,7 +368,7 @@ func DeleteMessage(c echo.Context) error {
 	token := ExtractBearerToken(authHeader)
 	if err := IsSessionValid(conn, token); err != nil {
 		return c.JSON(http.StatusUnauthorized, ErrorResponse{
-			Message: err.Error(),
+			Message: fmt.Sprintf("%s (tokenが無効)", err),
 		})
 	}
 
@@ -368,7 +381,7 @@ func DeleteMessage(c echo.Context) error {
 	//deleteできてなかったときはmessageidに0がかえるのでそれで判定してほしい
 	if result := conn.Clauses(clause.Returning{}).Where("id=? AND room_id=?", messageID, roomID).Delete(&message); result.Error != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
-			Message: result.Error.Error() + " (message削除エラー)",
+			Message: fmt.Sprintf("%s (message削除エラー)", result.Error),
 		})
 	}
 
@@ -376,7 +389,7 @@ func DeleteMessage(c echo.Context) error {
 	user := db.User{}
 	if result := conn.Find(&user, "id=?", message.UserID); result.Error != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
-			Message: result.Error.Error() + " (user検索エラー)",
+			Message: fmt.Sprintf("%s (user検索エラー)", result.Error),
 		})
 	}
 
@@ -384,7 +397,7 @@ func DeleteMessage(c echo.Context) error {
 		ID:        message.ID,
 		Text:      message.Text,
 		CreatedAt: message.CreatedAt,
-		User: User{
+		User: UserOutput{
 			ID:        user.ID,
 			Name:      user.Name,
 			CreatedAt: user.CreatedAt,
@@ -404,8 +417,6 @@ func IsSessionValid(conn *gorm.DB, token string) error {
 
 	//tokenの有効期限が切れている時
 	if session.ExpiredAt.Before(time.Now()) {
-		session = db.Session{}
-		conn.Delete(&session, "token = ?", token)
 		return errors.New("session expired" + " ログインし直してください")
 	}
 

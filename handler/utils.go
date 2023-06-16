@@ -1,16 +1,10 @@
 package handler
 
-import (
-	"strings"
-)
+import "strings"
 
 // AuthorizationHeaderからtokenを取り出す
 func ExtractBearerToken(authHeader string) string {
-	if authHeader == "" {
-		return ""
-	}
-
-	authParts := strings.Split(authHeader, " ")
+	authParts := strings.Fields(authHeader)
 	if len(authParts) != 2 || !strings.EqualFold(authParts[0], "bearer") {
 		return ""
 	}

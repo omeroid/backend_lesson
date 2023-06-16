@@ -1,13 +1,13 @@
 package main
 
 import (
-	"fmt"
+	"os"
+
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/omeroid/kosen_backend_lesson/db"
 	"github.com/omeroid/kosen_backend_lesson/handler"
-	"os"
 )
 
 // 現状ホームディレクトリ(Macなら"~"、 WindowsならC:\Users\ユーザ名)に.sqlitercというファイルを作りPRAGMA foreign_keys=ON;
@@ -34,7 +34,7 @@ func main() {
 	if err := db.InsertSampleRecord(conn); err != nil {
 		e.Logger.Fatal("DBへのサンプルレコードのinsert失敗: &v", err)
 	}
-	fmt.Println("Migration Successful")
+	e.Logger.Print("Migration Successful")
 
 	//middlewareを登録
 	e.Use(db.DBMiddleware(conn)) //DBの接続をプールする
@@ -43,7 +43,7 @@ func main() {
 
 	//APIエンドポイントを定義する
 	e.POST("/user/signup", handler.CreateUser)
-	e.POST("/user/signin", handler.CheckUser)
+	e.POST("/user/signin", handler.SignIn)
 	e.GET("/rooms", handler.GetRoomDetailList)
 	e.POST("/rooms", handler.CreateRoom)
 	e.GET("/rooms/:roomId", handler.GetRoomDetail)

@@ -173,7 +173,7 @@ paths:
           in: path
           required: true
           schema:
-            type : string
+            type : int
       requestBody:
         content:
           application/json:

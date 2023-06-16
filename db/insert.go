@@ -1,11 +1,12 @@
 package db
 
 import (
+	"errors"
 	"gorm.io/gorm"
 )
 
 // テーブルにレコードを挿入する
-func InsertSampleRecord(db *gorm.DB) {
+func InsertSampleRecord(db *gorm.DB) error {
 	//各テーブルに挿入するサンプルレコードの構造体を生成
 	user := User{
 		Name:         "wada hiroka",
@@ -30,19 +31,20 @@ func InsertSampleRecord(db *gorm.DB) {
 
 	//生成した構造体をDBにinsertする
 	if result := db.Create(&user); result.Error != nil {
-		panic("Failed to insert user")
+		return errors.New("Failed to insert user")
 	}
 
 	if result := db.Create(&room); result.Error != nil {
-		panic("Failed to insert room")
+		return errors.New("Failed to insert room")
 	}
 
 	if result := db.Create(&message); result.Error != nil {
-		panic("Failed to insert message")
+		return errors.New("Failed to insert message")
 	}
 
 	if result := db.Create(&session); result.Error != nil {
-		panic("Failed to insert session")
+		return errors.New("Failed to insert session")
 	}
 
+	return nil
 }

@@ -1,25 +1,25 @@
 package handler
 
-import ()
+import "time"
 
 type User struct {
-	ID        int    `json:"id"`
-	Name      string `json:"name"`
-	CreatedAt string `json:"createdAt"`
+	ID        int       `json:"id"`
+	Name      string    `json:"name"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 type Message struct {
-	ID        int    `json:"id"`
-	Text      string `json:"text"`
-	CreatedAt string `json:"createdAt"`
-	User      User   `json:"user"`
+	ID        int       `json:"id"`
+	Text      string    `json:"text"`
+	CreatedAt time.Time `json:"createdAt"`
+	User      User      `json:"user"`
 }
 
 type Room struct {
-	ID          int     `json:"id"`
-	Name        string  `json:"name"`
-	Description *string `json:"description"`
-	CreatedAt   string  `json:"createdAt"`
+	ID          int       `json:"id"`
+	Name        string    `json:"name"`
+	Description *string   `json:"description"`
+	CreatedAt   time.Time `json:"createdAt"`
 }
 
 type ErrorResponse struct {
@@ -32,9 +32,9 @@ type CreateUserInput struct {
 }
 
 type CreateUserOutput struct {
-	ID        int    `json:"id"`
-	Name      string `json:"name"`
-	CreatedAt string `json:"createdAt"`
+	ID        int       `json:"id"`
+	Name      string    `json:"name"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 type CheckUserInput struct {
@@ -58,17 +58,17 @@ type CreateRoomInput struct {
 }
 
 type CreateRoomOutput struct {
-	ID          int     `json:"id"`
-	Name        string  `json:"name"`
-	Description *string `json:"description"`
-	CreatedAt   string  `json:"createdAt"`
+	ID          int       `json:"id"`
+	Name        string    `json:"name"`
+	Description *string   `json:"description"`
+	CreatedAt   time.Time `json:"createdAt"`
 }
 
 type GetRoomDetailOutput struct {
-	ID          int     `json:"id"`
-	Name        string  `json:"name"`
-	Description *string `json:"description"`
-	CreatedAt   string  `json:"createdAt"`
+	ID          int       `json:"id"`
+	Name        string    `json:"name"`
+	Description *string   `json:"description"`
+	CreatedAt   time.Time `json:"createdAt"`
 }
 
 type CreateMessageInput struct {
@@ -77,10 +77,10 @@ type CreateMessageInput struct {
 }
 
 type CreateMessageOutput struct {
-	ID        int    `json:"id"`
-	Text      string `json:"text"`
-	CreatedAt string `json:"createdAt"`
-	User      User   `json:"user"`
+	ID        int       `json:"id"`
+	Text      string    `json:"text"`
+	User      User      `json:"user"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 type GetMessageDetailListOutput struct {
@@ -88,8 +88,8 @@ type GetMessageDetailListOutput struct {
 }
 
 type DeleteMessageOutput struct {
-	ID        int    `json:"id"`
-	Text      string `json:"text"`
-	CreatedAt string `json:"createdAt"`
-	User      User   `json:"user"`
+	ID        int       `json:"id"`
+	Text      string    `json:"text"`
+	User      User      `json:"user"`
+	CreatedAt time.Time `json:"createdAt"`
 }

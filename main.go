@@ -28,8 +28,12 @@ func main() {
 	}
 
 	//テーブルを作成しサンプルデータを挿入
-	db.Migrate(conn)
-	db.InsertSampleRecord(conn)
+	if err := db.Migrate(conn); err != nil {
+		e.Logger.Fatal("DBへのmigration失敗: &v", err)
+	}
+	if err := db.InsertSampleRecord(conn); err != nil {
+		e.Logger.Fatal("DBへのサンプルレコードのinsert失敗: &v", err)
+	}
 	fmt.Println("Migration Successful")
 
 	//middlewareを登録

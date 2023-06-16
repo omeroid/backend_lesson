@@ -48,7 +48,7 @@ func CreateUser(c echo.Context) error {
 	output := CreateUserOutput{
 		ID:        user.ID,
 		Name:      user.Name,
-		CreatedAt: user.CreatedAt.String(),
+		CreatedAt: user.CreatedAt,
 	}
 
 	return c.JSON(http.StatusCreated, output)
@@ -94,7 +94,7 @@ func CheckUser(c echo.Context) error {
 	session := db.Session{
 		UserID:    user.ID,
 		Token:     token.String(),
-		ExpiredAt: time.Now().Add(time.Hour * 24).Unix(),
+		ExpiredAt: time.Now().Add(time.Hour * 24),
 	}
 	if result := conn.Create(&session); result.Error != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{
@@ -140,7 +140,7 @@ func GetRoomDetailList(c echo.Context) error {
 			ID:          v.ID,
 			Name:        v.Name,
 			Description: v.Description,
-			CreatedAt:   v.CreatedAt.String(),
+			CreatedAt:   v.CreatedAt,
 		})
 	}
 
@@ -188,7 +188,7 @@ func CreateRoom(c echo.Context) error {
 		ID:          room.ID,
 		Name:        room.Name,
 		Description: room.Description,
-		CreatedAt:   room.CreatedAt.String(),
+		CreatedAt:   room.CreatedAt,
 	}
 
 	return c.JSON(http.StatusCreated, output)
@@ -221,7 +221,7 @@ func GetRoomDetail(c echo.Context) error {
 		ID:          room.ID,
 		Name:        room.Name,
 		Description: room.Description,
-		CreatedAt:   room.CreatedAt.String(),
+		CreatedAt:   room.CreatedAt,
 	}
 
 	return c.JSON(http.StatusOK, output)
@@ -280,11 +280,11 @@ func CreateMessage(c echo.Context) error {
 	output := CreateMessageOutput{
 		ID:        message.ID,
 		Text:      message.Text,
-		CreatedAt: message.CreatedAt.String(),
+		CreatedAt: message.CreatedAt,
 		User: User{
 			ID:        user.ID,
 			Name:      user.Name,
-			CreatedAt: user.CreatedAt.String(),
+			CreatedAt: user.CreatedAt,
 		},
 	}
 
@@ -329,11 +329,11 @@ func GetMessageDetailList(c echo.Context) error {
 		messageDetails = append(messageDetails, Message{
 			ID:        v.ID,
 			Text:      v.Text,
-			CreatedAt: v.CreatedAt.String(),
+			CreatedAt: v.CreatedAt,
 			User: User{
 				ID:        user.ID,
 				Name:      user.Name,
-				CreatedAt: user.CreatedAt.String(),
+				CreatedAt: user.CreatedAt,
 			},
 		})
 	}
@@ -383,11 +383,11 @@ func DeleteMessage(c echo.Context) error {
 	output := DeleteMessageOutput{
 		ID:        message.ID,
 		Text:      message.Text,
-		CreatedAt: message.CreatedAt.String(),
+		CreatedAt: message.CreatedAt,
 		User: User{
 			ID:        user.ID,
 			Name:      user.Name,
-			CreatedAt: user.CreatedAt.String(),
+			CreatedAt: user.CreatedAt,
 		},
 	}
 
@@ -403,7 +403,7 @@ func IsSessionValid(conn *gorm.DB, token string) error {
 	}
 
 	//tokenの有効期限が切れている時
-	if session.ExpiredAt < time.Now().Unix() {
+	if session.ExpiredAt.Before(time.Now()) {
 		session = db.Session{}
 		conn.Delete(&session, "token = ?", token)
 		return errors.New("session expired" + " ログインし直してください")

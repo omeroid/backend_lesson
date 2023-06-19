@@ -1,8 +1,8 @@
 package db
 
 import (
+	"github.com/glebarez/sqlite"
 	"github.com/labstack/echo/v4"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 

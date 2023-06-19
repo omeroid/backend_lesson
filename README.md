@@ -83,7 +83,6 @@ RESPONSE
 "description":"chat room",
 "createdAt":"2023-06-19T10:38:30.888965+09:00"
 }
-
 ```
                      
 ### /rooms/{roomId} GET　指定したIDのルームの情報取得
@@ -123,7 +122,6 @@ RESPONSE
 },
 "createdAt":"2023-06-19T10:47:25.288945+09:00"
 }
-
 ```
 
 ### /rooms/{roomId}/messages GET　指定したルームのメッセージを全件取得
@@ -155,7 +153,6 @@ RESPONSE
 },
 "createdAt":"2023-06-19T10:51:18.973032+09:00"}]
 }
-
 ```
   
 ### /room/{roomId}/messages/{messageId} GET　指定したルームのメッセージを削除
@@ -177,7 +174,6 @@ RESPONSE
 },
 "createdAt":"2023-06-19T10:51:18.973032+09:00"
 }
-
 ```
  
  

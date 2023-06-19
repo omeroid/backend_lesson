@@ -1,24 +1,26 @@
 package db
 
 import (
-	//"github.com/jinzhu/gorm"
-	"gorm.io/driver/postgres"
+	"github.com/glebarez/sqlite"
+	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
-	"log"
 )
 
-type Message struct {
-	MessageID string `gorm:"column:messageid"`
-	RoomID    string `gorm:"column:roomid"`
-	Content   string `gorm:"column:content"`
-	TimeStamp string `gorm:"column:timestamp"`
-}
-
-func Initdb() (*gorm.DB, error) {
-	dsn := "host=localhost user=root password=root dbname=root port=5430 sslmode=disable"
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+// DBに接続する
+func InitDB(dbName string) (*gorm.DB, error) {
+	db, err := gorm.Open(sqlite.Open(dbName), &gorm.Config{})
 	if err != nil {
-		log.Fatalln("接続失敗", err)
+		return nil, err
 	}
 	return db, nil
+}
+
+// echoにDBをmiddlewareとして登録する(DBのconnectionを使いまわせるようにする)
+func DBMiddleware(db *gorm.DB) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			c.Set("db", db)
+			return next(c)
+		}
+	}
 }

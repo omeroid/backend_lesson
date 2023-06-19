@@ -14,133 +14,171 @@
 
 ### /user/signup POST　サインアップ
 REQUEST
-`curl -X POST -H "Content-Type: application/json" -d '{
-                                                         "userName": "wada",
-                                                         "password": "password"
-                                                       }' http://localhost:1323/user/signup`
+```
+curl -X POST -H "Content-Type: application/json" -d '{
+"userName": "wada",
+"password": "password"
+}
+http://localhost:1323/user/signup
+```
                                                        
 RESPONSE 
-`{
-  "id":2,
-  "name":"wada",
-  "createdAt":"2023-06-19T10:29:02.464221+09:00"
-  }`
+```
+{
+"id":2,
+"name":"wada",
+"createdAt":"2023-06-19T10:29:02.464221+09:00"
+}
+```
   
 ### /user/signin POST　サインイン
 REQUEST
-`curl -X POST -H "Content-Type: application/json" -d '{
-                                                     "userName": "wada",
-                                                     "password": "password"
-                                                   }' http://localhost:1323/user/signin`
+```
+curl -X POST -H "Content-Type: application/json" -d '{
+"userName": "wada",
+"password": "password"
+}' http://localhost:1323/user/signin
+```
                                 
 RESPONSE
-`{
-   "userId":2,
-   "userName":"wada",
-   "token":"7c26b436-01b7-415e-96f3-c164e37f3f1d"
-   }`
+```
+{
+"userId":2,
+"userName":"wada",
+"token":"7c26b436-01b7-415e-96f3-c164e37f3f1d"
+}
+```
    
 ### /rooms GET　ルーム情報全件取得
 REQUEST
-`curl -X GET -H "Authorization: Bearer 7c26b436-01b7-415e-96f3-c164e37f3f1d" http://localhost:1323/rooms`
+```
+curl -X GET -H "Authorization: Bearer 7c26b436-01b7-415e-96f3-c164e37f3f1d" http://localhost:1323/rooms
+```
 
 RESPONSE
-`{
-  "Rooms":[{"id":1,
-                     "name":"雑談",
-                     "description":"どんな話題でもOK!　雑談ルーム",
-                     "createdAt":"2023-06-19T10:28:46.054979+09:00"}]}`
+```
+{
+"Rooms":[{"id":1,
+"name":"雑談",
+"description":"どんな話題でも OK!　雑談ルーム",
+"createdAt":"2023-06-19T10:28:46.054979+09:00"}]
+}
+```
        
 ### /rooms POST　ルーム作成
 REQUEST
-`curl -X POST -H "Authorization: Bearer 7c26b436-01b7-415e-96f3-c164e37f3f1d" -H "Content-Type: application/json" -d 
+```
+curl -X POST -H "Authorization: Bearer 7c26b436-01b7-415e-96f3-c164e37f3f1d" -H "Content-Type: application/json" -d 
 '{
-  "name": "test room", 
-  "description": "chat room"
-  }'  http://localhost:1323/rooms`
+"name": "test room",
+"description": "chat room"
+}'  http://localhost:1323/rooms
+```
   
 RESPONSE
-`{
-  "id":2,
-  "name":"test room",
-  "description":"chat room",
-  "createdAt":"2023-06-19T10:38:30.888965+09:00"
-  }`
+```
+{
+"id":2,
+"name":"test room",
+"description":"chat room",
+"createdAt":"2023-06-19T10:38:30.888965+09:00"
+}
+
+```
                      
 ### /rooms/{roomId} GET　指定したIDのルームの情報取得
 REQUEST
-`curl -X GET -H "Authorization: Bearer 7c26b436-01b7-415e-96f3-c164e37f3f1d" http://localhost:1323/rooms/2`
+```
+curl -X GET -H "Authorization: Bearer 7c26b436-01b7-415e-96f3-c164e37f3f1d" http://localhost:1323/rooms/2
+```
 
 RESPONSE
-`{
-  "id":2,
-  "name":"test room",
-  "description":"chat room",
-  "createdAt":"2023-06-19T10:38:30.888965+09:00"
-  }`
+```
+{
+"id":2,
+"name":"test room",
+"description":"chat room",
+"createdAt":"2023-06-19T10:38:30.888965+09:00"
+}
+```
 
 ### /rooms/{roomId}/messages POST　指定したルームでメッセージを送る
 REQUEST
-`curl -X POST -H "Authorization: Bearer 7c26b436-01b7-415e-96f3-c164e37f3f1d" -H "Content-Type: application/json" -d '{
+```
+curl -X POST -H "Authorization: Bearer 7c26b436-01b7-415e-96f3-c164e37f3f1d" -H "Content-Type: application/json" -d '{
 "userId": 2,
 "text": "Hello!"
-}'  http://localhost:1323/rooms/2/messages`
+}'  http://localhost:1323/rooms/2/messages
+```
 
 RESPONSE
-`{
-   "id":2,
-   "text":"Hello!",
-   "user":{
-                  "id":2,
-                  "name":"wada",
-                  "createdAt":"2023-06-19T10:29:02.464221+09:00"
-                  },
-   "createdAt":"2023-06-19T10:47:25.288945+09:00"
-}`
+```
+{
+"id":2,
+"text":"Hello!",
+"user":{
+  "id":2,
+  "name":"wada",
+  "createdAt":"2023-06-19T10:29:02.464221+09:00"
+},
+"createdAt":"2023-06-19T10:47:25.288945+09:00"
+}
+
+```
 
 ### /rooms/{roomId}/messages GET　指定したルームのメッセージを全件取得
 
 REQUEST 
-`curl -X GET -H "Authorization: Bearer 7c26b436-01b7-415e-96f3-c164e37f3f1d" http://localhost:1323/rooms/2/messages`
+```
+curl -X GET -H "Authorization: Bearer 7c26b436-01b7-415e-96f3-c164e37f3f1d" http://localhost:1323/rooms/2/messages
+```
 
 RESPONSE
-`{"messages":[{
-    "id":2,
-    "text":"Hello!",
-    "user":{
-                "id":2,
-                "name":"wada",
-                "createdAt":"2023-06-19T10:29:02.464221+09:00"
-                },
-    "createdAt":"2023-06-19T10:47:25.288945+09:00"
-    },
-    {
-    id":3,
-    "text":"Hello!!!!!!!",
-    "user":{
-               "id":2,
-               "name":"wada",
-               "createdAt":"2023-06-19T10:29:02.464221+09:00"
-               },
-  "createdAt":"2023-06-19T10:51:18.973032+09:00"}]
-  }`
+```
+{"messages":[{
+"id":2,
+"text":"Hello!",
+"user":{
+  "id":2,
+  "name":"wada",
+  "createdAt":"2023-06-19T10:29:02.464221+09:00"
+},
+"createdAt":"2023-06-19T10:47:25.288945+09:00"
+},
+{
+”id":3,
+"text":"Hello!!!!!!!",
+"user":{
+  "id":2,
+  "name":"wada",
+  "createdAt":"2023-06-19T10:29:02.464221+09:00"
+},
+"createdAt":"2023-06-19T10:51:18.973032+09:00"}]
+}
+
+```
   
 ### /room/{roomId}/messages/{messageId} GET　指定したルームのメッセージを削除
 
 REQUEST
-`curl -X GET -H "Authorization: Bearer 7c26b436-01b7-415e-96f3-c164e37f3f1d" http://localhost:1323/rooms/2/messages/3`
+```
+curl -X GET -H "Authorization: Bearer 7c26b436-01b7-415e-96f3-c164e37f3f1d" http://localhost:1323/rooms/2/messages/3
+```
 
 RESPONSE
-`{
-  "id":3,
-  "text":"Hello!!!!!!!",
-  "user":{
-               "id":2,
-               "name":"wada",
-               "createdAt":"2023-06-19T10:29:02.464221+09:00"
-               },
-  "createdAt":"2023-06-19T10:51:18.973032+09:00"
-     }`
+```
+{
+"id":3,
+"text":"Hello!!!!!!!",
+"user":{
+  "id":2,
+  "name":"wada",
+  "createdAt":"2023-06-19T10:29:02.464221+09:00"
+},
+"createdAt":"2023-06-19T10:51:18.973032+09:00"
+}
+
+```
  
  
 

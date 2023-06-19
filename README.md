@@ -125,7 +125,6 @@ RESPONSE
 ```
 
 ### /rooms/{roomId}/messages GET　指定したルームのメッセージを全件取得
-
 REQUEST 
 ```
 curl -X GET -H "Authorization: Bearer 7c26b436-01b7-415e-96f3-c164e37f3f1d" http://localhost:1323/rooms/2/messages
@@ -156,7 +155,6 @@ RESPONSE
 ```
   
 ### /room/{roomId}/messages/{messageId} GET　指定したルームのメッセージを削除
-
 REQUEST
 ```
 curl -X GET -H "Authorization: Bearer 7c26b436-01b7-415e-96f3-c164e37f3f1d" http://localhost:1323/rooms/2/messages/3

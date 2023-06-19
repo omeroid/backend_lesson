@@ -1,4 +1,4 @@
-# Web
+# 環境構築
 
 ## 必要なもの
 - Visual Studio Code（VSCode）

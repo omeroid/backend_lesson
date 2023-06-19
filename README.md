@@ -1,18 +1,18 @@
 # kosen_lesson
 
 ## 起動手順
-1 git cloneする
+1 `git clone https://github.com/omeroid/kosen_lesson.git`する
 
-2 .envをプロジェクトのルートディレクトリに作成し、`DATABASE_NAME=chatapp.sqlite`と入力し保存する
+2 `.env`をプロジェクトのルートディレクトリに作成し、`DATABASE_NAME=chatapp.sqlite`と入力し保存する
 
-3 ホームディレクトリ(Macなら~、WindowsならC:\Users\{ユーザ名})に.sqlitercを作成し`PRAGMA foreign_keys=ON;`と入力し保存(sqliteの外部キー制約をonにするため)
+3 ホームディレクトリ(Macなら`~`、Windowsなら`C:\Users\{ユーザ名}`)に`.sqliterc`を作成し`PRAGMA foreign_keys=ON;`と入力し保存(sqliteの外部キー制約をonにするため)
 
 4 `go get github.com/omeroid/kosen_backend_lesson`を実行し、依存パッケージをダウンロードする
 
-5 プロジェクトのルートディレクトリで`go run main.go`を実行するとサーバが起動する
-## 各エンドポイントに対するリクエストとレスポンスの例
+5 プロジェクトのルートディレクトリで`go run main.go`を実行すると`localhost:1323`でサーバが起動する
+## 各エンドポイントに対するリクエストとレスポンスの例(curlコマンド)
 
-# /user/signup POST
+### /user/signup POST　サインアップ
 REQUEST
 `curl -X POST -H "Content-Type: application/json" -d '{
                                                          "userName": "wada",
@@ -26,7 +26,7 @@ RESPONSE
   "createdAt":"2023-06-19T10:29:02.464221+09:00"
   }`
   
-# /user/signin POST
+### /user/signin POST　サインイン
 REQUEST
 `curl -X POST -H "Content-Type: application/json" -d '{
                                                      "userName": "wada",
@@ -40,7 +40,7 @@ RESPONSE
    "token":"7c26b436-01b7-415e-96f3-c164e37f3f1d"
    }`
    
-# /rooms GET
+### /rooms GET　ルーム情報全件取得
 REQUEST
 `curl -X GET -H "Authorization: Bearer 7c26b436-01b7-415e-96f3-c164e37f3f1d" http://localhost:1323/rooms`
 
@@ -51,7 +51,7 @@ RESPONSE
                      "description":"どんな話題でもOK!　雑談ルーム",
                      "createdAt":"2023-06-19T10:28:46.054979+09:00"}]}`
        
-# /rooms POST
+### /rooms POST　ルーム作成
 REQUEST
 `curl -X POST -H "Authorization: Bearer 7c26b436-01b7-415e-96f3-c164e37f3f1d" -H "Content-Type: application/json" -d 
 '{
@@ -67,7 +67,7 @@ RESPONSE
   "createdAt":"2023-06-19T10:38:30.888965+09:00"
   }`
                      
-# /rooms/{roomId} GET
+### /rooms/{roomId} GET　指定したIDのルームの情報取得
 REQUEST
 `curl -X GET -H "Authorization: Bearer 7c26b436-01b7-415e-96f3-c164e37f3f1d" http://localhost:1323/rooms/2`
 
@@ -79,7 +79,7 @@ RESPONSE
   "createdAt":"2023-06-19T10:38:30.888965+09:00"
   }`
 
-# /rooms/{roomId}/messages POST
+### /rooms/{roomId}/messages POST　指定したルームでメッセージを送る
 REQUEST
 `curl -X POST -H "Authorization: Bearer 7c26b436-01b7-415e-96f3-c164e37f3f1d" -H "Content-Type: application/json" -d '{
 "userId": 2,
@@ -98,7 +98,7 @@ RESPONSE
    "createdAt":"2023-06-19T10:47:25.288945+09:00"
 }`
 
-# /rooms/{roomId}/messages GET
+### /rooms/{roomId}/messages GET　指定したルームのメッセージを全件取得
 
 REQUEST 
 `curl -X GET -H "Authorization: Bearer 7c26b436-01b7-415e-96f3-c164e37f3f1d" http://localhost:1323/rooms/2/messages`
@@ -125,7 +125,7 @@ RESPONSE
   "createdAt":"2023-06-19T10:51:18.973032+09:00"}]
   }`
   
-# /room/{roomId}/messages/{messagedId} GET
+### /room/{roomId}/messages/{messageId} GET　指定したルームのメッセージを削除
 
 REQUEST
 `curl -X GET -H "Authorization: Bearer 7c26b436-01b7-415e-96f3-c164e37f3f1d" http://localhost:1323/rooms/2/messages/3`

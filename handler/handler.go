@@ -28,6 +28,17 @@ func SignUp(c echo.Context) error {
 	//DBのコネクションを取得
 	conn := c.Get("db").(*gorm.DB)
 
+	if input.Username == "" {
+		return c.JSON(http.StatusBadRequest, ErrorResponse{
+			Message: fmt.Sprintf("(ユーザーネームが空)"),
+		})
+	}
+
+	if input.Password == "" {
+		return c.JSON(http.StatusBadRequest, ErrorResponse{
+			Message: fmt.Sprintf("(パスワードが空)"),
+		})
+	}
 	//パスワードのHash化処理
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), 10)
 	if err != nil {
@@ -68,6 +79,18 @@ func SignIn(c echo.Context) error {
 
 	//DBのコネクションを取得
 	conn := c.Get("db").(*gorm.DB)
+
+	if input.Username == "" {
+		return c.JSON(http.StatusBadRequest, ErrorResponse{
+			Message: fmt.Sprintf("(ユーザーネームが空)"),
+		})
+	}
+
+	if input.Password == "" {
+		return c.JSON(http.StatusBadRequest, ErrorResponse{
+			Message: fmt.Sprintf("(パスワードが空)"),
+		})
+	}
 
 	//usersテーブルにusernameで検索をかける
 	user := db.User{}

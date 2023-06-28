@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React,{ useState,useEffect } from 'react';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
@@ -19,6 +19,8 @@ import SendIcon from '@mui/icons-material/Send';
 
 import { RoomList } from './RoomList';
 import { MessageList } from './MessageList';
+import { SendMessage } from './SendMessage';
+import { CreateRoom } from './CreateRoom';
 
 const drawerWidth = 500;
 
@@ -70,19 +72,10 @@ const defaultTheme = createTheme();
 
 export default function Dashboard() {
   const [open, setOpen] = useState(true);
-  const [chatInput, setChatInput] = useState('');
+  const [selectedRoomId, setSelectedRoomId] = useState(null);
 
   const toggleDrawer = () => {
     setOpen(!open);
-  };
-
-  const handleChatInputChange = (event) => {
-    setChatInput(event.target.value);
-  };
-
-  const handleChatSubmit = () => {
-    console.log('Chat Message:', chatInput);
-    setChatInput('');
   };
 
   return (
@@ -136,7 +129,8 @@ export default function Dashboard() {
           </Toolbar>
           <Divider />
           <List component="nav">
-            <RoomList />
+            <CreateRoom />
+            <RoomList selectedRoomId={selectedRoomId} setSelectedRoomId={setSelectedRoomId}/>
           </List>
         </Drawer>
         <Box
@@ -149,27 +143,14 @@ export default function Dashboard() {
             flexGrow: 1,
             height: '100vh',
             overflow: 'auto',
-            maxWidth: '900px',
             margin: 'auto',
             display: 'flex',
             flexDirection: 'column',
           }}
         >
           <Toolbar />
-          <MessageList />
-          <Box sx={{ mt: 'auto', p: 2, backgroundColor: 'white' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <TextField
-                label="チャットメッセージ"
-                value={chatInput}
-                onChange={handleChatInputChange}
-                fullWidth
-              />
-              <IconButton color="primary" onClick={handleChatSubmit}>
-                <SendIcon />
-              </IconButton>
-            </Box>
-          </Box>
+          <MessageList selectedRoomId={selectedRoomId} setSelectedRoomId={setSelectedRoomId}/>
+          <SendMessage selectedRoomId={selectedRoomId} setSelectedRoomId={setSelectedRoomId}/>
         </Box>
       </Box>
     </ThemeProvider>

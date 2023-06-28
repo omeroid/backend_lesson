@@ -3,25 +3,34 @@ import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
+import axios from 'axios'
 
 const defaultTheme = createTheme();
 
 export default function SignIn() {
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      username: data.get('username'),
-      password: data.get('password'),
-    });
+    const username = data.get('username')
+    const password = data.get('password')
+    try{
+      const response = await axios.post('http://localhost:1323/user/signin',{
+        userName: username,
+        password: password,
+      })
+      sessionStorage.setItem('userData',JSON.stringify(response.data))
+
+      // TODO エラーの場合はエラーをフロントに表示
+      console.log("success to signin",response.data)
+    }catch(e){
+      console.log("failure to signup",e)
+    }
   };
 
   return (
@@ -42,7 +51,7 @@ export default function SignIn() {
             alt="omeroid icon"
             src="https://assets.st-note.com/production/uploads/images/38911312/profile_5e2d06172918f8d8fae54589aa5e2217.jpg"
           />
-          <Typography component="h1" variant="h5">ユーザ作成</Typography>
+          <Typography component="h1" variant="h5">ログイン</Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
@@ -69,10 +78,10 @@ export default function SignIn() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-            >作成</Button>
+            >ログイン</Button>
             <Grid container>
               <Grid item>
-                <Link href="#" variant="body2">{"ログイン"}</Link>
+                <Link href="/signup" variant="body2">{"アカウント作成"}</Link>
               </Grid>
             </Grid>
           </Box>

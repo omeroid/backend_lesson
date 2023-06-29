@@ -7,9 +7,11 @@ import Typography from '@mui/material/Typography';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
+import {useNavigate} from 'react-router-dom'
 
-export const CreateRoom = () => {
+export const CreateRoom = ({setAllReload}) => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async(event) => {
     event.preventDefault();
@@ -30,10 +32,14 @@ export const CreateRoom = () => {
           Authorization: 'Bearer '+user.token,
         }
       })
-      // TODO エラーの場合はエラーをフロントに表示
       console.log("success to create room",response)
+      console.log("set all reload")
+      setAllReload(true)
     }catch(e){
       console.log("failure to create room",e)
+      if(e?.requst?.status === 401){
+        navigate("/")
+      }
     }
     setIsOpen(false);
   };

@@ -10,16 +10,15 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios'
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 
 const defaultTheme = createTheme();
 
 export default function SignUp() {
-  const navigate = useNavigate()
-  const [error, setError] = useState(null);
-
+  /*
+  const [ rooms, setRooms ] = useState([
+  ])
+  */
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -30,11 +29,11 @@ export default function SignUp() {
         userName: username,
         password: password,
       })
+      // TODO エラーの場合はエラーをフロントに表示
       console.log("success to signup",response)
-      navigate("/")
+      window.location.href = "/signin";
     }catch(e){
       console.log("failure to signup",e)
-      setError('そのユーザ名はすでに使用されています。');
     }
   };
 
@@ -78,11 +77,6 @@ export default function SignUp() {
               id="password"
               autoComplete="current-password"
             />
-            {error && (
-              <Typography variant="body2" color="error" sx={{ mt: 1 }}>
-                {error}
-              </Typography>
-            )}
             <Button
               type="submit"
               fullWidth

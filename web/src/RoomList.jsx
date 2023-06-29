@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
@@ -9,9 +8,14 @@ import Divider from '@mui/material/Divider';
 import InfoIcon from '@mui/icons-material/Info';
 import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
+import {useNavigate} from 'react-router-dom'
 
-export const RoomList = ({ selectedRoomId, setSelectedRoomId }) => {
+export const RoomList = ({ selectedRoomId, setSelectedRoomId,allReload,setAllReload }) => {
   const rawUserData = sessionStorage.getItem("userData");
+  const navigate = useNavigate();
+  if(rawUserData === null){
+    navigate("/signin")
+  }
   const user = rawUserData ? JSON.parse(rawUserData):null;
   const [rooms, setRooms] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -22,7 +26,6 @@ export const RoomList = ({ selectedRoomId, setSelectedRoomId }) => {
   };
 
   const handleInfoClick = async (roomId) => {
-    console.log(roomId)
     try {
       const url = `http://localhost:1323/rooms/${roomId}`;
       const response = await axios(url, {
@@ -43,22 +46,29 @@ export const RoomList = ({ selectedRoomId, setSelectedRoomId }) => {
       setIsOpen(true);
     } catch (error) {
       console.error('Error occurred while fetching room details:', error);
+      if(error?.request?.status === 401){
+        navigate("/")
+      }
     }
   };
 
   useEffect(() => {
-    // Fetch the room list
     const fetchRooms = async () => {
       try {
         const response = await fetchRoomsData();
         setRooms(response.Rooms);
       } catch (error) {
         console.error('Error occurred while fetching room list:', error);
+        if(error?.request?.status === 401){
+          navigate("/")
+        }
       }
     };
-
+    if(allReload){
+      setAllReload(false);
+    }
     fetchRooms();
-  }, []);
+  }, [selectedRoomId,allReload]);
 
   const fetchRoomsData = async () => {
     const url = 'http://localhost:1323/rooms';

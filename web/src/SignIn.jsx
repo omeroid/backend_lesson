@@ -1,35 +1,42 @@
 import * as React from 'react';
+import axios from 'axios'
+
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import axios from 'axios'
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const defaultTheme = createTheme();
 
 export default function SignIn() {
+  const navigate = useNavigate()
+  const [error, setError] = useState(null);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const username = data.get('username')
-    const password = data.get('password')
-    try{
-      const response = await axios.post('http://localhost:1323/user/signin',{
+    const username = data.get('username');
+    const password = data.get('password');
+
+    try {
+      const response = await axios.post('http://localhost:1323/user/signin', {
         userName: username,
         password: password,
-      })
-      sessionStorage.setItem('userData',JSON.stringify(response.data))
-
-      // TODO エラーの場合はエラーをフロントに表示
-      console.log("success to signin",response.data)
-    }catch(e){
-      console.log("failure to signup",e)
+      });
+      sessionStorage.setItem('userData', JSON.stringify(response.data));
+      console.log('success to signin', response.data);
+      setError('');
+      navigate('/chat');
+    } catch (e) {
+      console.log('failure to signup', e);
+      setError('ログインに失敗しました。ユーザ名とパスワードを確認してください。');
     }
   };
 
@@ -73,6 +80,11 @@ export default function SignIn() {
               id="password"
               autoComplete="current-password"
             />
+            {error && (
+              <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+                {error}
+              </Typography>
+            )}
             <Button
               type="submit"
               fullWidth

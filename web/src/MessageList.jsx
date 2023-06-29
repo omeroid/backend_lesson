@@ -1,18 +1,21 @@
 import { useState, useEffect } from 'react';
 import useSWR from 'swr'
 import axios from 'axios';
+import {useNavigate} from 'react-router-dom'
 
 import { MessageList as ChatMessageList } from "react-chat-elements"
 import { Button, Card } from 'react-bootstrap';
+
 import { fetcher } from './fetcher'
 
 
-export const MessageList = ({ selectedRoomId, setSelectedRoomId }) => {
+export const MessageList = ({ selectedRoomId, setSelectedRoomId,allReload,setAllReload }) => {
   const [messages, setMessages] = useState([]);
 
   const rawUserData = sessionStorage.getItem("userData");
   const user = rawUserData ? JSON.parse(rawUserData) : null;
 
+  const navigate = useNavigate();
   const handleRemoveMessage = async (message) => {
     console.log(message)
     try{
@@ -25,8 +28,12 @@ export const MessageList = ({ selectedRoomId, setSelectedRoomId }) => {
       })
       console.log("success to delete room",response)
       setSelectedRoomId(selectedRoomId)
+      setAllReload(true)
     }catch(e){
       console.log("failure to delete room",e)
+      if(e?.requst?.status === 401){
+        navigate("/")
+      }
     }
   }
 
@@ -68,13 +75,19 @@ export const MessageList = ({ selectedRoomId, setSelectedRoomId }) => {
             }));
           }
           setMessages(rawMessages);
-        } catch (error) {
-          console.error('Error occurred while fetching messages:', error);
+        } catch (e) {
+          console.error('Error occurred while fetching messages:', e);
+          if(e?.requst?.status === 401){
+            navigate("/")
+          }
         }
       }
     };
+    if(allReload){
+      setAllReload(false)
+    }
     fetchData();
-  }, [selectedRoomId]);
+  }, [selectedRoomId,allReload]);
 
   return (
     <div>

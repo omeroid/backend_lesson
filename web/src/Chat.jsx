@@ -1,4 +1,4 @@
-import React,{ useState,useEffect } from 'react';
+import React,{ useState } from 'react';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
@@ -9,13 +9,9 @@ import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import Badge from '@mui/material/Badge';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import SendIcon from '@mui/icons-material/Send';
 
 import { RoomList } from './RoomList';
 import { MessageList } from './MessageList';
@@ -73,6 +69,7 @@ const defaultTheme = createTheme();
 export default function Dashboard() {
   const [open, setOpen] = useState(true);
   const [selectedRoomId, setSelectedRoomId] = useState(null);
+  const [allReload, setAllReload] = useState(false);
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -129,8 +126,12 @@ export default function Dashboard() {
           </Toolbar>
           <Divider />
           <List component="nav">
-            <CreateRoom />
-            <RoomList selectedRoomId={selectedRoomId} setSelectedRoomId={setSelectedRoomId}/>
+            <CreateRoom setAllReload={setAllReload}/>
+            <RoomList selectedRoomId={selectedRoomId} 
+              setSelectedRoomId={setSelectedRoomId} 
+              allReload={allReload} 
+              setAllReload={setAllReload}
+          />
           </List>
         </Drawer>
         <Box
@@ -149,8 +150,12 @@ export default function Dashboard() {
           }}
         >
           <Toolbar />
-          <MessageList selectedRoomId={selectedRoomId} setSelectedRoomId={setSelectedRoomId}/>
-          <SendMessage selectedRoomId={selectedRoomId} setSelectedRoomId={setSelectedRoomId}/>
+          <MessageList selectedRoomId={selectedRoomId}
+            setSelectedRoomId={setSelectedRoomId}
+            allReload={allReload}
+            setAllReload={setAllReload}
+          />
+          <SendMessage selectedRoomId={selectedRoomId} setSelectedRoomId={setSelectedRoomId} setAllReload={setAllReload}/>
         </Box>
       </Box>
     </ThemeProvider>

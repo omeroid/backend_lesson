@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -40,6 +41,11 @@ func main() {
 	e.Use(db.DBMiddleware(conn)) //DBの接続をプールする
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"http://localhost:3000"},
+		AllowMethods: []string{http.MethodGet, http.MethodPost},
+	},
+	))
 
 	//APIエンドポイントを定義する
 	e.POST("/user/signup", handler.SignUp)

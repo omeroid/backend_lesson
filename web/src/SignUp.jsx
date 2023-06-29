@@ -2,7 +2,6 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -91,7 +90,7 @@ export default function SignUp() {
             >作成</Button>
             <Grid container>
               <Grid item>
-                <Link href="/signin" variant="body2">{"ログイン"}</Link>
+                <Link href="/" variant="body2">{"ログイン"}</Link>
               </Grid>
             </Grid>
           </Box>

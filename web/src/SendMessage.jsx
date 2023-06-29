@@ -54,19 +54,21 @@ export const SendMessage = ({selectedRoomId,setSelectedRoomId,setAllReload}) => 
     sx={{ mt: 'auto', p: 2, backgroundColor: 'white' }} 
     component="form"
     onSubmit={handleChatSubmit}>
-      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <TextField
-          id="text"
-          name="text"
-          label="チャットメッセージ"
-          value={chatInput}
-          onChange={handleChatInputChange}
-          fullWidth
-        />
-        <IconButton color="primary" type="submit">
-          <SendIcon />
-        </IconButton>
-      </Box>
+     {selectedRoomId && (
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <TextField
+            id="text"
+            name="text"
+            label="チャットメッセージ"
+            value={chatInput}
+            onChange={handleChatInputChange}
+            fullWidth
+          />
+          <IconButton color="primary" type="submit">
+            <SendIcon />
+          </IconButton>
+        </Box>
+      )}
     </Box>
   );
 }

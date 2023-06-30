@@ -7,7 +7,7 @@
 
 3 ホームディレクトリ(Macなら`~`、Windowsなら`C:\Users\{ユーザ名}`)に`.sqliterc`を作成し`PRAGMA foreign_keys=ON;`と入力し保存(sqliteの外部キー制約をonにするため)
 
-4 `go get github.com/omeroid/kosen_backend_lesson`を実行し、依存パッケージをダウンロードする
+4 プロジェクトのルートディレクトリで`go get github.com/omeroid/kosen_backend_lesson`を実行し、依存パッケージをダウンロードする
 
 5 プロジェクトのルートディレクトリで`go run main.go`を実行すると`localhost:1323`でサーバが起動する
 ## 各エンドポイントに対するリクエストとレスポンスの例(curlコマンド)

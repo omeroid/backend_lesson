@@ -1,3 +1,5 @@
 chatapp.sqlite
-.env
-/vendor
+vendor
+
+.DS_Store
+node_modules

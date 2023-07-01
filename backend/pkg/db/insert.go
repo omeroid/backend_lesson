@@ -3,20 +3,25 @@ package db
 import (
 	"errors"
 
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
 // テーブルにレコードを挿入する
 func InsertSampleRecord(db *gorm.DB) error {
 	//各テーブルに挿入するサンプルレコードの構造体を生成
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte("kosen"), 10)
+	if err != nil {
+		return errors.New("Failed to generate password hash")
+	}
 	user := User{
-		Name:         "wada hiroka",
-		PasswordHash: "au923o",
+		Name:         "omeroid",
+		PasswordHash: string(passwordHash),
 	}
 	message := Message{
 		RoomID: 1,
 		UserID: 1,
-		Text:   "Hello!",
+		Text:   "Welcome to the omeroid lecture!",
 	}
 
 	description := "どんな話題でもOK!　雑談ルーム"

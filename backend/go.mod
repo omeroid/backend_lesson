@@ -1,4 +1,4 @@
-module github.com/omeroid/kosen_backend_lesson
+module github.com/omeroid/kosen_lesson/backend
 
 go 1.20
 

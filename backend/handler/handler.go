@@ -9,7 +9,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
-	"github.com/omeroid/kosen_backend_lesson/db"
+	"github.com/omeroid/kosen_lesson/backend/pkg/db"
+	"github.com/omeroid/kosen_lesson/backend/pkg/util"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -127,7 +128,7 @@ func ListRoom(c echo.Context) error {
 
 	//sessionのtokenが有効か確認する
 	authHeader := c.Request().Header.Get("Authorization")
-	token := ExtractBearerToken(authHeader)
+	token := util.ExtractBearerToken(authHeader)
 	if err := IsSessionValid(conn, token); err != nil {
 		return c.JSON(http.StatusUnauthorized, ErrorResponse{
 			Message: fmt.Sprintf("%s (tokenが無効)", err),
@@ -175,7 +176,7 @@ func CreateRoom(c echo.Context) error {
 
 	//sessionのtokenが有効か確認する
 	authHeader := c.Request().Header.Get("Authorization")
-	token := ExtractBearerToken(authHeader)
+	token := util.ExtractBearerToken(authHeader)
 	if err := IsSessionValid(conn, token); err != nil {
 		return c.JSON(http.StatusUnauthorized, ErrorResponse{
 			Message: fmt.Sprintf("%s (tokenが無効)", err),
@@ -210,7 +211,7 @@ func GetRoom(c echo.Context) error {
 
 	//sessionのtokenが有効か確認する
 	authHeader := c.Request().Header.Get("Authorization")
-	token := ExtractBearerToken(authHeader)
+	token := util.ExtractBearerToken(authHeader)
 	if err := IsSessionValid(conn, token); err != nil {
 		return c.JSON(http.StatusUnauthorized, ErrorResponse{
 			Message: fmt.Sprintf("%s (tokenが無効)", err),
@@ -243,7 +244,7 @@ func CreateMessage(c echo.Context) error {
 
 	//sessionのtokenが有効か確認する
 	authHeader := c.Request().Header.Get("Authorization")
-	token := ExtractBearerToken(authHeader)
+	token := util.ExtractBearerToken(authHeader)
 	if err := IsSessionValid(conn, token); err != nil {
 		return c.JSON(http.StatusUnauthorized, ErrorResponse{
 			Message: fmt.Sprintf("%s (tokenが無効)", err),
@@ -307,7 +308,7 @@ func ListMessage(c echo.Context) error {
 
 	//sessionのtokenが有効か確認する
 	authHeader := c.Request().Header.Get("Authorization")
-	token := ExtractBearerToken(authHeader)
+	token := util.ExtractBearerToken(authHeader)
 	if err := IsSessionValid(conn, token); err != nil {
 		return c.JSON(http.StatusUnauthorized, ErrorResponse{
 			Message: fmt.Sprintf("%s (tokenが無効)", err),
@@ -365,7 +366,7 @@ func DeleteMessage(c echo.Context) error {
 
 	//sessionのtokenが有効か確認する
 	authHeader := c.Request().Header.Get("Authorization")
-	token := ExtractBearerToken(authHeader)
+	token := util.ExtractBearerToken(authHeader)
 	if err := IsSessionValid(conn, token); err != nil {
 		return c.JSON(http.StatusUnauthorized, ErrorResponse{
 			Message: fmt.Sprintf("%s (tokenが無効)", err),

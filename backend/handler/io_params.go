@@ -2,6 +2,17 @@ package handler
 
 import "time"
 
+type SignUpInput struct {
+	Username string `json:"userName"`
+	Password string `json:"password"`
+}
+
+type SignUpOutput struct {
+	ID        int       `json:"id"`
+	Name      string    `json:"name"`
+	CreatedAt time.Time `json:"createdAt"`
+}
+
 type UserOutput struct {
 	ID        int       `json:"id"`
 	Name      string    `json:"name"`
@@ -24,28 +35,6 @@ type RoomOutput struct {
 
 type ErrorResponse struct {
 	Message string `json:"message"`
-}
-
-type SignUpInput struct {
-	Username string `json:"userName"`
-	Password string `json:"password"`
-}
-
-type SignUpOutput struct {
-	ID        int       `json:"id"`
-	Name      string    `json:"name"`
-	CreatedAt time.Time `json:"createdAt"`
-}
-
-type SignInInput struct {
-	Username string `json:"userName"`
-	Password string `json:"password"`
-}
-
-type SignInOutput struct {
-	UserID   int    `json:"userId"`
-	UserName string `json:"userName"`
-	Token    string `json:"token"`
 }
 
 type ListRoomOutput struct {

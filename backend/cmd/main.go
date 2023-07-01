@@ -5,9 +5,9 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/omeroid/kosen_lesson/backend/handler"
-	"github.com/omeroid/kosen_lesson/backend/pkg/db"
-	"github.com/omeroid/kosen_lesson/backend/pkg/util"
+	"github.com/omeroid/backend_lesson/backend/handler"
+	"github.com/omeroid/backend_lesson/backend/pkg/db"
+	"github.com/omeroid/backend_lesson/backend/pkg/util"
 )
 
 // 現状ホームディレクトリ(Macなら"~"、 WindowsならC:\Users\ユーザ名)に.sqlitercというファイルを作りPRAGMA foreign_keys=ON;

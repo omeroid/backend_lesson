@@ -9,8 +9,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
-	"github.com/omeroid/kosen_lesson/backend/pkg/db"
-	"github.com/omeroid/kosen_lesson/backend/pkg/util"
+	"github.com/omeroid/backend_lesson/backend/pkg/db"
+	"github.com/omeroid/backend_lesson/backend/pkg/util"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"

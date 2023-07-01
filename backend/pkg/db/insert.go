@@ -10,7 +10,7 @@ import (
 // テーブルにレコードを挿入する
 func InsertSampleRecord(db *gorm.DB) error {
 	//各テーブルに挿入するサンプルレコードの構造体を生成
-	passwordHash, err := bcrypt.GenerateFromPassword([]byte("kosen"), 10)
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte("backend"), 10)
 	if err != nil {
 		return errors.New("Failed to generate password hash")
 	}

@@ -10,14 +10,11 @@ import (
 	"github.com/omeroid/backend_lesson/backend/pkg/util"
 )
 
-// 現状ホームディレクトリ(Macなら"~"、 WindowsならC:\Users\ユーザ名)に.sqlitercというファイルを作りPRAGMA foreign_keys=ON;
-// と記述しないと外部キー制約が効かない(解決策を考え中)
 func main() {
 	e := echo.New()
 
 	// databaseファイル
 	databaseFilePath := util.JoinWithBackendRoot("chatapp.sqlite")
-
 	//DBへ接続
 	conn, err := db.InitDB(databaseFilePath)
 	if err != nil {

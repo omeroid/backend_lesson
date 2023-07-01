@@ -104,7 +104,7 @@ export default function Dashboard() {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              WakayamaKosenChat
+              omeroidChatApp
             </Typography>
             <IconButton color="inherit">
               <AccountCircleIcon />

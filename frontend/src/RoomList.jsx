@@ -52,7 +52,20 @@ export const RoomList = ({ selectedRoomId, setSelectedRoomId,allReload,setAllRel
     }
   };
 
+
   useEffect(() => {
+    const fetchRoomsData = async () => {
+      const url = 'http://localhost:1323/rooms';
+      const response = await axios(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + user.token,
+        },
+      });
+      return response.data
+    };
+
     const fetchRooms = async () => {
       try {
         const response = await fetchRoomsData();
@@ -68,19 +81,7 @@ export const RoomList = ({ selectedRoomId, setSelectedRoomId,allReload,setAllRel
       setAllReload(false);
     }
     fetchRooms();
-  }, [selectedRoomId,allReload]);
-
-  const fetchRoomsData = async () => {
-    const url = 'http://localhost:1323/rooms';
-    const response = await axios(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + user.token,
-      },
-    });
-    return response.data
-  };
+  }, [selectedRoomId, allReload, setAllReload, navigate, user.token]);
 
   const handleCloseModal = () => {
     setIsOpen(false);

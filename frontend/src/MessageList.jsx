@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
-import useSWR from 'swr'
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom'
 
 import { MessageList as ChatMessageList } from "react-chat-elements"
-import { Button, Card } from 'react-bootstrap';
 
 import { fetcher } from './fetcher'
 
@@ -87,7 +85,7 @@ export const MessageList = ({ selectedRoomId, setSelectedRoomId,allReload,setAll
       setAllReload(false)
     }
     fetchData();
-  }, [selectedRoomId,allReload]);
+  }, [selectedRoomId, allReload, navigate, setAllReload, user.token, user.userId]);
 
   return (
     <div>

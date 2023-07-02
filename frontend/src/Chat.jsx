@@ -101,15 +101,24 @@ export default function Dashboard() {
               px: [1],
             }}
           >
+             <Typography
+              component="h1"
+              variant="h6"
+              color="inherit"
+              noWrap
+              sx={{ flexGrow: 1, textAlign: 'center', marginRight: '1.5rem' }}
+            >
+              Room
+            </Typography>
           </Toolbar>
           <Divider />
           <List component="nav">
-            <CreateRoom setAllReload={setAllReload}/>
             <RoomList selectedRoomId={selectedRoomId} 
               setSelectedRoomId={setSelectedRoomId} 
               allReload={allReload} 
               setAllReload={setAllReload}
-          />
+            />
+            <CreateRoom setAllReload={setAllReload}/>
           </List>
         </Drawer>
         <Box

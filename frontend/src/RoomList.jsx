@@ -90,21 +90,44 @@ export const RoomList = ({ selectedRoomId, setSelectedRoomId,allReload,setAllRel
   return (
     <div>
       {rooms &&
-        rooms.map((r, index) => (
-          <div key={r.id}>
-            <Box display="flex" alignItems="center" p={1}>
-              <Box flexGrow={1}>
-                <ListItemButton onClick={() => handleRoomClick(r.id)}>
-                  <ListItemText primary={r.name} style={{ textAlign: 'center' }} />
-                </ListItemButton>
+        rooms.map((r, index) => selectedRoomId === r.id ?
+          (
+            <div key={r.id}>
+              <Box
+                display="flex"
+                alignItems="center"
+                p={1}
+                backgroundColor='primary.light'
+                color='white'
+                >
+                <Box flexGrow={1}>
+                  <ListItemButton onClick={() => handleRoomClick(r.id)}>
+                    <ListItemText primary={r.name} style={{ textAlign: 'center' }} />
+                  </ListItemButton>
+                </Box>
+                <IconButton onClick={() => handleInfoClick(r.id)}>
+                  <InfoIcon sx={{ color: 'white' }}/>
+                </IconButton>
               </Box>
-              <IconButton onClick={() => handleInfoClick(r.id)}>
-                <InfoIcon />
-              </IconButton>
-            </Box>
-            <Divider />
-          </div>
-        ))}
+              <Divider />
+            </div>
+          ) :
+          (
+            <div key={r.id}>
+              <Box display="flex" alignItems="center" p={1}>
+                <Box flexGrow={1}>
+                  <ListItemButton onClick={() => handleRoomClick(r.id)}>
+                    <ListItemText primary={r.name} style={{ textAlign: 'center' }} />
+                  </ListItemButton>
+                </Box>
+                <IconButton onClick={() => handleInfoClick(r.id)}>
+                  <InfoIcon />
+                </IconButton>
+              </Box>
+              <Divider />
+            </div>
+          )
+        )}
         <Modal open={isOpen} onClose={handleCloseModal} aria-labelledby="modal-title">
           <Box
             sx={{

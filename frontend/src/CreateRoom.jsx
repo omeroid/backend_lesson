@@ -49,16 +49,18 @@ export const CreateRoom = ({setAllReload}) => {
       <Button
         variant="contained"
         size="large"
-        startIcon={<AddCircleIcon />}
+        endIcon={<AddCircleIcon />}
         sx={{
           color: 'white',
           width: '100%',
           borderRadius: 0,
+          backgroundColor: 'grey',
+          margin: 'auto',
         }}
         onClick={() => setIsOpen(true)}
       >
         <Box display="flex" alignItems="center" width="100%">
-          <Typography variant="body1" sx={{ marginLeft: 8 }}>
+          <Typography variant="body1" sx={{ width: "100%" }}>
             新規ルーム作成
           </Typography>
         </Box>

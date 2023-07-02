@@ -2,6 +2,17 @@ package handler
 
 import "time"
 
+type SignInInput struct {
+	Username string `json:"userName"`
+	Password string `json:"password"`
+}
+
+type SignInOutput struct {
+	UserID   int    `json:"userId"`
+	UserName string `json:"userName"`
+	Token    string `json:"token"`
+}
+
 type SignUpInput struct {
 	Username string `json:"userName"`
 	Password string `json:"password"`

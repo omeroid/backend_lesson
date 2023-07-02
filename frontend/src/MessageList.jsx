@@ -46,22 +46,7 @@ export const MessageList = ({ selectedRoomId, setSelectedRoomId,allReload,setAll
               Authorization: 'Bearer ' + user.token,
             }
           });
-          let rawMessages = [
-            {
-              position: "left",
-              type: "text",
-              title: "Kursat",
-              text: "Give me a message list example!",
-              removeButton: false,
-            },
-            {
-              position: "right",
-              type: "text",
-              title: "Emre",
-              text: "That's all.",
-              removeButton: false,
-            }
-          ];
+          let rawMessages = [];
           if (response && Array.isArray(response.messages)) {
             rawMessages = response.messages.map(item => ({
               id: item.id,

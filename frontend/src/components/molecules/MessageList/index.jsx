@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { MessageList as ChatMessageList } from "react-chat-elements"
+import { MessageList as ChatMessageList } from 'react-chat-elements'
 
 import { useListMessages, useDeleteMessage } from '../../../modules/message'
 import { useUser } from '../../../modules/user'
@@ -9,7 +9,6 @@ export const MessageList = ({ roomId }) => {
   const [messages, setMessages] = useState([]);
   const { data } = useListMessages(roomId)
   const { handleDeleteMessage } = useDeleteMessage(roomId)
-  console.log("MessageList:",roomId)
   const { user } = useUser()
 
 
@@ -21,8 +20,8 @@ export const MessageList = ({ roomId }) => {
     if(!user) return
     const list = data.messages.map(item => ({
       id: item.id,
-      position: user.userId === item.user.id ? "left" : "right",
-      type: "text",
+      position: user.userId === item.user.id ? 'left' : 'right',
+      type: 'text',
 
       title: item.user.name,
       text: item.text,

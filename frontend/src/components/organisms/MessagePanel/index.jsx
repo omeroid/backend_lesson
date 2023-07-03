@@ -10,7 +10,7 @@ export const MessagePanel = ({roomId})  => {
 
   return (
     <Box
-      component="main"
+      component='main'
       sx={{
         backgroundColor: (theme) =>
           theme.palette.mode === 'light'

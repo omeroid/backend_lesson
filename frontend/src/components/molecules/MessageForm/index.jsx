@@ -34,7 +34,7 @@ export const MessageForm = ({ roomId }) => {
             onChange={(e) => setChatInput(e.target.value)}
             fullWidth
           />
-          <IconButton color="primary" type="submit" disabled={isMutating}>
+          <IconButton color='primary' type='submit' disabled={isMutating}>
             <SendIcon />
           </IconButton>
         </Box>

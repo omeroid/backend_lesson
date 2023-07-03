@@ -37,8 +37,8 @@ export const RoomList = ({ roomId, setRoomId }) => {
           (
             <div key={r.id}>
               <Box
-                display="flex"
-                alignItems="center"
+                display='flex'
+                alignItems='center'
                 p={1}
                 backgroundColor='primary.light'
                 color='white'
@@ -57,7 +57,7 @@ export const RoomList = ({ roomId, setRoomId }) => {
           ) :
           (
             <div key={r.id}>
-              <Box display="flex" alignItems="center" p={1}>
+              <Box display='flex' alignItems='center' p={1}>
                 <Box flexGrow={1}>
                   <ListItemButton onClick={() => setRoomId(r.id)}>
                     <ListItemText primary={r.name} style={{ textAlign: 'center' }} />
@@ -71,7 +71,7 @@ export const RoomList = ({ roomId, setRoomId }) => {
             </div>
           )
         )}
-        <Modal open={isOpen} onClose={() => setIsOpen(false)} aria-labelledby="modal-title">
+        <Modal open={isOpen} onClose={() => setIsOpen(false)} aria-labelledby='modal-title'>
           <Box
             sx={{
               position: 'absolute',
@@ -87,29 +87,29 @@ export const RoomList = ({ roomId, setRoomId }) => {
               width: '100%',
             }}
           >
-            <Typography variant="h6" id="modal-title" sx={{ marginBottom: 2 }}>
+            <Typography variant='h6' id='modal-title' sx={{ marginBottom: 2 }}>
               ルーム詳細
             </Typography>
             <Box sx={{ marginBottom: 2 }}>
-              <Typography variant="body1" component="div" sx={{ fontWeight: 'bold', marginBottom: 1 }}>
+              <Typography variant='body1' component='div' sx={{ fontWeight: 'bold', marginBottom: 1 }}>
                 Name:
               </Typography>
-              <Typography variant="body1" component="div" sx={{ marginBottom: '1rem' }}>
+              <Typography variant='body1' component='div' sx={{ marginBottom: '1rem' }}>
                 {infoRoom?.name}
               </Typography>
             </Box>
             <Box sx={{ marginBottom: 2 }}>
-              <Typography variant="body1" component="div" sx={{ fontWeight: 'bold', marginBottom: 1 }}>
+              <Typography variant='body1' component='div' sx={{ fontWeight: 'bold', marginBottom: 1 }}>
                 Description:
               </Typography>
-              <Typography variant="body1" component="div" sx={{ marginBottom: '1rem' }}>
+              <Typography variant='body1' component='div' sx={{ marginBottom: '1rem' }}>
                 {infoRoom?.description}
               </Typography>
             <Box sx={{ marginBottom: 2 }}>
-              <Typography variant="body1" component="div" sx={{ fontWeight: 'bold', marginBottom: 1 }}>
+              <Typography variant='body1' component='div' sx={{ fontWeight: 'bold', marginBottom: 1 }}>
                 CreatedAt:
               </Typography>
-              <Typography variant="body1" component="div" sx={{ marginBottom: '1rem' }}>
+              <Typography variant='body1' component='div' sx={{ marginBottom: '1rem' }}>
                 {infoRoom?.createdAt}
               </Typography>
             </Box>

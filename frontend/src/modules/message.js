@@ -5,7 +5,7 @@ import { fetcher, mutater } from './fetcher'
 import { useUser } from './user'
 
 export const useListMessages = (roomId) => {
-  console.log("inuseListMessage:",roomId)
+  console.log('inuseListMessage:',roomId)
   return useSWR(roomId ? `/rooms/${roomId}/messages` : null, fetcher)
 }
 
@@ -39,7 +39,7 @@ export const useDeleteMessage = (roomId) => {
 
   const handleDeleteMessage = async (messageId) => {
     setIsMutating(true)
-    await mutater(`/rooms/${roomId}/messages/${messageId}`, "POST", null)
+    await mutater(`/rooms/${roomId}/messages/${messageId}`, 'POST', null)
     mutate()
     setIsMutating(false)
   }

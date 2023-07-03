@@ -9,7 +9,7 @@ export const useListRooms = () => {
 
 export const useRoomInfo = () => {
   const handleRoomInfo = async (roomId) => {
-    const room = await mutater(`/rooms/${roomId}`, "GET", null)
+    const room = await mutater(`/rooms/${roomId}`, 'GET', null)
     const datetime = new Date(room?.createdAt);
     const year = datetime.getFullYear();
     const month = datetime.getMonth() + 1;

@@ -1,14 +1,14 @@
 import axios from 'axios';
 
-const ENDPOINT = "http://localhost:1323"
+const ENDPOINT = 'http://localhost:1323'
 export const fetcher = async (url) => {
-  const rawUserData = sessionStorage.getItem("userData");
+  const rawUserData = sessionStorage.getItem('userData');
   const user = rawUserData ? JSON.parse(rawUserData) : null;
 
   try {
     const response = await axios(`${ENDPOINT}${url}`,
       {
-        method: "GET",
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           Authorization: 'Bearer ' + user.token,
@@ -23,7 +23,7 @@ export const fetcher = async (url) => {
 
 
 export const mutater = async (url, method, data) => {
-  const rawUserData = sessionStorage.getItem("userData");
+  const rawUserData = sessionStorage.getItem('userData');
   const user = rawUserData ? JSON.parse(rawUserData) : null;
 
   try {

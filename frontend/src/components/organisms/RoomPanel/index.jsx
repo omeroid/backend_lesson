@@ -40,7 +40,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export const RoomPanel = ({roomId, setRoomId})  => {
 
   return (
-    <Drawer variant="permanent" open={true}>
+    <Drawer variant='permanent' open={true}>
       <Toolbar
         sx={{
           display: 'flex',
@@ -52,9 +52,9 @@ export const RoomPanel = ({roomId, setRoomId})  => {
         }}
       >
           <Typography
-          component="h1"
-          variant="h6"
-          color="inherit"
+          component='h1'
+          variant='h6'
+          color='inherit'
           noWrap
           sx={{ flexGrow: 1, textAlign: 'center', marginRight: '1.5rem' }}
         >
@@ -62,7 +62,7 @@ export const RoomPanel = ({roomId, setRoomId})  => {
         </Typography>
       </Toolbar>
       <Divider />
-      <List component="nav">
+      <List component='nav'>
         <RoomList
           roomId={roomId}
           setRoomId={setRoomId}

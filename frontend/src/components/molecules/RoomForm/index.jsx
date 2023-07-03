@@ -23,7 +23,7 @@ export const RoomForm = () => {
     <div>
       <Button
         variant='contained'
-        size="large"
+        size='large'
         endIcon={<AddCircleIcon />}
         sx={{
           color: 'white',
@@ -34,8 +34,8 @@ export const RoomForm = () => {
         }}
         onClick={() => setIsOpen(true)}
       >
-        <Box display="flex" alignItems="center" width="100%">
-          <Typography variant="body1" sx={{ width: "100%" }}>
+        <Box display='flex' alignItems='center' width='100%'>
+          <Typography variant='body1' sx={{ width: '100%' }}>
             新規ルーム作成
           </Typography>
         </Box>
@@ -44,9 +44,9 @@ export const RoomForm = () => {
       <Modal
         open={isOpen}
         onClose={() => setIsOpen(false)}
-        aria-labelledby="modal-title"
+        aria-labelledby='modal-title'
       >
-        <Box component="form"
+        <Box component='form'
           onSubmit={ handleFormSubmit }
           sx={{
             position: 'absolute',
@@ -59,7 +59,7 @@ export const RoomForm = () => {
             borderRadius: 8,
           }}
         >
-          <Typography variant="h6" id="modal-title" sx={{ marginBottom: 2 }}>
+          <Typography variant='h6' id='modal-title' sx={{ marginBottom: 2 }}>
             ルーム作成
           </Typography>
           <TextField
@@ -85,9 +85,9 @@ export const RoomForm = () => {
             sx={{ marginBottom: 2 }}
           />
           <Button
-            type="submit"
+            type='submit'
             fullWidth
-            variant="contained"
+            variant='contained'
             sx={{ mt: 3, mb: 2 }}
           >作成</Button>
         </Box>

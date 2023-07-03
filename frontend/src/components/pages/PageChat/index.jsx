@@ -35,22 +35,22 @@ export const PageChat = ()  => {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <AppBar position="absolute" open={true}>
+      <AppBar position='absolute' open={true}>
         <Toolbar
           sx={{
             pr: '24px', // keep right padding when drawer closed
           }}
         >
           <Typography
-            component="h1"
-            variant="h6"
-            color="inherit"
+            component='h1'
+            variant='h6'
+            color='inherit'
             noWrap
             sx={{ flexGrow: 1 }}
           >
             omeroidChatApp
           </Typography>
-          <IconButton color="inherit">
+          <IconButton color='inherit'>
             <AccountCircleIcon />
           </IconButton>
         </Toolbar>

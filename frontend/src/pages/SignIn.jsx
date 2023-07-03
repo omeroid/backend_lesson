@@ -21,20 +21,21 @@ export default function SignIn() {
     const data = new FormData(event.currentTarget);
     const username = data.get('username');
     const password = data.get('password');
+    let response
 
     try {
-      const response = await axios.post('http://localhost:1323/user/signin', {
+        response = await axios.post('http://localhost:1323/user/signin', {
         userName: username,
         password: password,
       });
       sessionStorage.setItem('userData', JSON.stringify(response.data));
-      console.log('success to signin', response.data);
       setError('');
       navigate('/chat');
     } catch (e) {
-      console.log('failure to signup', e);
       setError('ログインに失敗しました。ユーザ名とパスワードを確認してください。');
+      response = e?.response
     }
+    console.log("method:",response?.config?.method,"url:",response?.config?.url)
   };
 
   return (

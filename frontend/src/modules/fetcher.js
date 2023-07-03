@@ -14,6 +14,7 @@ export const fetcher = async (url) => {
           Authorization: 'Bearer ' + user.token,
         }
       });
+    console.log("method:",response?.config?.method,"url:",response?.config?.url)
     return response.data;
   } catch (error) {
     console.log(error)
@@ -36,6 +37,7 @@ export const mutater = async (url, method, data) => {
         },
         data
       });
+    console.log("method:",response?.config?.method,"url:",response?.config?.url)
     return response.data;
   } catch (error) {
     console.log(error)

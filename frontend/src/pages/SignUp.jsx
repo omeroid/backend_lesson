@@ -16,21 +16,24 @@ export default function SignUp() {
   const [error, setError] = useState(null);
 
   const handleSubmit = async (event) => {
+    const url = 'http://localhost:1323/user/signup'
+
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const username = data.get('username');
     const password = data.get('password');
+    var response
     try{
-      const response = await axios.post('http://localhost:1323/user/signup',{
+        response = await axios.post(url,{
         userName: username,
         password: password,
       })
-      console.log("success to signup",response)
       navigate("/")
     }catch(e){
-      console.log("failure to signup",e)
       setError('そのユーザ名はすでに使用されています。');
+      response = e?.response
     }
+    console.log("method:",response?.config?.method,"url:",response?.config?.url)
   };
 
   return (

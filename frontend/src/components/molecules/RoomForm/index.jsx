@@ -1,5 +1,4 @@
 import * as React from 'react';
-import axios from 'axios';
 import { useState } from 'react';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
@@ -7,47 +6,23 @@ import Typography from '@mui/material/Typography';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
-import {useNavigate} from 'react-router-dom'
+import {useCreateRoom} from '../../../modules/room';
 
-export const RoomForm = ({setAllReload}) => {
+export const RoomForm = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
+  const [nameInput, setNameInput] = useState('')
+  const [descriptionInput, setDescriptionInput] = useState('')
 
-  const handleSubmit = async(event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const rawUserData = sessionStorage.getItem("userData");
-    const user = rawUserData ? JSON.parse(rawUserData):null;
-    const name = data.get('name')
-    const description = data.get('description')
-    try{
-      const response = await axios('http://localhost:1323/rooms',{
-        method:"POST",
-        data:{
-          name: name,
-          description: description,
-        },
-        headers:{
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer '+user.token,
-        }
-      })
-      console.log("success to create room",response)
-      console.log("set all reload")
-      setAllReload(true)
-    }catch(e){
-      console.log("failure to create room",e)
-      if(e?.requst?.status === 401){
-        navigate("/")
-      }
-    }
-    setIsOpen(false);
+  const {handleCreateRoom} = useCreateRoom()
+
+  const handleFormSubmit = async () => {
+    await handleCreateRoom(nameInput,descriptionInput)
   };
 
   return (
     <div>
       <Button
-        variant="contained"
+        variant='contained'
         size="large"
         endIcon={<AddCircleIcon />}
         sx={{
@@ -72,8 +47,7 @@ export const RoomForm = ({setAllReload}) => {
         aria-labelledby="modal-title"
       >
         <Box component="form"
-          onSubmit={handleSubmit}
-          noValidate
+          onSubmit={ handleFormSubmit }
           sx={{
             position: 'absolute',
             top: '50%',
@@ -90,19 +64,23 @@ export const RoomForm = ({setAllReload}) => {
           </Typography>
           <TextField
             required
-            id = "name"
-            label="name"
-            name="name"
-            autoComplete = "name"
+            id = 'name'
+            label='name'
+            name='name'
+            value={nameInput}
+            onChange={(e) => setNameInput(e.target.value)}
+            autoComplete='name'
             fullWidth
             sx={{ marginBottom: 2 }}
           />
           <TextField
             required
-            id = "description"
-            label="description"
-            name="description"
-            autoComplete = "description"
+            id = 'description'
+            label='description'
+            name='description'
+            value={descriptionInput}
+            onChange={(e) => setDescriptionInput(e.target.value)}
+            autoComplete = 'description'
             fullWidth
             sx={{ marginBottom: 2 }}
           />

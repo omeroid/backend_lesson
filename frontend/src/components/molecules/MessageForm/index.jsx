@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useState} from 'react';
-import {useNavigate} from 'react-router-dom'
 
 import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
@@ -14,7 +13,8 @@ export const MessageForm = ({ roomId }) => {
 
   const [chatInput, setChatInput] = useState('')
 
-  const handleChatSubmit = async () => {
+  const handleChatSubmit = async (e) => {
+    e.preventDefault();
     await handleCreateMessage(chatInput)
     setChatInput('');
   };

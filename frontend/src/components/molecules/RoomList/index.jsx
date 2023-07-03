@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from 'react';
-import axios from 'axios';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import IconButton from '@mui/material/IconButton';
@@ -8,20 +7,20 @@ import Divider from '@mui/material/Divider';
 import InfoIcon from '@mui/icons-material/Info';
 import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
-import {useNavigate} from 'react-router-dom'
 
-import { useListRooms } from '../../../modules/room'
+import { useListRooms, useRoomInfo } from '../../../modules/room'
 
 export const RoomList = ({ roomId, setRoomId }) => {
-  const rawUserData = sessionStorage.getItem("userData");
-  const navigate = useNavigate();
-  if(rawUserData === null){
-    navigate("/signin")
-  }
-  const user = rawUserData ? JSON.parse(rawUserData):null;
-  const [isOpen, setIsOpen] = useState(false);
-  const [infoSelectedRoom, setInfoSelectedRoom] = useState(null);
   const { data } = useListRooms()
+  const [isOpen, setIsOpen] = useState(false);
+  const [infoRoom, setInfoRoom] = useState(null);
+  const { handleRoomInfo } = useRoomInfo()
+
+  const handleRoomInfoClick = async (roomId) => {
+    const room = await handleRoomInfo(roomId)
+    setInfoRoom(room)
+    setIsOpen(true)
+  }
 
   const rooms = useMemo(() => data && data.Rooms ? data.Rooms : [], [data])
 
@@ -31,45 +30,10 @@ export const RoomList = ({ roomId, setRoomId }) => {
     }
   }, [rooms, roomId, setRoomId])
 
-  const handleRoomClick = (roomId) => {
-    setRoomId(roomId);
-  };
-
-  const handleInfoClick = async (roomId) => {
-    try {
-      const url = `http://localhost:1323/rooms/${roomId}`;
-      const response = await axios(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + user.token,
-        },
-      });
-      let room = response.data;
-      const datetime = new Date(room?.createdAt);
-      const year = datetime.getFullYear();
-      const month = datetime.getMonth() + 1;
-      const day = datetime.getDate();
-
-      room.createdAt= `${year}年${month}月${day}日`;
-      setInfoSelectedRoom(room)
-      setIsOpen(true);
-    } catch (error) {
-      console.error('Error occurred while fetching room details:', error);
-      if(error?.request?.status === 401){
-        navigate("/")
-      }
-    }
-  };
-
-  const handleCloseModal = () => {
-    setIsOpen(false);
-  };
-
   return (
     <div>
       {rooms &&
-        rooms.map((r, index) => roomId === r.id ?
+        rooms.map((r) => roomId === r.id ?
           (
             <div key={r.id}>
               <Box
@@ -80,11 +44,11 @@ export const RoomList = ({ roomId, setRoomId }) => {
                 color='white'
                 >
                 <Box flexGrow={1}>
-                  <ListItemButton onClick={() => handleRoomClick(r.id)}>
+                  <ListItemButton onClick={() => setRoomId(r.id)}>
                     <ListItemText primary={r.name} style={{ textAlign: 'center' }} />
                   </ListItemButton>
                 </Box>
-                <IconButton onClick={() => handleInfoClick(r.id)}>
+                <IconButton onClick={() => handleRoomInfoClick(r.id)}>
                   <InfoIcon sx={{ color: 'white' }}/>
                 </IconButton>
               </Box>
@@ -95,11 +59,11 @@ export const RoomList = ({ roomId, setRoomId }) => {
             <div key={r.id}>
               <Box display="flex" alignItems="center" p={1}>
                 <Box flexGrow={1}>
-                  <ListItemButton onClick={() => handleRoomClick(r.id)}>
+                  <ListItemButton onClick={() => setRoomId(r.id)}>
                     <ListItemText primary={r.name} style={{ textAlign: 'center' }} />
                   </ListItemButton>
                 </Box>
-                <IconButton onClick={() => handleInfoClick(r.id)}>
+                <IconButton onClick={() => handleRoomInfoClick(r.id)}>
                   <InfoIcon />
                 </IconButton>
               </Box>
@@ -107,7 +71,7 @@ export const RoomList = ({ roomId, setRoomId }) => {
             </div>
           )
         )}
-        <Modal open={isOpen} onClose={handleCloseModal} aria-labelledby="modal-title">
+        <Modal open={isOpen} onClose={() => setIsOpen(false)} aria-labelledby="modal-title">
           <Box
             sx={{
               position: 'absolute',
@@ -131,7 +95,7 @@ export const RoomList = ({ roomId, setRoomId }) => {
                 Name:
               </Typography>
               <Typography variant="body1" component="div" sx={{ marginBottom: '1rem' }}>
-                {infoSelectedRoom?.name}
+                {infoRoom?.name}
               </Typography>
             </Box>
             <Box sx={{ marginBottom: 2 }}>
@@ -139,14 +103,14 @@ export const RoomList = ({ roomId, setRoomId }) => {
                 Description:
               </Typography>
               <Typography variant="body1" component="div" sx={{ marginBottom: '1rem' }}>
-                {infoSelectedRoom?.description}
+                {infoRoom?.description}
               </Typography>
             <Box sx={{ marginBottom: 2 }}>
               <Typography variant="body1" component="div" sx={{ fontWeight: 'bold', marginBottom: 1 }}>
                 CreatedAt:
               </Typography>
               <Typography variant="body1" component="div" sx={{ marginBottom: '1rem' }}>
-                {infoSelectedRoom?.createdAt}
+                {infoRoom?.createdAt}
               </Typography>
             </Box>
           </Box>

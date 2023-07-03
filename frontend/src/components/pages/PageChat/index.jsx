@@ -4,11 +4,11 @@ import Box from '@mui/material/Box';
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 import { RoomPanel } from '../../organisms/RoomPanel';
 import { MessagePanel } from '../../organisms/MessagePanel';
+import { UserIcon } from '../../molecules/UserIcon';
+
 
 const drawerWidth = 500;
 
@@ -50,9 +50,7 @@ export const PageChat = ()  => {
           >
             omeroidChatApp
           </Typography>
-          <IconButton color='inherit'>
-            <AccountCircleIcon />
-          </IconButton>
+          <UserIcon />
         </Toolbar>
       </AppBar>
       <RoomPanel

@@ -5,7 +5,6 @@ import { fetcher, mutater } from './fetcher'
 import { useUser } from './user'
 
 export const useListMessages = (roomId) => {
-  console.log('inuseListMessage:',roomId)
   return useSWR(roomId ? `/rooms/${roomId}/messages` : null, fetcher)
 }
 

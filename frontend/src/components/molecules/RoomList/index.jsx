@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
@@ -10,19 +10,29 @@ import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import {useNavigate} from 'react-router-dom'
 
-export const RoomList = ({ selectedRoomId, setSelectedRoomId,allReload,setAllReload }) => {
+import { useListRooms } from '../../../modules/room'
+
+export const RoomList = ({ roomId, setRoomId }) => {
   const rawUserData = sessionStorage.getItem("userData");
   const navigate = useNavigate();
   if(rawUserData === null){
     navigate("/signin")
   }
   const user = rawUserData ? JSON.parse(rawUserData):null;
-  const [rooms, setRooms] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [infoSelectedRoom, setInfoSelectedRoom] = useState(null);
+  const { data } = useListRooms()
+
+  const rooms = useMemo(() => data && data.Rooms ? data.Rooms : [], [data])
+
+  useEffect(() => {
+    if(rooms && rooms.length > 0 && roomId === null) {
+      setRoomId(rooms[0].id);
+    }
+  }, [rooms, roomId, setRoomId])
 
   const handleRoomClick = (roomId) => {
-    setSelectedRoomId(roomId);
+    setRoomId(roomId);
   };
 
   const handleInfoClick = async (roomId) => {
@@ -52,37 +62,6 @@ export const RoomList = ({ selectedRoomId, setSelectedRoomId,allReload,setAllRel
     }
   };
 
-
-  useEffect(() => {
-    const fetchRoomsData = async () => {
-      const url = 'http://localhost:1323/rooms';
-      const response = await axios(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + user.token,
-        },
-      });
-      return response.data
-    };
-
-    const fetchRooms = async () => {
-      try {
-        const response = await fetchRoomsData();
-        setRooms(response.Rooms);
-      } catch (error) {
-        console.error('Error occurred while fetching room list:', error);
-        if(error?.request?.status === 401){
-          navigate("/")
-        }
-      }
-    };
-    if(allReload){
-      setAllReload(false);
-    }
-    fetchRooms();
-  }, [selectedRoomId, allReload, setAllReload, navigate, user.token]);
-
   const handleCloseModal = () => {
     setIsOpen(false);
   };
@@ -90,7 +69,7 @@ export const RoomList = ({ selectedRoomId, setSelectedRoomId,allReload,setAllRel
   return (
     <div>
       {rooms &&
-        rooms.map((r, index) => selectedRoomId === r.id ?
+        rooms.map((r, index) => roomId === r.id ?
           (
             <div key={r.id}>
               <Box

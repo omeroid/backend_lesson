@@ -1,18 +1,46 @@
 import React from 'react';
 import { BrowserRouter,Routes, Route } from 'react-router-dom';
+import { ThemeProvider, createTheme, styled } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
-import SignIn from './SignIn.jsx';
-import SignUp from './SignUp.jsx';
-import Dashboard from './Chat.jsx';
+import SignIn from './pages/SignIn.jsx';
+import SignUp from './pages/SignUp.jsx';
+import Chat from './pages/Chat.jsx';
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#2C3333',
+    },
+    secondary: {
+      main: '#395B64',
+    },
+    error: {
+      main: '#E7F6F2',
+    },
+    warning: {
+      main: '#E7F6F2',
+    },
+    info: {
+      main: '#A5C9CA',
+    },
+    success: {
+      main: '#A5C9CA',
+    },
+  },
+});
 
 const App = () => {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<SignIn />} />
-        <Route path='/signup' element={<SignUp />} />
-        <Route path='/chat' element={<Dashboard />} />
-      </Routes>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Routes>
+          <Route path='/' element={<SignIn />} />
+          <Route path='/signup' element={<SignUp />} />
+          <Route path='/chat' element={<Chat />} />
+        </Routes>
+      </ThemeProvider>
     </BrowserRouter>
   );
 };

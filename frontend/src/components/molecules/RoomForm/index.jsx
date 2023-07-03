@@ -9,7 +9,7 @@ import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import {useNavigate} from 'react-router-dom'
 
-export const CreateRoom = ({setAllReload}) => {
+export const RoomForm = ({setAllReload}) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -54,7 +54,7 @@ export const CreateRoom = ({setAllReload}) => {
           color: 'white',
           width: '100%',
           borderRadius: 0,
-          backgroundColor: 'grey',
+          backgroundColor: 'secondary.main',
           margin: 'auto',
         }}
         onClick={() => setIsOpen(true)}

@@ -49,7 +49,7 @@ type ErrorResponse struct {
 }
 
 type ListRoomOutput struct {
-	Rooms []RoomOutput
+	Rooms []RoomOutput `json:"rooms"`
 }
 
 type CreateRoomInput struct {

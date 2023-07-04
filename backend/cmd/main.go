@@ -36,7 +36,7 @@ func main() {
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},
-		AllowMethods: []string{http.MethodGet, http.MethodPost},
+		AllowMethods: []string{http.MethodGet, http.MethodPost, http.MethodDelete},
 	},
 	))
 
@@ -48,7 +48,7 @@ func main() {
 	e.GET("/rooms/:roomId", handler.GetRoom)
 	e.POST("/rooms/:roomId/messages", handler.CreateMessage)
 	e.GET("/rooms/:roomId/messages", handler.ListMessage)
-	e.POST("/rooms/:roomId/messages/:messageId", handler.DeleteMessage)
+	e.DELETE("/rooms/:roomId/messages/:messageId", handler.DeleteMessage)
 
 	//localhost:1323でサーバ起動
 	e.Logger.Fatal(e.Start(":1323"))

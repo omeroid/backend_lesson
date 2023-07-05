@@ -1,220 +1,202 @@
 ## バックエンド起動手順
 
 1. プロジェクトのルートディレクトリに `.env` ファイルを作成し、以下の内容を入力して保存します。
-
-   ```
-   DATABASE_NAME=chatapp.sqlite
-   ```
+```
+DATABASE_NAME=chatapp.sqlite
+```
 
 2. ユーザのホームディレクトリに `.sqliterc` ファイルを作成し、以下の内容を入力して保存します。これにより、SQLiteの外部キー制約が有効になります。
-
-   ```
-   PRAGMA foreign_keys=ON;
-   ```
+```
+PRAGMA foreign_keys=ON;
+```
 
 3. プロジェクトのルートディレクトリで以下のコマンドを実行し、依存パッケージをダウンロードします。
-
-   ```
-   go get github.com/omeroid/backend_backend_lesson
-   ```
+```
+go get github.com/omeroid/backend_backend_lesson
+```
 
 4. プロジェクトのルートディレクトリで以下のコマンドを実行すると、サーバが起動し、`localhost:1323` でアクセスできるようになります。
-
-   ```
-   go run main.go
-   ```
-## バックエンド起動確認
-次のコマンドをコマンドラインで実行することで、バックエンドの動作を確認しましよう。
-
-### /user/signup POST - サインアップ
-**REQUEST**
-```mac
-curl --location 'http://localhost:1323/user/signup' \
---header 'Content-Type: application/json' \
---data '{
-    "username": "testuser",
-    "password": "test"
-}'
+```
+go run main.go
 ```
 
-**RESPONSE**
+### postmanセットアップ手順
+
+1. [google drive](https://drive.google.com/drive/u/0/folders/1irK9IZINkFQeqF0tMxpxwc2qRcvBAtsL)から二つのjsonファイルをダウンロードします。
+
+2. postmanを開き、先ほどダウンロードした`collection.json`と`environment.json`をドラック&ドロップします。  
+
+3. 画面左「Collections」と画面右上「No Environment」プルダウンに`backend_lesson`が追加されていれば成功です。
+
+4. 最後に画面右上「No Environment」をクリックし、`No Environment`から`backend_lesson`に切り替えましょう
+
+## postman使用方法
+
+### パラメータを設定
+URLパラメータは、URL内の特定の部分に動的な値を埋め込むために使用されます。一般的に、URLパスやクエリ文字列の一部として指定されます。
+
+例1：ユーザーIDを含むユーザープロフィールページのURL
 ```
-{
-  "id": 2,
-  "name": "testuser",
-  "createdAt": "2023-06-19T10:29:02.464221+09:00"
-}
+https://example.com/users/123
 ```
+この例では、`users`というパスの後にユーザーIDが指定されています。ユーザーIDはURLパラメータであり、この場合は`123`です。
 
-### /user/signin POST - サインイン
-**REQUEST**
-```mac
-curl --location 'http://localhost:1323/user/signin' \
---header 'Content-Type: application/json' \
---data '{
-    "username":"testuser",
-    "password":"test"
-}'
+例2：商品IDとカテゴリーIDを含む商品ページのURL
 ```
-
-**RESPONSE**
+https://example.com/products/456?category=789
 ```
-{
-  "userId": 2,
-  "userName": "testuser",
-  "token": "7c26b436-01b7-415e-96f3-c164e37f3f1d"
-}
-```
+この例では、`products`というパスの後に商品IDが指定されており、クエリ文字列の`category`パラメータにカテゴリーIDが指定されています。
 
+下の画像は、Postmanを使用してURLパラメータを指定する方法を示しています。URLの一部に`:roomId`というパラメータが含まれており、値を指定する必要があります。
 
-### /rooms GET - ルーム情報全件取得
+Postmanの右側のパネルで、「Params」を選択し、その下にある「Path Variables」セクションに移動します。そこで、`roomId`とその値を指定します。
 
-**REQUEST**
-```mac
-curl --location --request GET 'http://localhost:1323/rooms' \
---header 'Authorization: Bearer {token}'
-```
+例えば、`roomId`の値を`123`に設定する場合、`roomId`の値の横に`123`を入力します。
 
-> **Note**  
-> Authorizationに含まれる{token}には「サインイン」時のリスポンスのtokenを使用してください
+このようにして、Postmanを使用してURLパラメータを指定し、APIエンドポイントに対してリクエストを送信することができます。
 
-**RESPONSE**
-```
-{
-  "Rooms": [
-    {
-      "id": 1,
-      "name": "雑談",
-      "description": "どんな話題でも OK! 雑談ルーム",
-      "createdAt": "2023-06-19T10:28:46.054979+09:00"
-    }
-  ]
-}
-```
+![image](https://github.com/omeroid/backend_lesson/assets/54432132/220ce3db-54b4-407f-9583-858e41060c22)
 
-### /rooms POST - ルーム作成
+### リクエストボディの設定
 
-**REQUEST**
-```mac
-curl --location 'http://localhost:1323/rooms' \
---header 'Content-Type: application/json' \
---header 'Authorization: Bearer {token}' \
---data '{
-    "name":"testroom",
-    "description":"description"
-}'
-```
+リクエストボディは、HTTPリクエストでサーバに送信されるデータです。主にPOSTやPUTメソッドで使用され、フォームデータやJSONデータなどの形式で表現されます。
 
-**RESPONSE**
+下の画像は、チャットアプリにログインするためのリクエストです。このリクエストではボディにユーザ名、パスワードを指定しています。
+
+Postmanの右側のパネルで、「Body」を選択し、その下にある「raw」をクリックし、bodyに含まれるデータを変更することができます。
+
+![image](https://github.com/omeroid/backend_lesson/assets/54432132/9d985a78-b2d8-406b-8c58-5e3928ded122)
+
+### リクエストの送信
+上の2項目を設定すればリクエストを送信するだけです。URL横の「Send」ボタンをクリックしリクエストを送信してみましょう。
+レスポンスのボディは画面下の「Body」から確認することができます。
+
+![image](https://github.com/omeroid/backend_lesson/assets/54432132/d8cbee71-3b3f-42ce-86e0-61cff9ab050b)
+
+## API確認
+実際にpostmanを使用してAPIを叩いてみよう
+
+### /user/signup POST - アカウント作成
+**成功リスポンス例**
 ```
 {
-  "id": 2,
-  "name": "testroom",
-  "description": "description",
-  "createdAt": "2023-06-19T10:38:30.888965+09:00"
-}
-```
-
-### /rooms/{roomId} GET - 指定したIDのルームの情報取得
-**REQUEST**
-```mac
-curl --location 'http://localhost:1323/rooms/{roomId}' \
---header 'Authorization: Bearer {token}'
-```
-
-> **Note**  
-> urlに含まれる{roomId}には「ルーム作成」時のリスポンスのidを使用してください
-
-**RESPONSE**
-```
-{
-  "id": 2,
-  "name": "test room",
-  "description": "chat room",
-  "createdAt": "2023-06-19T10:38:30.888965+09:00"
-}
-```
-
-### /rooms/{roomId}/messages POST - 指定したルームでメッセージを送る
-**REQUEST**
-```mac
-curl --location 'http://localhost:1323/rooms/{roomId}/messages' \
---header 'Content-Type: application/json' \
---header 'Authorization: Bearer {token}' \
---data '{
-    "userId":{userId},
-    "text":"hello"
-}'
-```
-
-> **Note**  
-> dataに含まれる{userId}には「ログイン」時のリスポンスのidを使用してください
-
-**RESPONSE**
-```
-{
-  "id": 2,
-  "text": "hello",
-  "user": {
     "id": 2,
     "name": "testuser",
-    "createdAt": "2023-06-19T10:29:02.464221+09:00"
-  },
-  "createdAt": "2023-06-19T10:47:25.288945+09:00"
+    "createdAt": "2023-07-05T18:32:53.94961+09:00"
 }
 ```
 
-### /rooms/{roomId}/messages GET - 指定したルームのメッセージを全件取得
-**REQUEST**
-```mac
-curl --location 'http://localhost:1323/rooms/{roomId}/messages' \
---header 'Authorization: Bearer {token}'
-```
-
-**RESPONSE**
+### /user/signin POST - ログイン
+**成功リスポンス例**
 ```
 {
-  "messages": [
-    {
-      "id": 2,
-      "text": "hello",
-      "user": {
-        "id": 2,
-        "name": "testuser",
-        "createdAt": "2023-06-19T10:29:02.464221+09:00"
-      },
-      "createdAt": "2023-06-19T10:47:25.288945+09:00"
-    },
-    {
-      "id": 3,
-      "text": "hello~",
-      "user": {
-        "id": 2,
-        "name": "testuser",
-        "createdAt": "2023-06-19T10:29:02.464221+09:00"
-      },
-      "createdAt": "2023-06-19T10:51:18.973032+09:00"
-    }
-  ]
+    "userId": 2,
+    "userName": "testuser",
+    "token": "9b5098e5-f790-4431-beb2-ea861527f473"
 }
 ```
 
-### /rooms/{roomId}/messages/{messageId} GET - 指定したルームのメッセージを削除
-**REQUEST**
+> **Note**  
+> リスポンスに含まれる「token」は次のリクエストを送信するために必要ですが、今回は自動で使用するようになっています。
+
+### /rooms GET - チャットルーム一覧取得
+**成功リスポンス例**
 ```
-curl -X DELETE -H "Authorization: Bearer 7c26b436-01b7-415e-96f3-c164e37f3f1d" http://localhost:1323/rooms/2/messages/3
+{
+    "rooms": [
+        {
+            "id": 1,
+            "name": "雑談",
+            "description": "どんな話題でもOK!　雑談ルーム",
+            "createdAt": "2023-07-05T17:14:16.712466+09:00"
+        }
+    ]
+}
 ```
 
-**RESPONSE**
-```mac
+### /rooms POST - チャットルーム作成
+**成功リスポンス例**
+```
 {
-  "id": 3,
-  "text": "Hello!!!!!!!",
-  "user": {
     "id": 2,
-    "name": "omeroid",
-    "createdAt": "2023-06-19T10:29:02.464221+09:00"
-  },
-  "createdAt": "2023-06-19T10:51:18.973032+09:00"
+    "name": "testroom",
+    "description": "description",
+    "createdAt": "2023-07-05T18:34:27.977218+09:00"
+}
+```
+
+### /rooms/{roomId} GET - チャットルーム詳細取得
+**成功リスポンス例**
+```
+{
+    "id": 2,
+    "name": "testroom",
+    "description": "description",
+    "createdAt": "2023-07-05T17:28:08.196615+09:00"
+}
+```
+
+> **Note**  
+> Path VariablesのroomIdは「チャットルーム作成」のリスポンスを参照
+
+### /rooms/{roomId}/messages POST - メッセージ送信
+**成功リスポンス例**
+```
+{
+    "id": 1,
+    "text": "hello",
+    "user": {
+        "id": 2,
+        "name": "testuser",
+        "createdAt": "2023-07-05T17:16:17.976631+09:00"
+    },
+    "createdAt": "2023-07-05T18:38:26.401928+09:00"
+}
+```
+
+> **Note**  
+> userIdはログイン時に環境変数にセットされているので、編集しないでok
+
+### /rooms/{roomId}/messages GET - メッセージ一覧取得
+**成功リスポンス例**
+```
+{
+    "messages": [
+        {
+            "id": 1,
+            "text": "Welcome to the omeroid lecture!",
+            "user": {
+                "id": 1,
+                "name": "omeroid",
+                "createdAt": "2023-07-05T17:14:16.711721+09:00"
+            },
+            "createdAt": "2023-07-05T17:14:16.712848+09:00"
+        },
+        {
+            "id": 2,
+            "text": "hello",
+            "user": {
+                "id": 2,
+                "name": "testuser",
+                "createdAt": "2023-07-05T17:16:17.976631+09:00"
+            },
+            "createdAt": "2023-07-05T17:30:48.628124+09:00"
+        },
+    ]
+}
+```
+
+### /rooms/{roomId}/messages/{messageId} GET - メッセージ削除
+**成功リスポンス例**
+```
+{
+    "id": 2,
+    "text": "hello",
+    "user": {
+        "id": 2,
+        "name": "testuser",
+        "createdAt": "2023-07-05T17:16:17.976631+09:00"
+    },
+    "createdAt": "2023-07-05T18:38:26.401928+09:00"
 }
 ```

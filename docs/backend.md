@@ -55,7 +55,7 @@ Postmanの右側のパネルで、「Params」を選択し、その下にある�
 
 このようにして、Postmanを使用してURLパラメータを指定し、APIエンドポイントに対してリクエストを送信することができます。
 
-![image](https://github.com/omeroid/backend_lesson/assets/54432132/220ce3db-54b4-407f-9583-858e41060c22)
+![image](https://github.com/omeroid/backend_lesson/assets/54432132/8516d581-57b8-4f83-aa24-06862c4b37b6)
 
 ### リクエストボディの設定
 
@@ -71,7 +71,7 @@ Postmanの右側のパネルで、「Body」を選択し、その下にある「
 上の2項目を設定すればリクエストを送信するだけです。URL横の「Send」ボタンをクリックしリクエストを送信してみましょう。
 レスポンスのボディは画面下の「Body」から確認することができます。
 
-![image](https://github.com/omeroid/backend_lesson/assets/54432132/d8cbee71-3b3f-42ce-86e0-61cff9ab050b)
+![image](https://github.com/omeroid/backend_lesson/assets/54432132/e0144de7-39f3-4632-b49f-e0e5909ed095)
 
 ## API確認
 実際にpostmanを使用してAPIを叩いてみよう

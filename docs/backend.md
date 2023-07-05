@@ -20,18 +20,16 @@ go get github.com/omeroid/backend_backend_lesson
 go run main.go
 ```
 
-### postmanセットアップ手順
-
+## Postmanセットアップ手順
 1. [google drive](https://drive.google.com/drive/u/0/folders/1irK9IZINkFQeqF0tMxpxwc2qRcvBAtsL)から二つのjsonファイルをダウンロードします。
 
-2. postmanを開き、先ほどダウンロードした`collection.json`と`environment.json`をドラック&ドロップします。  
+2. Postmanを開き、先ほどダウンロードした`collection.json`と`environment.json`をドラック&ドロップします。  
 
 3. 画面左「Collections」と画面右上「No Environment」プルダウンに`backend_lesson`が追加されていれば成功です。
 
 4. 最後に画面右上「No Environment」をクリックし、`No Environment`から`backend_lesson`に切り替えましょう
 
-## postman使用方法
-
+## Postmanの使用方法
 ### パラメータを設定
 URLパラメータは、URL内の特定の部分に動的な値を埋め込むために使用されます。一般的に、URLパスやクエリ文字列の一部として指定されます。
 
@@ -74,7 +72,7 @@ Postmanの右側のパネルで、「Body」を選択し、その下にある「
 ![image](https://github.com/omeroid/backend_lesson/assets/54432132/e0144de7-39f3-4632-b49f-e0e5909ed095)
 
 ## API確認
-実際にpostmanを使用してAPIを叩いてみよう
+上の「Postmanの使用方法」を参考にAPIを叩いてみましょう。
 
 ### /user/signup POST - アカウント作成
 **成功リスポンス例**

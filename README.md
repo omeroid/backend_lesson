@@ -28,5 +28,6 @@ Chatアプリの実装を通じて、GolangやWebのアーキテクチャにつ�
 | メッセージ一覧取得 | GET | /rooms/{roomId}/messages/ |
 
 ## 補足資料
+- [講義資料](https://docs.google.com/presentation/d/1quGWozbQtum89J4hHV33rjcoNkv09PXd5EQYlLn225E/)
 - [バックエンドの起動手順](https://github.com/omeroid/backend_lesson/blob/feat/readme/docs/backend.md)
 - [フロントエンドの起動手順](https://github.com/omeroid/backend_lesson/blob/feat/readme/docs/frontend.md)

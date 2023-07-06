@@ -6,13 +6,17 @@ DATABASE_NAME=chatapp.sqlite
 ```
 
 2. ユーザのホームディレクトリに `.sqliterc` ファイルを作成し、以下の内容を入力して保存します。これにより、SQLiteの外部キー制約が有効になります。
+- ファイル作成場所  
+Windows: C:/Users/{username}/.sqliterc  
+mac: ~/.sqliterc
+
 ```
 PRAGMA foreign_keys=ON;
 ```
 
-3. プロジェクトのルートディレクトリで以下のコマンドを実行し、依存パッケージをダウンロードします。
+3. プロジェクトの「backend」フォルダで以下のコマンドを実行し、依存パッケージをダウンロードします。
 ```
-go get github.com/omeroid/backend_backend_lesson
+go get all
 ```
 
 4. プロジェクトのルートディレクトリで以下のコマンドを実行すると、サーバが起動し、`localhost:1323` でアクセスできるようになります。

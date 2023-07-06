@@ -22,7 +22,7 @@ export const RoomList = ({ roomId, setRoomId }) => {
     setIsOpen(true)
   }
 
-  const rooms = useMemo(() => data && data.Rooms ? data.Rooms : [], [data])
+  const rooms = useMemo(() => data && data.rooms ? data.rooms : [], [data])
 
   useEffect(() => {
     if(rooms && rooms.length > 0 && roomId === null) {

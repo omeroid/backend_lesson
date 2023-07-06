@@ -10,6 +10,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ENDPOINT } from '../modules/fetcher'
 
 
 export default function SignIn() {
@@ -17,6 +18,8 @@ export default function SignIn() {
   const [error, setError] = useState(null);
 
   const handleSubmit = async (event) => {
+    const url = ENDPOINT+'/user/signin'
+
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const username = data.get('username');
@@ -24,7 +27,7 @@ export default function SignIn() {
     let response
 
     try {
-        response = await axios.post('http://localhost:1323/user/signin', {
+        response = await axios.post(url, {
         userName: username,
         password: password,
       });
@@ -77,7 +80,7 @@ export default function SignIn() {
             autoComplete="current-password"
           />
           {error && (
-            <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+            <Typography variant="body2" color="#616161" sx={{ mt: 1 }}>
               {error}
             </Typography>
           )}

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const ENDPOINT = 'http://localhost:1323'
+export const ENDPOINT = 'http://localhost:1323'
 export const fetcher = async (url) => {
   const rawUserData = sessionStorage.getItem('userData');
   const user = rawUserData ? JSON.parse(rawUserData) : null;

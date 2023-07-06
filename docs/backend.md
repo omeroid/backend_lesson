@@ -21,6 +21,11 @@ go run main.go
 ```
 
 ## Postmanセットアップ手順
+Postmanは、API開発者やテストエンジニアがAPIをテスト、デバッグ、ドキュメント化するための人気のあるツールです。
+この講座では作成したAPIのテストにPostmanを使用します。
+このセクションではPostmanの使用方法について説明します。
+
+
 1. [google drive](https://drive.google.com/drive/u/0/folders/1irK9IZINkFQeqF0tMxpxwc2qRcvBAtsL)から二つのjsonファイルをダウンロードします。
 
 2. Postmanを開き、先ほどダウンロードした`collection.json`と`environment.json`をドラック&ドロップします。  

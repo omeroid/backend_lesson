@@ -9,6 +9,7 @@ import Container from '@mui/material/Container';
 import axios from 'axios'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ENDPOINT } from '../modules/fetcher'
 
 
 export default function SignUp() {
@@ -16,7 +17,7 @@ export default function SignUp() {
   const [error, setError] = useState(null);
 
   const handleSubmit = async (event) => {
-    const url = 'http://localhost:1323/user/signup'
+    const url = ENDPOINT+'/user/signup'
 
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -75,7 +76,7 @@ export default function SignUp() {
             autoComplete="current-password"
           />
           {error && (
-            <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+            <Typography variant="body2" color="#616161" sx={{ mt: 1 }}>
               {error}
             </Typography>
           )}

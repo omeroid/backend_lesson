@@ -38,7 +38,7 @@ export const useDeleteMessage = (roomId) => {
 
   const handleDeleteMessage = async (messageId) => {
     setIsMutating(true)
-    await mutater(`/rooms/${roomId}/messages/${messageId}`, 'POST', null)
+    await mutater(`/rooms/${roomId}/messages/${messageId}`, 'DELETE', null)
     mutate()
     setIsMutating(false)
   }

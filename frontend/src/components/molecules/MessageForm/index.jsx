@@ -1,31 +1,33 @@
-import * as React from 'react';
-import { useState} from 'react';
+import * as React from "react";
+import { useState } from "react";
 
-import IconButton from '@mui/material/IconButton';
-import Box from '@mui/material/Box';
-import SendIcon from '@mui/icons-material/Send';
-import TextField from '@mui/material/TextField';
+import IconButton from "@mui/material/IconButton";
+import Box from "@mui/material/Box";
+import SendIcon from "@mui/icons-material/Send";
+import TextField from "@mui/material/TextField";
 
-import { useCreateMessage } from '../../../modules/message';
+import { useCreateMessage } from "../../../modules/message";
 
 export const MessageForm = ({ roomId }) => {
-  const { isMutating, handleCreateMessage } = useCreateMessage(roomId)
+  const { isMutating, handleCreateMessage } = useCreateMessage(roomId);
 
-  const [chatInput, setChatInput] = useState('')
+  const [chatInput, setChatInput] = useState("");
 
   const handleChatSubmit = async (e) => {
     e.preventDefault();
-    await handleCreateMessage(chatInput)
-    setChatInput('');
+    if (!chatInput) return;
+    await handleCreateMessage(chatInput);
+    setChatInput("");
   };
 
   return (
     <Box
-    sx={{ mt: 'auto', p: 2, backgroundColor: 'white', height: '5rem' }}
-    component="form"
-    onSubmit={handleChatSubmit}>
-     {roomId && (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      sx={{ mt: "auto", p: 2, backgroundColor: "white", height: "5rem" }}
+      component="form"
+      onSubmit={handleChatSubmit}
+    >
+      {roomId && (
+        <Box sx={{ display: "flex", alignItems: "center" }}>
           <TextField
             id="text"
             name="text"
@@ -34,11 +36,11 @@ export const MessageForm = ({ roomId }) => {
             onChange={(e) => setChatInput(e.target.value)}
             fullWidth
           />
-          <IconButton color='primary' type='submit' disabled={isMutating}>
+          <IconButton color="primary" type="submit" disabled={isMutating}>
             <SendIcon />
           </IconButton>
         </Box>
       )}
     </Box>
   );
-}
+};

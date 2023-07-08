@@ -43,7 +43,8 @@ export const mutater = async (url, method, data) => {
       'method:',
       response?.config?.method,
       'url:',
-      response?.config?.url
+      response?.config?.url,
+      'data:', data
     )
     return response.data
   } catch (error) {

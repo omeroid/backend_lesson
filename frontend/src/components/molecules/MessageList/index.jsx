@@ -12,7 +12,6 @@ export const MessageList = ({ roomId }) => {
 
   const scrollRef = useRef(null)
   const scrollToBottomOfList = useCallback(() => {
-    console.log('scrollToBottomOfList', scrollRef)
     scrollRef.current.scrollIntoView({
       behavior: 'smooth',
       block: 'end',

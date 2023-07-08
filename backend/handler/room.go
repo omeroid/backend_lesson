@@ -10,29 +10,31 @@ import (
 	"gorm.io/gorm"
 )
 
-// 全roomの情報取得
+// 全roomの情報取得関数
 func ListRoom(c echo.Context) error {
 	//DBのコネクションを取得
 	conn := c.Get("db").(*gorm.DB)
 
-	//sessionのtokenが有効か確認する
+	//リクエストヘッダーからトークンを取得してバリデーションをする
 	authHeader := c.Request().Header.Get("Authorization")
 	token := util.ExtractBearerToken(authHeader)
+	//セッションが無効ならエラーメッセージを返す
 	if err := IsSessionValid(conn, token); err != nil {
 		return c.JSON(http.StatusUnauthorized, ErrorResponse{
 			Message: fmt.Sprintf("%s (tokenが無効)", err),
 		})
 	}
 
-	//roomsからレコードを全件取得
+	//全てのroomデータをデータベースから取得
 	var rooms []db.Room
+	//取得に失敗した場合はエラーメッセージを返す
 	if result := conn.Find(&rooms); result.Error != nil {
 		return c.JSON(http.StatusInternalServerError, ErrorResponse{
 			Message: fmt.Sprintf("%s (room検索エラー)", result.Error),
 		})
 	}
 
-	//ユーザが必要なroomの情報を定義した構造体にデータを詰める
+	//取得したroomデータを構造体に格納
 	var roomDetails []RoomOutput
 	for _, v := range rooms {
 		roomDetails = append(roomDetails, RoomOutput{
@@ -43,17 +45,20 @@ func ListRoom(c echo.Context) error {
 		})
 	}
 
+	//レスポンス用のデータを作成
 	output := ListRoomOutput{
 		Rooms: roomDetails,
 	}
 
+	//レスポンスデータをJSON形式で返す
 	return c.JSON(http.StatusOK, output)
 }
 
-// roomを作成する
+// roomを作成する関数
 func CreateRoom(c echo.Context) error {
-	//入力値の取得
+	//クライアントから送られてきたデータを取得
 	input := new(CreateRoomInput)
+	//データのバリデーションを行い、エラーが発生したらエラーメッセージを返す
 	if err := c.Bind(input); err != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
 			Message: fmt.Sprintf("%s (入力値エラー)", err),
@@ -63,26 +68,29 @@ func CreateRoom(c echo.Context) error {
 	//DBのコネクションの取得
 	conn := c.Get("db").(*gorm.DB)
 
-	//sessionのtokenが有効か確認する
+	//リクエストヘッダーからトークンを取得してバリデーションをする
 	authHeader := c.Request().Header.Get("Authorization")
 	token := util.ExtractBearerToken(authHeader)
+	//セッションが無効ならエラーメッセージを返す
 	if err := IsSessionValid(conn, token); err != nil {
 		return c.JSON(http.StatusUnauthorized, ErrorResponse{
 			Message: fmt.Sprintf("%s (tokenが無効)", err),
 		})
 	}
 
-	//roomsにレコードを挿入する
+	//新規Roomデータを作成
 	room := db.Room{
 		Name:        input.Name,
 		Description: input.Description,
 	}
+	//RoomデータをDBに保存して、失敗したらエラーメッセージを返す
 	if result := conn.Create(&room); result.Error != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
 			Message: fmt.Sprintf("%s (room作成エラー)", result.Error),
 		})
 	}
 
+	// 作成されたRoomのレスポンスデータを作成する
 	output := CreateRoomOutput{
 		ID:          room.ID,
 		Name:        room.Name,
@@ -90,32 +98,36 @@ func CreateRoom(c echo.Context) error {
 		CreatedAt:   room.CreatedAt,
 	}
 
+	//レスポンスデータをJSON形式で返す
 	return c.JSON(http.StatusCreated, output)
 }
 
-// 指定したroomidのroomの詳細取得
+// 指定したroomidのroomの詳細取得関数
 func GetRoom(c echo.Context) error {
 	//DBのコネクションを取得する
 	conn := c.Get("db").(*gorm.DB)
 
-	//sessionのtokenが有効か確認する
+	//リクエストヘッダーからトークンを取得してバリデーションをする
 	authHeader := c.Request().Header.Get("Authorization")
 	token := util.ExtractBearerToken(authHeader)
+	//セッションが無効ならエラーメッセージを返す
 	if err := IsSessionValid(conn, token); err != nil {
 		return c.JSON(http.StatusUnauthorized, ErrorResponse{
 			Message: fmt.Sprintf("%s (tokenが無効)", err),
 		})
 	}
 
-	//roomsをroomIDで検索する
+	//パラメータからroomIdを取得して該当roomをDBから検索
 	roomID := c.Param("roomId")
 	var room db.Room
+	//検索に失敗した場合はエラーメッセージを返す
 	if result := conn.Find(&room, "id=?", roomID); result.Error != nil {
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
 			Message: fmt.Sprintf("%s (room検索エラー)", result.Error),
 		})
 	}
 
+	//取得したroomのレスポンスデータを作成する
 	output := GetRoomOutput{
 		ID:          room.ID,
 		Name:        room.Name,
@@ -123,5 +135,6 @@ func GetRoom(c echo.Context) error {
 		CreatedAt:   room.CreatedAt,
 	}
 
+	//レスポンスデータをJSON形式で返す
 	return c.JSON(http.StatusOK, output)
 }

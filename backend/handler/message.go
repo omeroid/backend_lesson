@@ -12,56 +12,56 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-// messageをデータベースに登録する
+// メッセージをデータベースに登録する関数を定義します。
 func CreateMessage(c echo.Context) error {
-	//DBのコネクションを取得
+	//DBとの接続を確立します。
 	conn := c.Get("db").(*gorm.DB)
-
-	//sessionのtokenが有効か確認する
+	//セッションのtokenが有効かどうかを確認します。
 	authHeader := c.Request().Header.Get("Authorization")
 	token := util.ExtractBearerToken(authHeader)
 	if err := IsSessionValid(conn, token); err != nil {
+		//Tokenが無効な場合、エラーレスポンスを返します。
 		return c.JSON(http.StatusUnauthorized, ErrorResponse{
 			Message: fmt.Sprintf("%s (tokenが無効)", err),
 		})
 	}
-
-	//リクエストのボディから入力値の取得
+	//リクエストボディから送られてきたデータ（メッセージ）を取得します。
 	input := new(CreateMessageInput)
 	if err := c.Bind(input); err != nil {
+		//受け取りに問題があった場合、エラーレスポンスを返します。
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
 			Message: fmt.Sprintf("%s (入力値エラー)", err),
 		})
 	}
-
-	//リクエストのURLから入力値の取得
+	//リクエストURLからルームIDを取得します。
 	roomID, err := strconv.Atoi(c.Param("roomId"))
 	if err != nil {
+		//ルームIDの取得に失敗した場合、エラーレスポンスを返します。
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
 			Message: fmt.Sprintf("%s (roomID入力エラー)", err),
 		})
 	}
-
-	//usersからuserIDで検索する
+	//指定されたユーザーIDに該当するユーザーをデータベースから検索します。
 	user := db.User{}
 	if result := conn.First(&user, "id=?", input.UserID); result.Error != nil {
+		//ユーザーの検索に失敗した場合、エラーレスポンスを返します。
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
 			Message: fmt.Sprintf("%s (user検索エラー)", result.Error),
 		})
 	}
-
-	//messagesにレコードを挿入する
+	//新規メッセージをデータベースに登録します。
 	message := db.Message{
 		RoomID: roomID,
 		UserID: input.UserID,
 		Text:   input.Text,
 	}
 	if result := conn.Create(&message); result.Error != nil {
+		//メッセージの作成に失敗した場合、エラーレスポンスを返します。
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
 			Message: fmt.Sprintf("%s (message作成エラー)", result.Error),
 		})
 	}
-
+	//返すべきメッセージデータを作成します。
 	output := CreateMessageOutput{
 		ID:        message.ID,
 		Text:      message.Text,
@@ -72,45 +72,46 @@ func CreateMessage(c echo.Context) error {
 			CreatedAt: user.CreatedAt,
 		},
 	}
-
+	//作成したメッセージデータをJSONとして返します。
 	return c.JSON(http.StatusCreated, output)
 }
 
-// roomidで指定したroomのmessage詳細を全件取得
+// 特定のroomでの全てのmessageを取得する関数を定義します。
 func ListMessage(c echo.Context) error {
-	//DBのコネクションを取得
+	//DBとの接続を確立します。
 	conn := c.Get("db").(*gorm.DB)
-
-	//sessionのtokenが有効か確認する
+	//セッションのtokenが有効かどうかを確認します。
 	authHeader := c.Request().Header.Get("Authorization")
 	token := util.ExtractBearerToken(authHeader)
 	if err := IsSessionValid(conn, token); err != nil {
+		//Tokenが無効な場合、エラーレスポンスを返します。
 		return c.JSON(http.StatusUnauthorized, ErrorResponse{
 			Message: fmt.Sprintf("%s (tokenが無効)", err),
 		})
 	}
-
-	//リクエストのURLから入力値の取得
+	//リクエストURLからルームIDを取得します。
 	roomID, err := strconv.Atoi(c.Param("roomId"))
 	if err != nil {
+		//ルームIDの取得に失敗した場合、エラーレスポンスを返します。
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
 			Message: fmt.Sprintf("%s (roomID入力エラー)", err),
 		})
 	}
-
-	//messagesにroomIDで検索をかける(一致全件取得)
+	//指定されたルームIDを持つメッセージをデータベースから取得します。
 	var messages []db.Message
 	if result := conn.Find(&messages, "room_id=?", roomID); result.Error != nil {
+		//メッセージの取得に失敗した場合、エラーレスポンスを返します。
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
 			Message: fmt.Sprintf("%s (message検索エラー)", result.Error),
 		})
 	}
-
-	//ユーザが必要な情報を定義した構造体にデータを詰める
+	//取得したメッセージとそれに紐づくユーザー情報を整形します。
+	//最終的にはユーザーに表示するために必要なメッセージの詳細を作成します。
 	var messageDetails []MessageOutput
 	for _, v := range messages {
 		user := db.User{}
 		if result := conn.Find(&user, "id=?", v.UserID); result.Error != nil {
+			//ユーザーの検索に失敗した場合、エラーレスポンスを返します。
 			return c.JSON(http.StatusBadRequest, ErrorResponse{
 				Message: fmt.Sprintf("%s (user検索エラー)", result.Error),
 			})
@@ -126,49 +127,46 @@ func ListMessage(c echo.Context) error {
 			},
 		})
 	}
-
+	//取得したメッセージの詳細をJSONとして返します。
 	output := ListMessageOutput{
 		Messages: messageDetails,
 	}
-
 	return c.JSON(http.StatusOK, output)
 }
 
-// messageをデータベースから削除
+// 特定のメッセージをデータベースから削除する関数を定義します。
 func DeleteMessage(c echo.Context) error {
-	//DBのコネクションを取得する
+	//DBとの接続を確立します。
 	conn := c.Get("db").(*gorm.DB)
-
-	//sessionのtokenが有効か確認する
+	//セッションのtokenが有効かどうかを確認します。
 	authHeader := c.Request().Header.Get("Authorization")
 	token := util.ExtractBearerToken(authHeader)
 	if err := IsSessionValid(conn, token); err != nil {
+		//Tokenが無効な場合、エラーレスポンスを返します。
 		return c.JSON(http.StatusUnauthorized, ErrorResponse{
 			Message: fmt.Sprintf("%s (tokenが無効)", err),
 		})
 	}
-
-	//リクエストのURLから入力値の取得
+	//リクエストURLからメッセージIDとルームIDを取得します。
 	messageID := c.Param("messageId")
 	roomID := c.Param("roomId")
-
-	//messagesから指定したレコードを削除する
+	//指定されたメッセージIDとルームIDに該当するメッセージをデータベースから削除します。
 	message := &db.Message{}
-	//deleteできてなかったときはmessageidに0がかえるのでそれで判定してほしい
 	if result := conn.Clauses(clause.Returning{}).Where("id=? AND room_id=?", messageID, roomID).Delete(&message); result.Error != nil {
+		//メッセージの削除に失敗した場合、エラーレスポンスを返します。
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
 			Message: fmt.Sprintf("%s (message削除エラー)", result.Error),
 		})
 	}
-
-	//usersからuserIDでuserを検索する
+	//削除したメッセージと関連するユーザーをデータベースから検索します。
 	user := db.User{}
 	if result := conn.Find(&user, "id=?", message.UserID); result.Error != nil {
+		//ユーザーの検索に失敗した場合、エラーレスポンスを返します。
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
 			Message: fmt.Sprintf("%s (user検索エラー)", result.Error),
 		})
 	}
-
+	//削除したメッセージの詳細を作成します。
 	output := DeleteMessageOutput{
 		ID:        message.ID,
 		Text:      message.Text,
@@ -179,6 +177,6 @@ func DeleteMessage(c echo.Context) error {
 			CreatedAt: user.CreatedAt,
 		},
 	}
-
+	//削除したメッセージの詳細をJSONとして返します。
 	return c.JSON(http.StatusCreated, output)
 }

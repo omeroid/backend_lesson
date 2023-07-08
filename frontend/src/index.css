@@ -5,9 +5,29 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.my-message {
+  .rce-mbox-right {
+    background-color: rgb(86, 91, 91);
+  }
+  .rce-mbox-title{
+    color: #fff;
+  }
+  .rce-mbox-text{
+    color: #fff;
+  }
+  .rce-mbox-right-notch{
+    fill: rgb(86, 91, 91);
+  }
+}
+
+.rce-mbox.rce-mbox-right {
+  max-width: 90%;
 }

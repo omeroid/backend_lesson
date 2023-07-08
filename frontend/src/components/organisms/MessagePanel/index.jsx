@@ -18,7 +18,7 @@ export const MessagePanel = ({roomId})  => {
             : theme.palette.grey[900],
         flexGrow: 1,
         height: '100vh',
-        overflow: 'auto',
+        overflow: 'hidden',
         margin: 'auto',
         display: 'flex',
         flexDirection: 'column',

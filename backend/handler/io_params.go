@@ -86,10 +86,3 @@ type CreateMessageOutput struct {
 type ListMessageOutput struct {
 	Messages []MessageOutput `json:"messages"`
 }
-
-type DeleteMessageOutput struct {
-	ID        int        `json:"id"`
-	Text      string     `json:"text"`
-	User      UserOutput `json:"user"`
-	CreatedAt time.Time  `json:"createdAt"`
-}

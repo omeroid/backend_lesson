@@ -9,7 +9,6 @@ import (
 	"github.com/omeroid/backend_lesson/backend/pkg/db"
 	"github.com/omeroid/backend_lesson/backend/pkg/util"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 )
 
 // メッセージをデータベースに登録する関数を定義します。
@@ -151,32 +150,12 @@ func DeleteMessage(c echo.Context) error {
 	messageID := c.Param("messageId")
 	roomID := c.Param("roomId")
 	//指定されたメッセージIDとルームIDに該当するメッセージをデータベースから削除します。
-	message := &db.Message{}
-	if result := conn.Clauses(clause.Returning{}).Where("id=? AND room_id=?", messageID, roomID).Delete(&message); result.Error != nil {
+	if result := conn.Delete(&db.Message{}, "id=? AND room_id=?", messageID, roomID); result.Error != nil {
 		//メッセージの削除に失敗した場合、エラーレスポンスを返します。
 		return c.JSON(http.StatusBadRequest, ErrorResponse{
 			Message: fmt.Sprintf("%s (message削除エラー)", result.Error),
 		})
 	}
-	//削除したメッセージと関連するユーザーをデータベースから検索します。
-	user := db.User{}
-	if result := conn.Find(&user, "id=?", message.UserID); result.Error != nil {
-		//ユーザーの検索に失敗した場合、エラーレスポンスを返します。
-		return c.JSON(http.StatusBadRequest, ErrorResponse{
-			Message: fmt.Sprintf("%s (user検索エラー)", result.Error),
-		})
-	}
-	//削除したメッセージの詳細を作成します。
-	output := DeleteMessageOutput{
-		ID:        message.ID,
-		Text:      message.Text,
-		CreatedAt: message.CreatedAt,
-		User: UserOutput{
-			ID:        user.ID,
-			Name:      user.Name,
-			CreatedAt: user.CreatedAt,
-		},
-	}
 	//削除したメッセージの詳細をJSONとして返します。
-	return c.JSON(http.StatusCreated, output)
+	return c.JSON(http.StatusCreated, nil)
 }

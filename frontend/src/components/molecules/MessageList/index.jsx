@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { MessageList as ChatMessageList } from 'react-chat-elements'
 
 import { useListMessages, useDeleteMessage } from '../../../modules/message'
@@ -11,6 +11,14 @@ export const MessageList = ({ roomId }) => {
   const { handleDeleteMessage } = useDeleteMessage(roomId)
   const { user } = useUser()
 
+  const scrollRef = useRef(null)
+  const scrollToBottomOfList = useCallback(() => {
+    console.log('scrollToBottomOfList', scrollRef)
+    scrollRef.current.scrollIntoView({
+      behavior: 'smooth',
+      block: 'end',
+    })
+  }, [ scrollRef ])
 
   useEffect(() => {
     if (!data || !data.messages) {
@@ -20,18 +28,22 @@ export const MessageList = ({ roomId }) => {
     if(!user) return
     const list = data.messages.map(item => ({
       id: item.id,
-      position: user.userId === item.user.id ? 'left' : 'right',
+      position: user.userId === item.user.id ? 'right' : 'left',
       type: 'text',
-
       title: item.user.name,
       text: item.text,
       removeButton: user.userId === item.user.id,
+      className: user.userId === item.user.id ? 'my-message' : '',
     }));
     setMessages(list)
-  }, [data, user]);
+  }, [data, user, scrollToBottomOfList]);
+
+  useEffect(() => {
+    scrollToBottomOfList()
+  }, [messages, scrollToBottomOfList]);
 
   return (
-    <div>
+    <div style={{overflow: 'scroll', height: 'calc(100% - 5rem)'}}>
       <ChatMessageList
         onRemoveMessageClick={(message) => handleDeleteMessage(message.id)}
         className='message-list'
@@ -39,6 +51,7 @@ export const MessageList = ({ roomId }) => {
         toBottomHeight={'100%'}
         dataSource={messages}
       />
+      <div ref={scrollRef}></div>
     </div>
   );
 };

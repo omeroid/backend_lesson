@@ -7,14 +7,13 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import axios from 'axios'
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ENDPOINT } from '../modules/fetcher'
+import toast from 'react-hot-toast';
 
 
 export default function SignUp() {
   const navigate = useNavigate()
-  const [error, setError] = useState(null);
 
   const handleSubmit = async (event) => {
     const url = ENDPOINT+'/user/signup'
@@ -30,8 +29,9 @@ export default function SignUp() {
         password: password,
       })
       navigate("/")
+      toast.success('アカウント登録が完了しました。ログインしてください。');
     }catch(e){
-      setError('そのユーザ名はすでに使用されています。');
+      toast.error('usernameがすでに使われております');
       response = e?.response
     }
     console.log("method:",response?.config?.method,"url:",response?.config?.url)
@@ -75,11 +75,6 @@ export default function SignUp() {
             id="password"
             autoComplete="current-password"
           />
-          {error && (
-            <Typography variant="body2" color="#616161" sx={{ mt: 1 }}>
-              {error}
-            </Typography>
-          )}
           <Button
             type="submit"
             fullWidth

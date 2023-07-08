@@ -21,7 +21,7 @@ export const MessageForm = ({ roomId }) => {
 
   return (
     <Box
-    sx={{ mt: 'auto', p: 2, backgroundColor: 'white' }}
+    sx={{ mt: 'auto', p: 2, backgroundColor: 'white', height: '5rem' }}
     component="form"
     onSubmit={handleChatSubmit}>
      {roomId && (

@@ -1,12 +1,12 @@
-import React from 'react';
-import { BrowserRouter,Routes, Route } from 'react-router-dom';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import { Toaster } from 'react-hot-toast';
+import React from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { ThemeProvider, createTheme } from '@mui/material/styles'
+import CssBaseline from '@mui/material/CssBaseline'
+import { Toaster } from 'react-hot-toast'
 
-import SignIn from './pages/SignIn.jsx';
-import SignUp from './pages/SignUp.jsx';
-import Chat from './pages/Chat.jsx';
+import SignIn from './pages/SignIn.jsx'
+import SignUp from './pages/SignUp.jsx'
+import Chat from './pages/Chat.jsx'
 
 const theme = createTheme({
   palette: {
@@ -29,7 +29,7 @@ const theme = createTheme({
       main: '#A5C9CA',
     },
   },
-});
+})
 
 const App = () => {
   return (
@@ -42,12 +42,12 @@ const App = () => {
           }}
         />
         <Routes>
-          <Route path='/' element={<SignIn />} />
-          <Route path='/signup' element={<SignUp />} />
-          <Route path='/chat' element={<Chat />} />
+          <Route path="/" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/chat" element={<Chat />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>
-  );
-};
-export default App;
+  )
+}
+export default App

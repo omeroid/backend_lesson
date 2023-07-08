@@ -1,16 +1,14 @@
-import React from 'react';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
+import React from 'react'
+import Box from '@mui/material/Box'
+import Toolbar from '@mui/material/Toolbar'
 
-import { MessageList } from '../../molecules/MessageList';
-import { MessageForm } from '../../molecules/MessageForm';
+import { MessageList } from '../../molecules/MessageList'
+import { MessageForm } from '../../molecules/MessageForm'
 
-
-export const MessagePanel = ({roomId})  => {
-
+export const MessagePanel = ({ roomId }) => {
   return (
     <Box
-      component='main'
+      component="main"
       sx={{
         backgroundColor: (theme) =>
           theme.palette.mode === 'light'
@@ -25,12 +23,8 @@ export const MessagePanel = ({roomId})  => {
       }}
     >
       <Toolbar />
-      <MessageList
-        roomId={roomId}
-      />
-      <MessageForm
-        roomId={roomId}
-      />
+      <MessageList roomId={roomId} />
+      <MessageForm roomId={roomId} />
     </Box>
-  );
+  )
 }

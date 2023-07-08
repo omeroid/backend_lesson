@@ -17,19 +17,17 @@ export const useCreateMessage = (roomId) => {
     setIsMutating(true)
     const data = {
       userId: user.userId,
-      text: text
+      text: text,
     }
     await mutater(`/rooms/${roomId}/messages`, 'POST', data)
     mutate()
     setIsMutating(false)
   }
 
-
   return {
     handleCreateMessage,
-    isMutating
+    isMutating,
   }
-
 }
 
 export const useDeleteMessage = (roomId) => {
@@ -43,10 +41,8 @@ export const useDeleteMessage = (roomId) => {
     setIsMutating(false)
   }
 
-
   return {
     handleDeleteMessage,
-    isMutating
+    isMutating,
   }
-
 }

@@ -1,45 +1,51 @@
-import * as React from 'react';
+import * as React from 'react'
 import axios from 'axios'
 
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Link from '@mui/material/Link'
+import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import Container from '@mui/material/Container'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { ENDPOINT } from '../modules/fetcher'
-
 
 export default function SignIn() {
   const navigate = useNavigate()
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null)
 
   const handleSubmit = async (event) => {
-    const url = ENDPOINT+'/user/signin'
+    const url = ENDPOINT + '/user/signin'
 
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const username = data.get('username');
-    const password = data.get('password');
+    event.preventDefault()
+    const data = new FormData(event.currentTarget)
+    const username = data.get('username')
+    const password = data.get('password')
     let response
 
     try {
-        response = await axios.post(url, {
+      response = await axios.post(url, {
         userName: username,
         password: password,
-      });
-      sessionStorage.setItem('userData', JSON.stringify(response.data));
-      setError('');
-      navigate('/chat');
+      })
+      sessionStorage.setItem('userData', JSON.stringify(response.data))
+      setError('')
+      navigate('/chat')
     } catch (e) {
-      setError('ログインに失敗しました。ユーザ名とパスワードを確認してください。');
+      setError(
+        'ログインに失敗しました。ユーザ名とパスワードを確認してください。'
+      )
       response = e?.response
     }
-    console.log("method:",response?.config?.method,"url:",response?.config?.url)
-  };
+    console.log(
+      'method:',
+      response?.config?.method,
+      'url:',
+      response?.config?.url
+    )
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -51,13 +57,15 @@ export default function SignIn() {
           alignItems: 'center',
         }}
       >
-      <Box
+        <Box
           component="img"
-          sx={{height: 100,width: 100}}
+          sx={{ height: 100, width: 100 }}
           alt="omeroid icon"
           src="https://assets.st-note.com/production/uploads/images/38911312/profile_5e2d06172918f8d8fae54589aa5e2217.jpg"
         />
-        <Typography component="h1" variant="h5">ログイン</Typography>
+        <Typography component="h1" variant="h5">
+          ログイン
+        </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"
@@ -89,14 +97,18 @@ export default function SignIn() {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
-          >ログイン</Button>
+          >
+            ログイン
+          </Button>
           <Grid container>
             <Grid item>
-              <Link href="/signup" variant="body2">{"アカウント作成"}</Link>
+              <Link href="/signup" variant="body2">
+                {'アカウント作成'}
+              </Link>
             </Grid>
           </Grid>
         </Box>
       </Box>
     </Container>
-  );
+  )
 }

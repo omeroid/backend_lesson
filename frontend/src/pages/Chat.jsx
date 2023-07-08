@@ -1,11 +1,7 @@
-import React from 'react';
+import React from 'react'
 
-import  { PageChat } from '../components/pages/PageChat';
-
+import { PageChat } from '../components/pages/PageChat'
 
 export default function Index() {
-
-  return (
-    <PageChat />
-  );
+  return <PageChat />
 }

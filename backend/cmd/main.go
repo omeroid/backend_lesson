@@ -61,9 +61,15 @@ func main() {
 	e.GET("/rooms", handler.ListRoom)
 	e.POST("/rooms", handler.CreateRoom)
 	e.GET("/rooms/:roomId", handler.GetRoom)
-	e.POST("/rooms/:roomId/messages", handler.CreateMessage)
-	e.GET("/rooms/:roomId/messages", handler.ListMessage)
-	e.DELETE("/rooms/:roomId/messages/:messageId", handler.DeleteMessage)
+
+	// TODO 1. メッセージ一覧取得機能を実装してください
+	// (ヒント: handler.ListMessageを実装してください)
+
+	// TODO 2. メッセージ作成機能を実装してください
+	// (ヒント: handler.CreateMessageを実装してください)
+
+	// TODO 3. メッセージの削除機能を実装してください。
+	// (ヒント: handler.DeleteMessageを実装してください)
 
 	e.Logger.Fatal(e.Start(":1323")) // サーバーを1323ポートで起動します。なお、サーバー起動時にエラーが発生した場合はログを出力してプログラムを終了します。
 }

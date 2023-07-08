@@ -92,7 +92,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Room'
+                type: object
+                properties:
+                  rooms:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Room'
         '401':
           description: 認証失敗
           content:

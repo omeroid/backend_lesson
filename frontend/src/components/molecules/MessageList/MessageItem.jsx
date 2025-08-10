@@ -36,15 +36,11 @@ export const MessageItem = ({ message, onDelete }) => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: 'white',
+            color: isMyMessage ? 'black' : 'white',
             fontWeight: 'bold',
             fontSize: '0.875rem',
-            background: isMyMessage 
-              ? 'linear-gradient(135deg, rgb(147, 51, 234), rgb(236, 72, 153))' 
-              : 'linear-gradient(135deg, rgb(59, 130, 246), rgb(34, 197, 94))',
-            boxShadow: isMyMessage
-              ? '0 0 20px rgba(147, 51, 234, 0.4)'
-              : '0 0 20px rgba(59, 130, 246, 0.4)'
+            background: isMyMessage ? '#ffffff' : '#333333',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
           }}>
             {message.title?.charAt(0).toUpperCase() || 'U'}
           </div>
@@ -84,19 +80,17 @@ export const MessageItem = ({ message, onDelete }) => {
             style={{
               position: 'relative',
               background: isMyMessage 
-                ? 'linear-gradient(135deg, rgba(147, 51, 234, 0.15), rgba(236, 72, 153, 0.15))' 
-                : 'rgba(55, 65, 81, 0.6)',
+                ? 'rgba(255, 255, 255, 0.1)' 
+                : 'rgba(0, 0, 0, 0.3)',
               border: isMyMessage
-                ? '1px solid rgba(147, 51, 234, 0.3)'
-                : '1px solid rgba(75, 85, 99, 0.3)',
+                ? '1px solid rgba(255, 255, 255, 0.2)'
+                : '1px solid rgba(255, 255, 255, 0.1)',
               borderRadius: isMyMessage 
                 ? '1.25rem 1.25rem 0.25rem 1.25rem'
                 : '1.25rem 1.25rem 1.25rem 0.25rem',
               padding: '0.75rem 1rem',
               backdropFilter: 'blur(10px)',
-              boxShadow: isMyMessage
-                ? '0 4px 12px rgba(147, 51, 234, 0.1)'
-                : '0 4px 12px rgba(0, 0, 0, 0.1)',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
               minWidth: '4rem'
             }}
             onMouseEnter={(e) => {

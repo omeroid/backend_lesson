@@ -55,10 +55,7 @@ body {
   height: 100%;
   margin: 0;
   overflow: hidden;
-  background: linear-gradient(135deg, 
-    rgb(17 24 39) 0%, 
-    rgb(88 28 135) 50%, 
-    rgb(124 58 237) 100%);
+  background: #000000;
   color: white;
   font-family: var(--font-family-sans);
   -webkit-font-smoothing: antialiased;
@@ -76,16 +73,16 @@ code {
 /* Glass Morphism Effects */
 .glass-morphism {
   backdrop-filter: blur(16px) saturate(180%);
-  background-color: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
 }
 
 .glass-morphism-dark {
   backdrop-filter: blur(16px) saturate(180%);
-  background-color: rgba(17, 25, 40, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.125);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
 }
 
 /* Text Gradients */
@@ -94,8 +91,8 @@ code {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-image: linear-gradient(135deg, 
-    var(--color-gradient-purple) 0%, 
-    var(--color-gradient-pink) 100%);
+    #ffffff 0%, 
+    #888888 100%);
 }
 
 .text-gradient-blue {

@@ -44,14 +44,28 @@ export default function SignIn() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+    <div style={{ 
+      minHeight: '100vh', 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'center', 
+      padding: '1rem',
+      background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)'
+    }}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         style={{ width: '100%', maxWidth: '28rem' }}
       >
-        <div className="glass-morphism" style={{ borderRadius: '1.5rem', padding: '2rem', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)' }}>
+        <div style={{ 
+          borderRadius: '1.5rem', 
+          padding: '2rem', 
+          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)',
+          background: 'rgba(255, 255, 255, 0.03)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255, 255, 255, 0.1)'
+        }}>
           <motion.div
             initial={{ scale: 0.5 }}
             animate={{ scale: 1 }}
@@ -64,27 +78,25 @@ export default function SignIn() {
             style={{ display: 'flex', justifyContent: 'center', marginBottom: '2rem' }}
           >
             <div style={{ position: 'relative' }}>
+              {/* omeroid Logo */}
               <div style={{ 
-                position: 'absolute', 
-                inset: 0, 
-                backgroundColor: 'rgb(147, 51, 234)', 
-                borderRadius: '50%', 
-                filter: 'blur(20px)', 
-                opacity: 0.5 
-              }}></div>
-              <div style={{ 
-                position: 'relative', 
-                background: 'linear-gradient(to bottom right, rgb(147, 51, 234), rgb(236, 72, 153))', 
-                borderRadius: '50%', 
                 width: '5rem', 
                 height: '5rem', 
+                background: '#ffffff',
+                borderRadius: '1rem',
                 display: 'flex', 
                 alignItems: 'center', 
-                justifyContent: 'center' 
+                justifyContent: 'center',
+                boxShadow: '0 10px 20px rgba(0, 0, 0, 0.3)'
               }}>
-                <svg style={{ width: '3rem', height: '3rem', color: 'white' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
+                <span style={{ 
+                  fontSize: '2rem', 
+                  fontWeight: 'bold',
+                  background: 'linear-gradient(135deg, #000000, #333333)',
+                  backgroundClip: 'text',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>O</span>
               </div>
             </div>
           </motion.div>
@@ -93,16 +105,21 @@ export default function SignIn() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="text-gradient"
-            style={{ fontSize: '1.875rem', fontWeight: 'bold', textAlign: 'center', marginBottom: '0.5rem' }}
+            style={{ 
+              fontSize: '1.875rem', 
+              fontWeight: 'bold', 
+              textAlign: 'center', 
+              marginBottom: '0.5rem',
+              color: '#ffffff'
+            }}
           >
-            Welcome Back
+            omeroid chat
           </motion.h2>
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            style={{ textAlign: 'center', color: 'rgb(209, 213, 219)', marginBottom: '2rem' }}
+            style={{ textAlign: 'center', color: 'rgb(156, 163, 175)', marginBottom: '2rem' }}
           >
             アカウントにログインして続ける
           </motion.p>
@@ -118,7 +135,7 @@ export default function SignIn() {
               </label>
               <div style={{ position: 'relative' }}>
                 <div style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: '0.75rem', pointerEvents: 'none' }}>
-                  <svg style={{ width: '1.25rem', height: '1.25rem', color: 'rgb(156, 163, 175)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg style={{ width: '1.25rem', height: '1.25rem', color: 'rgb(107, 114, 128)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                 </div>
@@ -135,14 +152,22 @@ export default function SignIn() {
                     paddingRight: '0.75rem',
                     paddingTop: '0.75rem',
                     paddingBottom: '0.75rem',
-                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                    border: '1px solid rgb(75, 85, 99)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
                     borderRadius: '0.75rem',
                     color: 'white',
                     outline: 'none',
                     transition: 'all 0.2s'
                   }}
                   placeholder="ユーザー名を入力"
+                  onFocus={(e) => {
+                    e.target.style.border = '1px solid rgba(255, 255, 255, 0.3)'
+                    e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.08)'
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.border = '1px solid rgba(255, 255, 255, 0.1)'
+                    e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.05)'
+                  }}
                 />
               </div>
             </motion.div>
@@ -157,7 +182,7 @@ export default function SignIn() {
               </label>
               <div style={{ position: 'relative' }}>
                 <div style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: '0.75rem', pointerEvents: 'none' }}>
-                  <svg style={{ width: '1.25rem', height: '1.25rem', color: 'rgb(156, 163, 175)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg style={{ width: '1.25rem', height: '1.25rem', color: 'rgb(107, 114, 128)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
                 </div>
@@ -174,14 +199,22 @@ export default function SignIn() {
                     paddingRight: '0.75rem',
                     paddingTop: '0.75rem',
                     paddingBottom: '0.75rem',
-                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                    border: '1px solid rgb(75, 85, 99)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
                     borderRadius: '0.75rem',
                     color: 'white',
                     outline: 'none',
                     transition: 'all 0.2s'
                   }}
                   placeholder="パスワードを入力"
+                  onFocus={(e) => {
+                    e.target.style.border = '1px solid rgba(255, 255, 255, 0.3)'
+                    e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.08)'
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.border = '1px solid rgba(255, 255, 255, 0.1)'
+                    e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.05)'
+                  }}
                 />
               </div>
             </motion.div>
@@ -197,8 +230,8 @@ export default function SignIn() {
                 style={{
                   width: '100%',
                   padding: '0.75rem 1rem',
-                  background: loading ? 'rgb(107, 114, 128)' : 'linear-gradient(to right, rgb(147, 51, 234), rgb(236, 72, 153))',
-                  color: 'white',
+                  background: loading ? 'rgb(75, 85, 99)' : '#ffffff',
+                  color: loading ? 'white' : '#000000',
                   fontWeight: '600',
                   borderRadius: '0.75rem',
                   border: 'none',
@@ -246,13 +279,13 @@ export default function SignIn() {
               <Link 
                 to="/signup" 
                 style={{ 
-                  color: 'rgb(196, 181, 253)', 
+                  color: '#ffffff', 
                   fontWeight: '600', 
                   textDecoration: 'none',
-                  transition: 'color 0.2s'
+                  transition: 'opacity 0.2s'
                 }}
-                onMouseEnter={(e) => e.currentTarget.style.color = 'rgb(221, 214, 254)'}
-                onMouseLeave={(e) => e.currentTarget.style.color = 'rgb(196, 181, 253)'}
+                onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
+                onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
               >
                 新規登録
               </Link>
@@ -266,7 +299,7 @@ export default function SignIn() {
           transition={{ delay: 1 }}
           style={{ marginTop: '2rem', textAlign: 'center', fontSize: '0.875rem', color: 'rgb(107, 114, 128)' }}
         >
-          <p>© 2025 Modern Chat App. All rights reserved.</p>
+          <p>© 2025 omeroid Inc. All rights reserved.</p>
         </motion.div>
       </motion.div>
     </div>

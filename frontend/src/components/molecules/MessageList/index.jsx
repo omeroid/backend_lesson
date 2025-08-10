@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { Box } from '@mui/material'
+import { motion } from 'framer-motion'
 import { MessageItem } from './MessageItem'
 
 import { useListMessages, useDeleteMessage } from '../../../modules/message'
@@ -42,15 +42,30 @@ export const MessageList = ({ roomId }) => {
   }, [messages, scrollToBottomOfList])
 
   return (
-    <Box sx={{ overflow: 'auto', height: 'calc(100% - 5rem)', py: 2 }}>
-      {messages.map((message) => (
-        <MessageItem
-          key={message.id}
-          message={message}
-          onDelete={(msg) => handleDeleteMessage(msg.id)}
-        />
-      ))}
+    <div className="flex-1 overflow-y-auto scrollbar-thin bg-gray-800 py-4">
+      {messages.length === 0 ? (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="flex items-center justify-center h-full"
+        >
+          <div className="text-center">
+            <p className="text-gray-500 text-lg mb-2">まだメッセージがありません</p>
+            <p className="text-gray-600 text-sm">最初のメッセージを送信してみましょう！</p>
+          </div>
+        </motion.div>
+      ) : (
+        <>
+          {messages.map((message, index) => (
+            <MessageItem
+              key={message.id}
+              message={message}
+              onDelete={(msg) => handleDeleteMessage(msg.id)}
+            />
+          ))}
+        </>
+      )}
       <div ref={scrollRef}></div>
-    </Box>
+    </div>
   )
 }

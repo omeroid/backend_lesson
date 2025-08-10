@@ -1,103 +1,335 @@
 import * as React from 'react'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import { Link as MuiLink } from '@mui/material'
-import Grid from '@mui/material/Grid'
-import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
-import Container from '@mui/material/Container'
-import axios from 'axios'
+import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { ENDPOINT } from '../modules/fetcher'
+import { motion } from 'framer-motion'
+import axios from 'axios'
 import toast from 'react-hot-toast'
+import { ENDPOINT } from '../modules/fetcher'
 
 export default function SignUp() {
   const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+    confirmPassword: ''
+  })
 
   const handleSubmit = async (event) => {
+    event.preventDefault()
+    
+    if (formData.password !== formData.confirmPassword) {
+      toast.error('パスワードが一致しません')
+      return
+    }
+
+    setLoading(true)
     const url = ENDPOINT + '/user/signup'
 
-    event.preventDefault()
-    const data = new FormData(event.currentTarget)
-    const username = data.get('username')
-    const password = data.get('password')
-    var response
     try {
-      response = await axios.post(url, {
-        userName: username,
-        password: password,
+      await axios.post(url, {
+        userName: formData.username,
+        password: formData.password,
       })
-      navigate('/')
-      toast.success('アカウント登録が完了しました。ログインしてください。')
+      toast.success('アカウント作成成功！ログイン画面へ移動します...')
+      setTimeout(() => navigate('/'), 500)
     } catch (e) {
-      toast.error('usernameがすでに使われております')
-      response = e?.response
+      toast.error('このユーザー名は既に使用されています')
+      console.error('Signup error:', e?.response)
+    } finally {
+      setLoading(false)
     }
-    console.log(
-      'method:',
-      response?.config?.method,
-      'url:',
-      response?.config?.url
-    )
   }
 
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    })
+  }
+
+  const passwordMatch = formData.password && formData.confirmPassword && 
+                        formData.password === formData.confirmPassword
+
   return (
-    <Container component="main" maxWidth="xs">
-      <Box
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        style={{ width: '100%', maxWidth: '28rem' }}
       >
-        <Box
-          component="img"
-          sx={{ height: 100, width: 100 }}
-          alt="omeroid icon"
-          src="https://assets.st-note.com/production/uploads/images/38911312/profile_5e2d06172918f8d8fae54589aa5e2217.jpg"
-        />
-        <Typography component="h1" variant="h5">
-          アカウント作成
-        </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="username"
-            label="username"
-            name="username"
-            autoComplete="email"
-            autoFocus
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
+        <div className="glass-morphism" style={{ borderRadius: '1.5rem', padding: '2rem', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)' }}>
+          <motion.div
+            initial={{ scale: 0.5 }}
+            animate={{ scale: 1 }}
+            transition={{ 
+              delay: 0.2,
+              type: "spring",
+              stiffness: 260,
+              damping: 20
+            }}
+            style={{ display: 'flex', justifyContent: 'center', marginBottom: '2rem' }}
           >
-            作成
-          </Button>
-          <Grid container>
-            <Grid item>
-              <MuiLink component={Link} to="/" variant="body2">
-                {'ログイン'}
-              </MuiLink>
-            </Grid>
-          </Grid>
-        </Box>
-      </Box>
-    </Container>
+            <div style={{ position: 'relative' }}>
+              <div style={{ 
+                position: 'absolute', 
+                inset: 0, 
+                backgroundColor: 'rgb(236, 72, 153)', 
+                borderRadius: '50%', 
+                filter: 'blur(20px)', 
+                opacity: 0.5 
+              }}></div>
+              <div style={{ 
+                position: 'relative', 
+                background: 'linear-gradient(to bottom right, rgb(236, 72, 153), rgb(147, 51, 234))', 
+                borderRadius: '50%', 
+                width: '5rem', 
+                height: '5rem', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center' 
+              }}>
+                <svg style={{ width: '3rem', height: '3rem', color: 'white' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                </svg>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.h2
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="text-gradient"
+            style={{ fontSize: '1.875rem', fontWeight: 'bold', textAlign: 'center', marginBottom: '0.5rem' }}
+          >
+            Create Account
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            style={{ textAlign: 'center', color: 'rgb(209, 213, 219)', marginBottom: '2rem' }}
+          >
+            新しいアカウントを作成して始める
+          </motion.p>
+
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <motion.div
+              initial={{ x: -50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'rgb(209, 213, 219)', marginBottom: '0.5rem' }}>
+                ユーザー名
+              </label>
+              <div style={{ position: 'relative' }}>
+                <div style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: '0.75rem', pointerEvents: 'none' }}>
+                  <svg style={{ width: '1.25rem', height: '1.25rem', color: 'rgb(156, 163, 175)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  required
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    paddingLeft: '2.5rem',
+                    paddingRight: '0.75rem',
+                    paddingTop: '0.75rem',
+                    paddingBottom: '0.75rem',
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    border: '1px solid rgb(75, 85, 99)',
+                    borderRadius: '0.75rem',
+                    color: 'white',
+                    outline: 'none',
+                    transition: 'all 0.2s'
+                  }}
+                  placeholder="希望のユーザー名を入力"
+                />
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ x: -50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.6 }}
+            >
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'rgb(209, 213, 219)', marginBottom: '0.5rem' }}>
+                パスワード
+              </label>
+              <div style={{ position: 'relative' }}>
+                <div style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: '0.75rem', pointerEvents: 'none' }}>
+                  <svg style={{ width: '1.25rem', height: '1.25rem', color: 'rgb(156, 163, 175)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                </div>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  minLength="6"
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    paddingLeft: '2.5rem',
+                    paddingRight: '0.75rem',
+                    paddingTop: '0.75rem',
+                    paddingBottom: '0.75rem',
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    border: '1px solid rgb(75, 85, 99)',
+                    borderRadius: '0.75rem',
+                    color: 'white',
+                    outline: 'none',
+                    transition: 'all 0.2s'
+                  }}
+                  placeholder="6文字以上のパスワード"
+                />
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ x: -50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.7 }}
+            >
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: 'rgb(209, 213, 219)', marginBottom: '0.5rem' }}>
+                パスワード（確認）
+              </label>
+              <div style={{ position: 'relative' }}>
+                <div style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: '0.75rem', pointerEvents: 'none' }}>
+                  <svg style={{ width: '1.25rem', height: '1.25rem', color: 'rgb(156, 163, 175)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                </div>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                  minLength="6"
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    paddingLeft: '2.5rem',
+                    paddingRight: '2.5rem',
+                    paddingTop: '0.75rem',
+                    paddingBottom: '0.75rem',
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    border: `1px solid ${formData.confirmPassword ? (passwordMatch ? 'rgb(34, 197, 94)' : 'rgb(239, 68, 68)') : 'rgb(75, 85, 99)'}`,
+                    borderRadius: '0.75rem',
+                    color: 'white',
+                    outline: 'none',
+                    transition: 'all 0.2s'
+                  }}
+                  placeholder="パスワードを再入力"
+                />
+                {formData.confirmPassword && (
+                  <div style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', right: '0.75rem' }}>
+                    <svg 
+                      style={{ width: '1.25rem', height: '1.25rem', color: passwordMatch ? 'rgb(34, 197, 94)' : 'rgb(239, 68, 68)' }} 
+                      fill="none" 
+                      viewBox="0 0 24 24" 
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.8 }}
+            >
+              <button
+                type="submit"
+                disabled={loading || !passwordMatch}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem',
+                  background: (loading || !passwordMatch) ? 'rgb(107, 114, 128)' : 'linear-gradient(to right, rgb(236, 72, 153), rgb(147, 51, 234))',
+                  color: 'white',
+                  fontWeight: '600',
+                  borderRadius: '0.75rem',
+                  border: 'none',
+                  cursor: (loading || !passwordMatch) ? 'not-allowed' : 'pointer',
+                  opacity: (loading || !passwordMatch) ? 0.5 : 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.5rem',
+                  transition: 'all 0.2s',
+                  transform: 'scale(1)',
+                }}
+                onMouseEnter={(e) => !(loading || !passwordMatch) && (e.currentTarget.style.transform = 'scale(1.02)')}
+                onMouseLeave={(e) => !(loading || !passwordMatch) && (e.currentTarget.style.transform = 'scale(1)')}
+              >
+                {loading ? (
+                  <div style={{ 
+                    width: '1.25rem', 
+                    height: '1.25rem', 
+                    border: '2px solid white', 
+                    borderTopColor: 'transparent', 
+                    borderRadius: '50%', 
+                    animation: 'spin 1s linear infinite' 
+                  }} />
+                ) : (
+                  <>
+                    アカウント作成
+                    <svg style={{ width: '1.25rem', height: '1.25rem' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                    </svg>
+                  </>
+                )}
+              </button>
+            </motion.div>
+          </form>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.9 }}
+            style={{ marginTop: '2rem', textAlign: 'center' }}
+          >
+            <p style={{ color: 'rgb(156, 163, 175)' }}>
+              既にアカウントをお持ちの方は{' '}
+              <Link 
+                to="/" 
+                style={{ 
+                  color: 'rgb(251, 191, 219)', 
+                  fontWeight: '600', 
+                  textDecoration: 'none',
+                  transition: 'color 0.2s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.color = 'rgb(252, 231, 243)'}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'rgb(251, 191, 219)'}
+              >
+                ログイン
+              </Link>
+            </p>
+          </motion.div>
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+          style={{ marginTop: '2rem', textAlign: 'center', fontSize: '0.875rem', color: 'rgb(107, 114, 128)' }}
+        >
+          <p>© 2025 Modern Chat App. All rights reserved.</p>
+        </motion.div>
+      </motion.div>
+    </div>
   )
 }

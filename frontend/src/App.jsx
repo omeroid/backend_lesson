@@ -1,35 +1,10 @@
 import React from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { ThemeProvider, createTheme } from '@mui/material/styles'
-import CssBaseline from '@mui/material/CssBaseline'
 import { Toaster } from 'react-hot-toast'
 
 import SignIn from './pages/SignIn.jsx'
 import SignUp from './pages/SignUp.jsx'
 import Chat from './pages/Chat.jsx'
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#2C3333',
-    },
-    secondary: {
-      main: '#395B64',
-    },
-    error: {
-      main: '#E7F6F2',
-    },
-    warning: {
-      main: '#E7F6F2',
-    },
-    info: {
-      main: '#A5C9CA',
-    },
-    success: {
-      main: '#A5C9CA',
-    },
-  },
-})
 
 const router = createBrowserRouter([
   {
@@ -48,15 +23,34 @@ const router = createBrowserRouter([
 
 const App = () => {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <>
       <Toaster
+        position="top-right"
         toastOptions={{
-          position: 'top-right',
+          duration: 3000,
+          style: {
+            background: 'rgba(17, 25, 40, 0.9)',
+            color: '#fff',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+          },
+          success: {
+            iconTheme: {
+              primary: '#10b981',
+              secondary: '#fff',
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: '#ef4444',
+              secondary: '#fff',
+            },
+          },
         }}
       />
       <RouterProvider router={router} />
-    </ThemeProvider>
+    </>
   )
 }
+
 export default App

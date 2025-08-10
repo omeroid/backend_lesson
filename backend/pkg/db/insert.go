@@ -27,7 +27,7 @@ func InsertSampleRecord(db *gorm.DB) error {
 	description := "どんな話題でもOK!　雑談ルーム"
 	room := Room{
 		Description: &description,
-		Name:        "#general",
+		Name:        "general",
 	}
 
 	session := Session{

@@ -77,20 +77,24 @@ export const PageChat = () => {
           style={{
             width: '3rem',
             height: '3rem',
-            background: 'linear-gradient(to bottom right, rgb(147, 51, 234), rgb(236, 72, 153))',
-            borderRadius: '1rem',
+            borderRadius: '0.75rem',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer',
-            transition: 'border-radius 0.2s'
+            overflow: 'hidden',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
           }}
-          onMouseEnter={(e) => e.currentTarget.style.borderRadius = '0.75rem'}
-          onMouseLeave={(e) => e.currentTarget.style.borderRadius = '1rem'}
         >
-          <svg style={{ width: '1.75rem', height: '1.75rem', color: 'white' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-          </svg>
+          <img 
+            src="/omeroid.svg" 
+            alt="omeroid" 
+            style={{ 
+              width: '100%', 
+              height: '100%',
+              objectFit: 'cover'
+            }}
+          />
         </motion.div>
         
         <div style={{ height: '1px', width: '2rem', backgroundColor: 'rgb(55, 65, 81)' }} />
@@ -430,7 +434,13 @@ export const PageChat = () => {
             </div>
 
             {/* メッセージエリア */}
-            <div style={{ flex: 1, overflow: 'hidden' }}>
+            <div style={{ 
+              flex: 1, 
+              overflow: 'hidden',
+              display: 'flex',
+              flexDirection: 'column',
+              minHeight: 0
+            }}>
               <MessageList roomId={selectedRoom.id} />
             </div>
 

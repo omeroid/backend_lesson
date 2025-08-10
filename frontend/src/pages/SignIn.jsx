@@ -79,25 +79,16 @@ export default function SignIn() {
           >
             <div style={{ position: 'relative' }}>
               {/* omeroid Logo */}
-              <div style={{ 
-                width: '5rem', 
-                height: '5rem', 
-                background: '#ffffff',
-                borderRadius: '1rem',
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center',
-                boxShadow: '0 10px 20px rgba(0, 0, 0, 0.3)'
-              }}>
-                <span style={{ 
-                  fontSize: '2rem', 
-                  fontWeight: 'bold',
-                  background: 'linear-gradient(135deg, #000000, #333333)',
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent'
-                }}>O</span>
-              </div>
+              <img 
+                src="/omeroid.svg" 
+                alt="omeroid" 
+                style={{ 
+                  width: '5rem', 
+                  height: '5rem',
+                  borderRadius: '1rem',
+                  boxShadow: '0 10px 20px rgba(0, 0, 0, 0.3)'
+                }}
+              />
             </div>
           </motion.div>
 

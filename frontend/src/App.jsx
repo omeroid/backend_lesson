@@ -1,53 +1,56 @@
 import React from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { ThemeProvider, createTheme } from '@mui/material/styles'
-import CssBaseline from '@mui/material/CssBaseline'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 
 import SignIn from './pages/SignIn.jsx'
 import SignUp from './pages/SignUp.jsx'
 import Chat from './pages/Chat.jsx'
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#2C3333',
-    },
-    secondary: {
-      main: '#395B64',
-    },
-    error: {
-      main: '#E7F6F2',
-    },
-    warning: {
-      main: '#E7F6F2',
-    },
-    info: {
-      main: '#A5C9CA',
-    },
-    success: {
-      main: '#A5C9CA',
-    },
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <SignIn />,
   },
-})
+  {
+    path: '/signup',
+    element: <SignUp />,
+  },
+  {
+    path: '/chat',
+    element: <Chat />,
+  },
+])
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Toaster
-          toastOptions={{
-            position: 'top-right',
-          }}
-        />
-        <Routes>
-          <Route path="/" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/chat" element={<Chat />} />
-        </Routes>
-      </ThemeProvider>
-    </BrowserRouter>
+    <>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: 'rgba(17, 25, 40, 0.9)',
+            color: '#fff',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+          },
+          success: {
+            iconTheme: {
+              primary: '#10b981',
+              secondary: '#fff',
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: '#ef4444',
+              secondary: '#fff',
+            },
+          },
+        }}
+      />
+      <RouterProvider router={router} />
+    </>
   )
 }
+
 export default App

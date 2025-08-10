@@ -248,7 +248,109 @@ npm install --legacy-peer-deps
 | メッセージ削除 | DELETE | /chatRooms/{roomId}/messages/{messageId} |
 | メッセージ一覧取得 | GET | /rooms/{roomId}/messages/ |
 
-## 補足資料
-- [講義資料](https://docs.google.com/presentation/d/10xLeueQwx0gD7bsZ947B9Ukv_f-4tCtVBS-XD8l0SDA)
+## 📝 ハンズオン問題集
+
+### 問題概要
+`question`ブランチには、以下の3つの機能を実装する課題があります。各機能はメッセージ管理に関するものです。
+
+### 問題1: メッセージ一覧取得機能の実装
+**ファイル**: `backend/cmd/main.go` (65-66行目)
+**内容**: チャットルーム内のメッセージ一覧を取得するAPIエンドポイントを追加します。
+
+**実装のヒント**:
+- `handler.ListMessage`関数を呼び出すルーティングを追加
+- HTTPメソッド: GET
+- パス: `/rooms/:roomId/messages`
+
+---
+
+### 問題2: メッセージ作成機能の実装
+**ファイル**: `backend/cmd/main.go` (68-69行目)
+**内容**: チャットルームに新しいメッセージを投稿するAPIエンドポイントを追加します。
+
+**実装のヒント**:
+- `handler.CreateMessage`関数を呼び出すルーティングを追加
+- HTTPメソッド: POST
+- パス: `/rooms/:roomId/messages`
+
+---
+
+### 問題3: メッセージ削除機能の実装
+**ファイル**: `backend/cmd/main.go` (71-72行目)
+**内容**: 特定のメッセージを削除するAPIエンドポイントを追加します。
+
+**実装のヒント**:
+- `handler.DeleteMessage`関数を呼び出すルーティングを追加
+- HTTPメソッド: DELETE
+- パス: `/rooms/:roomId/messages/:messageId`
+
+---
+
+### 問題A: メッセージ作成処理の実装
+**ファイル**: `backend/handler/message.go` (14-28行目)
+**関数名**: `CreateMessage`
+**内容**: メッセージを作成するハンドラー関数を実装します。
+
+**実装手順**:
+1. データベース接続を取得（`c.Get("db")`を`*gorm.DB`型へキャスト）
+2. Authorizationヘッダーからトークンを取得
+3. `IsSessionValid`でトークンを検証
+4. URLパラメータからルームID取得（`c.Param("roomId")`）
+5. リクエストボディからメッセージ内容を取得
+6. データベースにメッセージを保存
+7. ユーザー情報を含むレスポンスを作成
+8. `c.JSON(http.StatusCreated, output)`で返却
+
+---
+
+### 問題B: メッセージ一覧取得処理の実装
+**ファイル**: `backend/handler/message.go` (30-44行目)
+**関数名**: `ListMessage`
+**内容**: 指定されたルームの全メッセージを取得するハンドラー関数を実装します。
+
+**実装手順**:
+1. データベース接続を取得（`c.Get("db")`を`*gorm.DB`型へキャスト）
+2. Authorizationヘッダーからトークンを取得
+3. `IsSessionValid`でトークンを検証
+4. URLパラメータからルームID取得（`c.Param("roomId")`）
+5. ルームIDを`strconv.Atoi()`で整数に変換
+6. データベースからメッセージ一覧を取得
+7. 各メッセージにユーザー情報を追加
+8. `c.JSON(http.StatusOK, output)`で返却
+
+---
+
+### 問題C: メッセージ削除処理の実装
+**ファイル**: `backend/handler/message.go` (46-56行目)
+**関数名**: `DeleteMessage`
+**内容**: 指定されたメッセージを削除するハンドラー関数を実装します。
+
+**実装手順**:
+1. データベース接続を取得（`c.Get("db")`を`*gorm.DB`型へキャスト）
+2. Authorizationヘッダーからトークンを取得
+3. `IsSessionValid`でトークンを検証
+4. URLパラメータからメッセージIDとルームIDを取得
+5. データベースから該当メッセージを削除
+6. エラーハンドリング
+7. `c.JSON(http.StatusNoContent, nil)`で返却
+
+---
+
+### 💡 実装のポイント
+- 必要なパッケージのインポートを忘れずに（コメントアウトされているものを有効化）
+- エラーハンドリングを適切に実装
+- HTTPステータスコードを正しく使用（作成:201、取得:200、削除:204）
+- トークン検証を忘れずに実装
+
+### 🎯 答え合わせ
+実装が完了したら、`main`ブランチの同じファイルと比較して答え合わせをしてください：
+```bash
+git diff main backend/cmd/main.go
+git diff main backend/handler/message.go
+```
+
+## 📖 補足資料
+- [講義資料（スライド）](https://docs.google.com/presentation/d/10xLeueQwx0gD7bsZ947B9Ukv_f-4tCtVBS-XD8l0SDA)
+- [問題文・ハンズオン手順書](https://docs.google.com/document/d/1lBfKX0FiuU1kX6Njy5Ss0Cdu3FvXSs8Kd7PeH9fPGAA)
 - [バックエンドの起動手順](https://github.com/omeroid/backend_lesson/blob/feat/readme/docs/backend.md)
 - [フロントエンドの起動手順](https://github.com/omeroid/backend_lesson/blob/feat/readme/docs/frontend.md)

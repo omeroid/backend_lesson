@@ -254,85 +254,80 @@ npm install --legacy-peer-deps
 `question`ブランチには、以下の3つの機能を実装する課題があります。各機能はメッセージ管理に関するものです。
 
 ### 問題1: メッセージ一覧取得機能の実装
-**ファイル**: `backend/cmd/main.go` (65-66行目)
+**ファイル**: `backend/cmd/main.go`
 **内容**: チャットルーム内のメッセージ一覧を取得するAPIエンドポイントを追加します。
 
-**実装のヒント**:
-- `handler.ListMessage`関数を呼び出すルーティングを追加
 - HTTPメソッド: GET
 - パス: `/rooms/:roomId/messages`
+- ハンドラー: `handler.ListMessage`
 
 ---
 
 ### 問題2: メッセージ作成機能の実装
-**ファイル**: `backend/cmd/main.go` (68-69行目)
+**ファイル**: `backend/cmd/main.go`
 **内容**: チャットルームに新しいメッセージを投稿するAPIエンドポイントを追加します。
 
-**実装のヒント**:
-- `handler.CreateMessage`関数を呼び出すルーティングを追加
 - HTTPメソッド: POST
 - パス: `/rooms/:roomId/messages`
+- ハンドラー: `handler.CreateMessage`
 
 ---
 
 ### 問題3: メッセージ削除機能の実装
-**ファイル**: `backend/cmd/main.go` (71-72行目)
+**ファイル**: `backend/cmd/main.go`
 **内容**: 特定のメッセージを削除するAPIエンドポイントを追加します。
 
-**実装のヒント**:
-- `handler.DeleteMessage`関数を呼び出すルーティングを追加
 - HTTPメソッド: DELETE
 - パス: `/rooms/:roomId/messages/:messageId`
+- ハンドラー: `handler.DeleteMessage`
 
 ---
 
 ### 問題A: メッセージ作成処理の実装
-**ファイル**: `backend/handler/message.go` (14-28行目)
+**ファイル**: `backend/handler/message.go`
 **関数名**: `CreateMessage`
 **内容**: メッセージを作成するハンドラー関数を実装します。
 
 **実装手順**:
-1. データベース接続を取得（`c.Get("db")`を`*gorm.DB`型へキャスト）
-2. Authorizationヘッダーからトークンを取得
+1. データベース接続を取得（`c.Get("db")`を`*gorm.DB`に型変換）
+2. Authorizationヘッダーからトークンを取得し、`util.ExtractBearerToken`で抽出
 3. `IsSessionValid`でトークンを検証
-4. URLパラメータからルームID取得（`c.Param("roomId")`）
-5. リクエストボディからメッセージ内容を取得
-6. データベースにメッセージを保存
-7. ユーザー情報を含むレスポンスを作成
-8. `c.JSON(http.StatusCreated, output)`で返却
+4. リクエストボディから`CreateMessageInput`を取得
+5. URLパラメータから`roomId`を取得し、`strconv.Atoi`で整数に変換
+6. UserIDに該当するユーザーをデータベースから検索
+7. メッセージをデータベースに保存
+8. `CreateMessageOutput`を作成して返却（`http.StatusCreated`）
 
 ---
 
 ### 問題B: メッセージ一覧取得処理の実装
-**ファイル**: `backend/handler/message.go` (30-44行目)
+**ファイル**: `backend/handler/message.go`
 **関数名**: `ListMessage`
 **内容**: 指定されたルームの全メッセージを取得するハンドラー関数を実装します。
 
 **実装手順**:
-1. データベース接続を取得（`c.Get("db")`を`*gorm.DB`型へキャスト）
-2. Authorizationヘッダーからトークンを取得
+1. データベース接続を取得（`c.Get("db")`を`*gorm.DB`に型変換）
+2. Authorizationヘッダーからトークンを取得し、`util.ExtractBearerToken`で抽出
 3. `IsSessionValid`でトークンを検証
-4. URLパラメータからルームID取得（`c.Param("roomId")`）
-5. ルームIDを`strconv.Atoi()`で整数に変換
-6. データベースからメッセージ一覧を取得
-7. 各メッセージにユーザー情報を追加
-8. `c.JSON(http.StatusOK, output)`で返却
+4. URLパラメータから`roomId`を取得し、`strconv.Atoi`で整数に変換
+5. 指定されたルームIDのメッセージをデータベースから取得
+6. 各メッセージにユーザー情報を追加して`ListMessageOutput`を作成
+7. レスポンスを返却（`http.StatusOK`）
 
 ---
 
 ### 問題C: メッセージ削除処理の実装
-**ファイル**: `backend/handler/message.go` (46-56行目)
+**ファイル**: `backend/handler/message.go`
 **関数名**: `DeleteMessage`
 **内容**: 指定されたメッセージを削除するハンドラー関数を実装します。
 
 **実装手順**:
-1. データベース接続を取得（`c.Get("db")`を`*gorm.DB`型へキャスト）
-2. Authorizationヘッダーからトークンを取得
+1. データベース接続を取得（`c.Get("db")`を`*gorm.DB`に型変換）
+2. Authorizationヘッダーからトークンを取得し、`util.ExtractBearerToken`で抽出
 3. `IsSessionValid`でトークンを検証
-4. URLパラメータからメッセージIDとルームIDを取得
-5. データベースから該当メッセージを削除
-6. エラーハンドリング
-7. `c.JSON(http.StatusNoContent, nil)`で返却
+4. URLパラメータから`messageId`と`roomId`を取得し、`strconv.Atoi`で整数に変換
+5. 指定されたメッセージをデータベースから削除
+6. レスポンスを返却（`http.StatusNoContent`）
 
 ---
 

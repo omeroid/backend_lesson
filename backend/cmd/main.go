@@ -62,14 +62,20 @@ func main() {
 	e.POST("/rooms", handler.CreateRoom)
 	e.GET("/rooms/:roomId", handler.GetRoom)
 
-	// TODO 1. メッセージ一覧取得機能を実装してください
-	// (ヒント: handler.ListMessageを実装してください)
+	// TODO 1: メッセージ一覧取得機能を実装してください
+	// HTTPメソッド: GET
+	// パス: /rooms/:roomId/messages
+	// ハンドラー: handler.ListMessage
 
-	// TODO 2. メッセージ作成機能を実装してください
-	// (ヒント: handler.CreateMessageを実装してください)
+	// TODO 2: メッセージ作成機能を実装してください
+	// HTTPメソッド: POST
+	// パス: /rooms/:roomId/messages
+	// ハンドラー: handler.CreateMessage
 
-	// TODO 3. メッセージの削除機能を実装してください。
-	// (ヒント: handler.DeleteMessageを実装してください)
+	// TODO 3: メッセージ削除機能を実装してください
+	// HTTPメソッド: DELETE
+	// パス: /rooms/:roomId/messages/:messageId
+	// ハンドラー: handler.DeleteMessage
 
 	e.Logger.Fatal(e.Start(":1323")) // サーバーを1323ポートで起動します。なお、サーバー起動時にエラーが発生した場合はログを出力してプログラムを終了します。
 }

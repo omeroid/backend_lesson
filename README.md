@@ -215,9 +215,9 @@ npm install --legacy-peer-deps
 - **golang.org/x/crypto** (パスワードハッシュ化)
 
 ### フロントエンド
-- **React** 18.3.1
-- **React Router** v6.30.1
-- **Material-UI** v5.16.7
+- **React** 19.1.1
+- **React Router** v7.8.0
+- **Material-UI (MUI)** v6.3.0
 - **Axios** v1.11.0 (HTTP クライアント)
 - **SWR** v2.3.5 (データフェッチング)
 - **React Hot Toast** v2.5.2 (通知)

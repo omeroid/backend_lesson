@@ -1,13 +1,13 @@
 import * as React from 'react'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
-import Link from '@mui/material/Link'
+import { Link as MuiLink } from '@mui/material'
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { ENDPOINT } from '../modules/fetcher'
 import toast from 'react-hot-toast'
 
@@ -91,9 +91,9 @@ export default function SignUp() {
           </Button>
           <Grid container>
             <Grid item>
-              <Link href="/" variant="body2">
+              <MuiLink component={Link} to="/" variant="body2">
                 {'ログイン'}
-              </Link>
+              </MuiLink>
             </Grid>
           </Grid>
         </Box>

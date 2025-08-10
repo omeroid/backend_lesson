@@ -3,13 +3,13 @@ import axios from 'axios'
 
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
-import Link from '@mui/material/Link'
+import { Link as MuiLink } from '@mui/material'
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { ENDPOINT } from '../modules/fetcher'
 
 export default function SignIn() {
@@ -102,9 +102,9 @@ export default function SignIn() {
           </Button>
           <Grid container>
             <Grid item>
-              <Link href="/signup" variant="body2">
+              <MuiLink component={Link} to="/signup" variant="body2">
                 {'アカウント作成'}
-              </Link>
+              </MuiLink>
             </Grid>
           </Grid>
         </Box>

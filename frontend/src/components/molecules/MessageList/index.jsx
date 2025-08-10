@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { MessageList as ChatMessageList } from 'react-chat-elements'
+import { Box } from '@mui/material'
+import { MessageItem } from './MessageItem'
 
 import { useListMessages, useDeleteMessage } from '../../../modules/message'
 import { useUser } from '../../../modules/user'
@@ -12,11 +13,11 @@ export const MessageList = ({ roomId }) => {
 
   const scrollRef = useRef(null)
   const scrollToBottomOfList = useCallback(() => {
-    scrollRef.current.scrollIntoView({
+    scrollRef.current?.scrollIntoView({
       behavior: 'smooth',
       block: 'end',
     })
-  }, [scrollRef])
+  }, [])
 
   useEffect(() => {
     if (!data || !data.messages) {
@@ -34,22 +35,22 @@ export const MessageList = ({ roomId }) => {
       className: user.userId === item.user.id ? 'my-message' : '',
     }))
     setMessages(list)
-  }, [data, user, scrollToBottomOfList])
+  }, [data, user])
 
   useEffect(() => {
     scrollToBottomOfList()
   }, [messages, scrollToBottomOfList])
 
   return (
-    <div style={{ overflow: 'scroll', height: 'calc(100% - 5rem)' }}>
-      <ChatMessageList
-        onRemoveMessageClick={(message) => handleDeleteMessage(message.id)}
-        className="message-list"
-        lockable={true}
-        toBottomHeight={'100%'}
-        dataSource={messages}
-      />
+    <Box sx={{ overflow: 'auto', height: 'calc(100% - 5rem)', py: 2 }}>
+      {messages.map((message) => (
+        <MessageItem
+          key={message.id}
+          message={message}
+          onDelete={(msg) => handleDeleteMessage(msg.id)}
+        />
+      ))}
       <div ref={scrollRef}></div>
-    </div>
+    </Box>
   )
 }

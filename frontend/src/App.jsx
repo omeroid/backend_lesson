@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 import { Toaster } from 'react-hot-toast'
@@ -31,23 +31,32 @@ const theme = createTheme({
   },
 })
 
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <SignIn />,
+  },
+  {
+    path: '/signup',
+    element: <SignUp />,
+  },
+  {
+    path: '/chat',
+    element: <Chat />,
+  },
+])
+
 const App = () => {
   return (
-    <BrowserRouter>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Toaster
-          toastOptions={{
-            position: 'top-right',
-          }}
-        />
-        <Routes>
-          <Route path="/" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/chat" element={<Chat />} />
-        </Routes>
-      </ThemeProvider>
-    </BrowserRouter>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Toaster
+        toastOptions={{
+          position: 'top-right',
+        }}
+      />
+      <RouterProvider router={router} />
+    </ThemeProvider>
   )
 }
 export default App

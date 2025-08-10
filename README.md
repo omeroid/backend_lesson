@@ -337,6 +337,145 @@ npm install --legacy-peer-deps
 - HTTPステータスコードを正しく使用（作成:201、取得:200、削除:204）
 - トークン検証を忘れずに実装
 
+## 🔧 デバッグ方法と動作確認
+
+### 1. コンパイルエラーの確認
+```bash
+# backendディレクトリで実行
+cd backend
+go build ./cmd/main.go
+
+# エラーが出た場合の対処法
+# - インポート忘れ: undefined エラーが出たパッケージをインポート
+# - 型エラー: 型変換を確認（例: c.Get("db").(*gorm.DB)）
+# - 関数名のタイポ: 大文字小文字を確認
+```
+
+### 2. サーバー起動の確認
+```bash
+# バックエンドサーバーを起動
+go run cmd/main.go
+
+# 正常に起動した場合の表示
+# ⇨ http server started on [::]:1323
+
+# よくあるエラー
+# - "bind: address already in use": 既に起動中なので、既存プロセスを停止
+# - "panic: runtime error": ルーティング設定のミスを確認
+```
+
+### 3. APIエンドポイントの動作確認
+
+#### テスト用アカウントでログイン
+```bash
+# まずログインしてトークンを取得
+curl -X POST http://localhost:1323/user/signin \
+  -H "Content-Type: application/json" \
+  -d '{"userName":"omeroid","password":"backend"}'
+
+# レスポンス例
+# {"id":1,"name":"omeroid","token":"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"}
+# このtokenを以降のリクエストで使用
+```
+
+#### 問題1: メッセージ一覧取得のテスト
+```bash
+# メッセージ一覧を取得（tokenは上記で取得したものを使用）
+curl -X GET http://localhost:1323/rooms/1/messages \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE"
+
+# 期待されるレスポンス
+# {"messages":[{"id":1,"text":"Welcome to the omeroid lecture!","user":{"id":1,"name":"omeroid"},"createdAt":"..."}]}
+
+# エラーの場合
+# 401 Unauthorized: トークンが無効 → Authorization ヘッダーを確認
+# 404 Not Found: エンドポイントが未実装 → main.goのルーティングを確認
+# 500 Internal Server Error: DB接続エラー → handler内の実装を確認
+```
+
+#### 問題2: メッセージ作成のテスト
+```bash
+# メッセージを投稿
+curl -X POST http://localhost:1323/rooms/1/messages \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE" \
+  -d '{"userId":1,"text":"テストメッセージです"}'
+
+# 期待されるレスポンス（201 Created）
+# {"id":2,"text":"テストメッセージです","user":{"id":1,"name":"omeroid"},"createdAt":"..."}
+
+# エラーの場合
+# 400 Bad Request: リクエストボディの形式エラー → CreateMessageInput構造体を確認
+# 401 Unauthorized: トークンが無効
+# 404 Not Found: エンドポイントが未実装
+```
+
+#### 問題3: メッセージ削除のテスト
+```bash
+# メッセージを削除（メッセージID:2を削除する例）
+curl -X DELETE http://localhost:1323/rooms/1/messages/2 \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE"
+
+# 期待されるレスポンス（204 No Content）
+# ボディは空
+
+# エラーの場合
+# 401 Unauthorized: トークンが無効
+# 404 Not Found: エンドポイントが未実装 または メッセージが存在しない
+# 500 Internal Server Error: DB削除処理のエラー
+```
+
+### 4. ログを使ったデバッグ
+
+実装中にデバッグが必要な場合、以下のようにログを追加：
+
+```go
+// handler/message.go内でデバッグ用ログを追加
+func CreateMessage(c echo.Context) error {
+    conn := c.Get("db").(*gorm.DB)
+    
+    // デバッグ: DB接続確認
+    fmt.Println("DB接続取得成功")
+    
+    authHeader := c.Request().Header.Get("Authorization")
+    token := util.ExtractBearerToken(authHeader)
+    
+    // デバッグ: トークン確認
+    fmt.Printf("取得したトークン: %s\n", token)
+    
+    // ... 以下実装
+}
+```
+
+### 5. フロントエンドからの動作確認
+
+バックエンドとフロントエンドを両方起動した状態で確認：
+
+```bash
+# ターミナル1: バックエンド起動
+cd backend
+go run cmd/main.go
+
+# ターミナル2: フロントエンド起動
+cd frontend
+npm start
+```
+
+ブラウザで http://localhost:3000 にアクセスして確認：
+1. omeroid/backend でログイン
+2. チャットルームを選択
+3. メッセージの表示・投稿・削除が正常に動作するか確認
+
+### 6. よくあるエラーと対処法
+
+| エラー | 原因 | 対処法 |
+|-------|------|--------|
+| `undefined: handler.ListMessage` | 関数が未実装 | handler/message.goに関数を実装 |
+| `cannot use conn (type interface {}) as type *gorm.DB` | 型アサーション忘れ | `.(*gorm.DB)`を追加 |
+| `undefined: strconv` | インポート忘れ | import文に"strconv"を追加 |
+| `http: panic serving` | nilポインタアクセス | エラーチェックを追加 |
+| `Error 1: no such table: messages` | DB初期化失敗 | chat.dbを削除して再起動 |
+
 ### 🎯 答え合わせ
 実装が完了したら、`main`ブランチの同じファイルと比較して答え合わせをしてください：
 ```bash
